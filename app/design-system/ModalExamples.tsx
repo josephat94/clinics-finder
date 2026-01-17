@@ -74,11 +74,7 @@ export function ModalExamples() {
               placeholder="Ej: Calle Principal 123"
               required
             />
-            <Select label="Estado" placeholder="Selecciona un estado" required>
-              <option value="il">Illinois</option>
-              <option value="ny">New York</option>
-              <option value="fl">Florida</option>
-            </Select>
+ 
             <Input
               label="Teléfono"
               type="tel"
