@@ -9,9 +9,17 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@floating-ui/react": "^0.27.16",
+    "@supabase/ssr": "^0.8.0",
+    "@supabase/supabase-js": "^2.90.1",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.26.2",
     "next": "16.1.2",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "react-icons": "^5.5.0",
+    "tailwind-merge": "^3.4.0",
+    "zustand": "^5.0.10"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
