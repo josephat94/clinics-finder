@@ -29,6 +29,7 @@ export interface PopoverProps {
   trigger?: 'click' | 'hover';
   className?: string;
   contentClassName?: string;
+  zIndex?: number;
 }
 
 const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
@@ -43,6 +44,7 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
       trigger = 'click',
       className,
       contentClassName,
+      zIndex = 50,
     },
     ref
   ) => {
@@ -268,10 +270,9 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
                     position: 'fixed',
                     top: `${position.top}px`,
                     left: `${position.left}px`,
-                    zIndex: 50,
+                    zIndex: zIndex,
                   }}
                   className={cn(
-                    'z-50',
                     'rounded-lg border border-zinc-200 dark:border-zinc-800',
                     'bg-white dark:bg-zinc-900',
                     'shadow-lg',

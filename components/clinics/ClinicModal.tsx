@@ -324,6 +324,7 @@ export function ClinicModal({
             value={formData.state || ""}
             onChange={(value) => setFormData({ ...formData, state: value })}
             placeholder="Selecciona un estado"
+            popoverZIndex={250}
           />
 
           <Input

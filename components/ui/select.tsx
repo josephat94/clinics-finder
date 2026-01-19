@@ -27,6 +27,7 @@ export interface SelectProps {
   id?: string;
   name?: string;
   required?: boolean;
+  popoverZIndex?: number;
 }
 
 const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
@@ -46,6 +47,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
       id,
       name,
       required,
+      popoverZIndex,
       ...props
     },
     ref
@@ -118,6 +120,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
           placement="bottom-start"
           contentClassName="p-2 min-w-[200px] max-h-[400px] overflow-y-auto max-w-[300px]"
           trigger="click"
+          zIndex={popoverZIndex}
         >
           <button
             ref={ref}
