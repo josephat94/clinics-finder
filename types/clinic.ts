@@ -14,6 +14,7 @@ export interface Clinic {
   notes: string | null;
   website: string | null;
   enabled: boolean;
+  banned: boolean;
   created_at: string; // timestamptz
   updated_at: string; // timestamptz
 }

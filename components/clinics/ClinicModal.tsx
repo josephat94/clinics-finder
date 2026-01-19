@@ -34,6 +34,7 @@ export function ClinicModal({
     notes: null,
     website: null,
     enabled: true,
+    banned: false,
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -53,6 +54,7 @@ export function ClinicModal({
         notes: clinic.notes,
         website: clinic.website,
         enabled: clinic.enabled ?? true,
+        banned: clinic.banned ?? false,
       });
     } else if (open && !clinic) {
       // Resetear formulario en modo creación
@@ -67,6 +69,7 @@ export function ClinicModal({
         notes: null,
         website: null,
         enabled: true,
+        banned: false,
       });
     }
     setError(null);
@@ -157,6 +160,7 @@ export function ClinicModal({
         notes: null,
         website: null,
         enabled: true,
+        banned: false,
       });
 
       // Cerrar el modal y notificar éxito
@@ -188,6 +192,7 @@ export function ClinicModal({
         notes: null,
         website: null,
         enabled: true,
+        banned: false,
       });
       setError(null);
       onClose();
@@ -224,21 +229,39 @@ export function ClinicModal({
             error={error?.includes("nombre")}
           />
 
-          <div className="flex items-center gap-2 pt-6">
-            <input
-              type="checkbox"
-              id="enabled"
-              name="enabled"
-              checked={formData.enabled ?? true}
-              onChange={handleCheckboxChange}
-              className="h-4 w-4 rounded border-zinc-300 text-black focus:ring-2 focus:ring-black dark:border-zinc-700 dark:text-white dark:focus:ring-white"
-            />
-            <label
-              htmlFor="enabled"
-              className="text-sm font-medium text-zinc-900 dark:text-zinc-100"
-            >
-              Clínica habilitada
-            </label>
+          <div className="flex flex-col gap-3 pt-6">
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="enabled"
+                name="enabled"
+                checked={formData.enabled ?? true}
+                onChange={handleCheckboxChange}
+                className="h-4 w-4 rounded border-zinc-300 text-black focus:ring-2 focus:ring-black dark:border-zinc-700 dark:text-white dark:focus:ring-white"
+              />
+              <label
+                htmlFor="enabled"
+                className="text-sm font-medium text-zinc-900 dark:text-zinc-100"
+              >
+                Clínica habilitada
+              </label>
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="banned"
+                name="banned"
+                checked={formData.banned ?? false}
+                onChange={handleCheckboxChange}
+                className="h-4 w-4 rounded border-zinc-300 text-red-600 focus:ring-2 focus:ring-red-500 dark:border-zinc-700 dark:text-red-400 dark:focus:ring-red-500"
+              />
+              <label
+                htmlFor="banned"
+                className="text-sm font-medium text-zinc-900 dark:text-zinc-100"
+              >
+                Clínica baneada
+              </label>
+            </div>
           </div>
         </div>
 

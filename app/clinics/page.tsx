@@ -1,5 +1,4 @@
-import { SearchIntoInvetory } from "@/components/search-into-inventory/SearchIntoInvetory";
-import { Container } from "@/components/ui/container/Container";
+
 import { getAllClinics } from "@/lib/clinics";
 import { Clinic } from "@/types/clinic";
 import { getStatesByCodes } from "@/utils/states";

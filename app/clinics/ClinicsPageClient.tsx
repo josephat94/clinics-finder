@@ -124,7 +124,7 @@ export function ClinicsPageClient({
             </p>
           </div>
         ) : (
-          <div className={`grid gap-6 ${gridCols} ${viewMode === "list" ? "w-full" : "w-full"}`}>
+          <div className={`grid gap-6 ${gridCols} ${viewMode === "list" ? "w-full" : "w-full"} items-stretch`}>
             <AnimatePresence mode="popLayout">
               {filteredClinics.map((clinic, index) => {
                 // Determinar la variante basada en si tiene travelTime y su posición
@@ -272,6 +272,7 @@ export function ClinicsPageClient({
                     exit="exit"
                     variants={animationVariants}
                     layout
+                    className="h-full"
                   >
                     <Card
                 showOptions={true}
@@ -289,19 +290,33 @@ export function ClinicsPageClient({
                       </>
                     ) : undefined
                   }
-                >
-                  <div className="flex items-start justify-between mb-2">
-                    <h2 className="text-xl font-semibold text-black dark:text-zinc-50">
-                      {clinic.name}
-                    </h2>
+                  className={clinic.banned ? "opacity-80 border-red-500 dark:border-red-600 bg-red-50/30 dark:bg-red-950/20" : ""}
+
+                  badges={
+                    <>
+                    <div className="flex gap-2">
+                    {clinic.banned && (
+                      <Badge variant="danger" size="sm">
+                        Baneada
+                      </Badge>
+                    )}
                     {!clinic.enabled && (
-                      <span className="text-xs px-2 py-1 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 rounded">
+                      <Badge variant="warning" size="sm">
                         Deshabilitada
-                      </span>
+                      </Badge>
                     )}
                   </div>
+                    </>
+                  }
+                >
+                  <div className="flex items-start justify-between mb-2">
+                    <h2 className={`text-xl font-semibold ${clinic.banned ? "line-through text-zinc-500 dark:text-zinc-500" : "text-black dark:text-zinc-50"}`}>
+                      {clinic.name}
+                    </h2>
+ 
+                  </div>
                   {clinic.address && (
-                    <p className="text-gray-600 dark:text-zinc-400 mb-1 text-sm">
+                    <p className={`mb-1 text-sm ${clinic.banned ? "text-zinc-400 dark:text-zinc-600" : "text-gray-600 dark:text-zinc-400"}`}>
                       📍 {clinic.address}
                       {clinic.state && `, ${clinic.state}`}
                       {clinic.zipcode && ` ${clinic.zipcode}`}
@@ -309,28 +324,28 @@ export function ClinicsPageClient({
                   )}
                   <div className="flex flex-col gap-1 mt-2">
                     {clinic.phone && (
-                      <p className="text-gray-600 dark:text-zinc-400 text-sm">
+                      <p className={`text-sm ${clinic.banned ? "text-zinc-400 dark:text-zinc-600" : "text-gray-600 dark:text-zinc-400"}`}>
                         📞 {clinic.phone}
                       </p>
                     )}
                     {clinic.fax && (
-                      <p className="text-gray-600 dark:text-zinc-400 text-sm">
+                      <p className={`text-sm ${clinic.banned ? "text-zinc-400 dark:text-zinc-600" : "text-gray-600 dark:text-zinc-400"}`}>
                         📠 {clinic.fax}
                       </p>
                     )}
                     {clinic.email && (
-                      <p className="text-gray-600 dark:text-zinc-400 text-sm">
+                      <p className={`text-sm ${clinic.banned ? "text-zinc-400 dark:text-zinc-600" : "text-gray-600 dark:text-zinc-400"}`}>
                         ✉️ {clinic.email}
                       </p>
                     )}
                     {clinic.website && (
-                      <p className="text-gray-600 dark:text-zinc-400 text-sm">
+                      <p className={`text-sm ${clinic.banned ? "text-zinc-400 dark:text-zinc-600" : "text-gray-600 dark:text-zinc-400"}`}>
                         🌐{" "}
                         <a
                           href={clinic.website}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-blue-600 dark:text-blue-400 hover:underline"
+                          className={`${clinic.banned ? "text-zinc-500 dark:text-zinc-600 line-through cursor-not-allowed" : "text-blue-600 dark:text-blue-400 hover:underline"}`}
                         >
                           {clinic.website}
                         </a>
@@ -338,7 +353,7 @@ export function ClinicsPageClient({
                     )}
                   </div>
                   {clinic.notes && (
-                    <p className="text-gray-500 dark:text-zinc-500 text-xs mt-3 pt-3 border-t border-zinc-200 dark:border-zinc-700">
+                    <p className={`text-xs mt-3 pt-3 border-t ${clinic.banned ? "text-zinc-400 dark:text-zinc-600 border-zinc-300 dark:border-zinc-800" : "text-gray-500 dark:text-zinc-500 border-zinc-200 dark:border-zinc-700"}`}>
                       {clinic.notes}
                     </p>
                   )}

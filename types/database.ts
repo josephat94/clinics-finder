@@ -24,6 +24,7 @@ export interface Database {
           lat: number | null;
           lng: number | null;
           enabled: boolean;
+          banned: boolean;
           created_at: string; // timestamptz
           updated_at: string; // timestamptz
         };
@@ -39,6 +40,7 @@ export interface Database {
           notes?: string | null;
           website?: string | null;
           enabled?: boolean;
+          banned?: boolean;
           lat?: number | null;
           lng?: number | null;
           created_at?: string; // timestamptz
@@ -56,6 +58,7 @@ export interface Database {
           notes: string | null;
           website: string | null;
           enabled: boolean;
+          banned: boolean;
           lat: number | null;
           lng: number | null;
           created_at: string; // timestamptz
