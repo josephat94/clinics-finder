@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import { LoginForm } from '@/components/auth/LoginForm';
 
 export default function LoginPage() {
@@ -16,7 +17,15 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <LoginForm />
+          <Suspense fallback={
+            <div className="space-y-4">
+              <div className="h-10 bg-zinc-200 dark:bg-zinc-700 rounded animate-pulse" />
+              <div className="h-10 bg-zinc-200 dark:bg-zinc-700 rounded animate-pulse" />
+              <div className="h-10 bg-zinc-200 dark:bg-zinc-700 rounded animate-pulse" />
+            </div>
+          }>
+            <LoginForm />
+          </Suspense>
         </div>
       </div>
     </div>
