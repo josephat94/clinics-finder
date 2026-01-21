@@ -59,6 +59,57 @@ export function ClinicsMap({ userLocation, clinics, userAddress, selectedClinicI
     }
   }, [mapLoaded]);
 
+    // Verificar que userLocation tenga valores válidos
+    const hasValidUserLocation = userLocation &&
+        typeof userLocation.lat === 'number' &&
+        typeof userLocation.lng === 'number' &&
+        !isNaN(userLocation.lat) &&
+        !isNaN(userLocation.lng);
+
+    // Efecto para ajustar el zoom a todos los resultados cuando se cargan
+    useEffect(() => {
+        if (!mapLoaded || !markersReady || !mapRef.current || !hasValidUserLocation || clinics.length === 0) {
+            return;
+        }
+
+        const map = mapRef.current.getMap();
+        if (!map) return;
+
+        // Calcular bounds para incluir todas las ubicaciones
+        const lats = [
+            userLocation.lat,
+            ...clinics
+                .map((c) => (c as any).lat)
+                .filter((lat): lat is number => typeof lat === 'number' && !isNaN(lat)),
+        ];
+        const lngs = [
+            userLocation.lng,
+            ...clinics
+                .map((c) => (c as any).lng)
+                .filter((lng): lng is number => typeof lng === 'number' && !isNaN(lng)),
+        ];
+
+        if (lats.length === 0 || lngs.length === 0) return;
+
+        const minLat = Math.min(...lats);
+        const maxLat = Math.max(...lats);
+        const minLng = Math.min(...lngs);
+        const maxLng = Math.max(...lngs);
+
+        // Usar fitBounds para ajustar el mapa a todos los markers
+        map.fitBounds(
+            [
+                [minLng, minLat], // southwest corner
+                [maxLng, maxLat], // northeast corner
+            ],
+            {
+                padding: { top: 50, bottom: 50, left: 50, right: 50 }, // Padding en píxeles
+                maxZoom: 15, // Zoom máximo para evitar acercarse demasiado
+                duration: 1000, // Duración de la animación en ms
+            }
+        );
+    }, [mapLoaded, markersReady, userLocation, clinics, hasValidUserLocation]);
+
   const handleFlyToUser = () => {
     if (!mapRef.current || !userLocation) return;
     
@@ -143,13 +194,6 @@ export function ClinicsMap({ userLocation, clinics, userAddress, selectedClinicI
       </div>
     );
   }
-
-  // Verificar que userLocation tenga valores válidos
-  const hasValidUserLocation = userLocation && 
-    typeof userLocation.lat === 'number' && 
-    typeof userLocation.lng === 'number' &&
-    !isNaN(userLocation.lat) && 
-    !isNaN(userLocation.lng);
 
   return (
     <div className="relative w-full h-full">
