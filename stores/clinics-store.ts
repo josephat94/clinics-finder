@@ -8,6 +8,8 @@ export type ClinicWithTravelTime = Clinic & {
     duration: { text: string; value: number };
     status: string;
   };
+  distanceKm: number | null;
+  distanceMi: number | null;
 };
 
 interface ClinicsState {

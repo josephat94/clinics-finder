@@ -29,8 +29,9 @@ export async function GET(request: NextRequest) {
       
     }
 
+      let userCoords: { lat: number; lng: number } | null = null;
       if (search && clinics.length > 0) {
-        const userCoords = await geocodeAddress(search);
+        userCoords = await geocodeAddress(search);
 
         console.log(":::::: GEOCODE USER ::::::", userCoords);
 
@@ -38,16 +39,32 @@ export async function GET(request: NextRequest) {
           // 2️⃣ Haversine → prefiltrar
           const clinicsWithDistance = clinics
             .filter((c) => c.lat && c.lng)
-            .map((c) => ({
-              ...c,
-              distanceKm: haversineKm(
-                userCoords?.lat,
-                userCoords?.lng,
-                c.lat ?? 0,
-                c.lng ?? 0
-              ),
-            }))
-            .sort((a, b) => a.distanceKm - b.distanceKm)
+            .map((c) => {
+              const distanceKm = userCoords
+                ? haversineKm(
+                    userCoords.lat,
+                    userCoords.lng,
+                    c.lat ?? 0,
+                    c.lng ?? 0
+                  )
+                : null;
+              
+              // Convertir kilómetros a millas (1 km = 0.621371 millas)
+              const distanceMi = distanceKm !== null ? distanceKm * 0.621371 : null;
+              
+              return {
+                ...c,
+                distanceKm,
+                distanceMi,
+              };
+            })
+            .sort((a, b) => {
+              // Handle possible nulls: sort nulls to the end
+              if (a.distanceKm == null && b.distanceKm == null) return 0;
+              if (a.distanceKm == null) return 1;
+              if (b.distanceKm == null) return -1;
+              return a.distanceKm - b.distanceKm;
+            })
             .slice(0, 10);
 
           console.log(
@@ -80,12 +97,13 @@ export async function GET(request: NextRequest) {
 
         }
       }
+
+    return NextResponse.json({ clinics, userCoords }, { status: 200 });
     } else {
       // Obtener todas las clínicas si no hay filtro
       clinics = await getAllClinics();
     }
 
-    return NextResponse.json({ clinics }, { status: 200 });
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : "Error desconocido";

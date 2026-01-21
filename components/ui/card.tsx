@@ -64,7 +64,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
     const effectiveVariant = variant || 'normal';
 
     const baseStyles =
-      'bg-white dark:bg-zinc-900 p-6 rounded-lg shadow-sm border transition-colors relative w-full h-full flex flex-col';
+      'bg-white dark:bg-zinc-900 p-6 rounded-lg shadow-sm border transition-colors relative w-full h-auto flex flex-col';
 
     const variants = {
       normal:

@@ -35,6 +35,7 @@ export function ClinicModal({
     website: null,
     enabled: true,
     banned: false,
+
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
