@@ -9,7 +9,8 @@ import type { ClinicWithTravelTime } from '@/stores';
 import type { Clinic } from '@/types/clinic';
 import type { LatLng } from '@/lib/google';
 import { Button } from '@/components/ui';
-import { FaArrowLeft, FaMapMarkerAlt, FaPhone, FaGlobe, FaInfo } from 'react-icons/fa';
+import { FaArrowLeft } from 'react-icons/fa';
+import { ClinicCardContent } from '@/components/clinics/ClinicCardContent';
 
 export default function SearchClinicClient() {
   const searchParams = useSearchParams();
@@ -221,74 +222,7 @@ export default function SearchClinicClient() {
                     </>
                   }
                 >
-                  <div className="flex items-start justify-between mb-2">
-                    <h3 className={`text-lg font-semibold text-zinc-900 dark:text-zinc-100 ${clinic.banned ? 'line-through text-zinc-500 dark:text-zinc-500' : ''}`}>
-                      {clinic.name}
-                    </h3>
-                  </div>
-
-                  {clinic.address && (
-                    <div className="flex items-start gap-2 mb-2 text-sm text-zinc-600 dark:text-zinc-400">
-                      <FaMapMarkerAlt className="w-4 h-4 mt-0.5 shrink-0" />
-                      <span className="line-clamp-2">{clinic.address}</span>
-                    </div>
-                  )}
-
-                  {clinic.state && (
-                    <div className="flex items-center gap-2 mb-2 text-sm text-zinc-600 dark:text-zinc-400">
-                      <span className="font-medium">{clinic.state}</span>
-                      {clinic.zipcode && <span>• {clinic.zipcode}</span>}
-                    </div>
-                  )}
-
-                  <div className="flex flex-wrap gap-3 mt-4 pt-4 border-t border-zinc-200 dark:border-zinc-800">
-                    {clinic.phone && (
-                      <div className="flex items-center gap-1.5 text-sm text-zinc-600 dark:text-zinc-400">
-                        <FaPhone className="w-3 h-3" />
-                        <span>{clinic.phone}</span>
-                      </div>
-                    )}
-                    {clinic.website && (
-                      <a
-                        href={clinic.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 text-sm text-blue-600 dark:text-blue-400 hover:underline"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <FaGlobe className="w-3 h-3" />
-                        <span>Website</span>
-                      </a>
-                    )}
-                  </div>
-
-                    {hasTravelTime && (
-                    <div className="mt-3 pt-3 border-t border-zinc-200 dark:border-zinc-800">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-zinc-600 dark:text-zinc-400">Distancia:</span>
-
-                
-                        <span className="font-medium text-zinc-900 dark:text-zinc-100">
-                        {clinic.travelTime?.distance.text ? `${(clinic.travelTime?.distance.value/1000).toFixed(2)} Millas` : `${clinic.distanceMi?.toFixed(2)} Millas`}
-                      
-                        </span>
-                      </div>
-                    </div>
-                  )}
-
-{!hasTravelTime && (
-                    <div className="mt-3 pt-3 border-t border-zinc-200 dark:border-zinc-800">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-zinc-600 dark:text-zinc-400">Distancia:</span>
-
-                
-                        <span className="font-medium text-zinc-900 dark:text-zinc-100">
-                        {`${clinic.distanceMi?.toFixed(2)} Millas`}
-                      
-                        </span>
-                      </div>
-                    </div>
-                  )}
+                  <ClinicCardContent clinic={clinic} />
                 </Card>
               );
             })}

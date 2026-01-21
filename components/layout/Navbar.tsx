@@ -11,7 +11,7 @@ export function Navbar() {
 
   return (
     <nav className="border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-      <div className="container mx-auto px-4 py-4 max-w-7xl">
+      <div className="mx-auto px-4 py-4 2xl:max-w-[1950px]">
         <div className="flex items-center justify-between">
           <Link
             href="/"
