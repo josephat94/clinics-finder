@@ -97,6 +97,7 @@ export function CreateUserForm({ onSuccess }: CreateUserFormProps) {
 
       <div>
         <Select
+          popoverZIndex={250}
           label="Rol"
           value={role}
           onChange={(value) => setRole(value as UserRole)}
