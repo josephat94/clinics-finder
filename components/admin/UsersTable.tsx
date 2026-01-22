@@ -9,6 +9,7 @@ import { ConfirmationModal } from '@/components/ui/confirmation-modal';
 import { EditUserForm } from '@/components/auth/EditUserForm';
 import { Popover } from '@/components/ui/popover';
 import { ListItem } from '@/components/ui/list-item';
+import { UsersTableSkeleton } from './UsersTableSkeleton';
 import { FaEllipsisV, FaEdit, FaTrash } from 'react-icons/fa';
 import { useAuth } from '@/hooks/use-auth';
 import type { UserRole } from '@/hooks/use-role';
@@ -108,11 +109,7 @@ export function UsersTable({ refreshKey, onRefresh }: UsersTableProps) {
   };
 
   if (loading) {
-    return (
-      <Card className="p-6">
-        <p className="text-center text-zinc-600 dark:text-zinc-400">Cargando usuarios...</p>
-      </Card>
-    );
+    return <UsersTableSkeleton />;
   }
 
   if (error) {

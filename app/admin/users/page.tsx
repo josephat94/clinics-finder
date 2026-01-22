@@ -9,6 +9,8 @@ import { useRole } from '@/hooks/use-role';
 import { Container } from '@/components/ui/container/Container';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
+import { Skeleton } from '@/components/ui/skeleton';
+import { UsersTableSkeleton } from '@/components/admin/UsersTableSkeleton';
 import { FaPlus } from 'react-icons/fa';
 
 export default function AdminUsersPage() {
@@ -30,8 +32,18 @@ export default function AdminUsersPage() {
 
   if (authLoading || roleLoading) {
     return (
-      <Container className="min-h-screen flex items-center justify-center">
-        <p>Cargando...</p>
+      <Container className="min-h-screen py-16 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-8 flex items-center justify-between">
+            <div>
+              <Skeleton className="h-9 w-64 mb-2" />
+              <Skeleton className="h-5 w-48" />
+            </div>
+            <Skeleton className="h-10 w-40" />
+          </div>
+
+          <UsersTableSkeleton />
+        </div>
       </Container>
     );
   }
