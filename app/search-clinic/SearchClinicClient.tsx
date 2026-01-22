@@ -11,6 +11,7 @@ import type { LatLng } from '@/lib/google';
 import { Button } from '@/components/ui';
 import { FaArrowLeft } from 'react-icons/fa';
 import { ClinicCardContent } from '@/components/clinics/ClinicCardContent';
+import { SearchClinicSkeleton } from './SearchClinicSkeleton';
 
 export default function SearchClinicClient() {
   const searchParams = useSearchParams();
@@ -103,10 +104,7 @@ export default function SearchClinicClient() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[600px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mb-4"></div>
-        <p className="text-zinc-600 dark:text-zinc-400">Buscando clínicas...</p>
-      </div>
+      <SearchClinicSkeleton />
     );
   }
 
