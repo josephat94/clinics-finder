@@ -85,7 +85,7 @@ export function ClinicCardContent({ clinic }: ClinicCardContentProps) {
       {clinic.travelTime ? (
         <div className="flex items-center gap-3 mt-4">
           <Badge variant="secondary" size="sm">
-            Distancia:  {((clinic.travelTime.distance.value / 1609.34).toFixed(2))} Millas
+            Distancia:  {clinic.travelTime.distance.value} Millas
           </Badge>
         </div>
       ) : clinic.distanceMi ? (

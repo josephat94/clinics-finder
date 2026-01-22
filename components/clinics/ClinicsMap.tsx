@@ -7,6 +7,9 @@ import type { ClinicWithTravelTime } from '@/stores';
 import type { LatLng } from '@/lib/google';
 import { FaUser, FaCrosshairs } from 'react-icons/fa';
 import { Button } from '@/components/ui/button';
+import { Popover } from '@/components/ui/popover';
+import { Badge } from '@/components/ui/badge';
+import { ClinicCardContent } from './ClinicCardContent';
 
 // Importación dinámica para evitar problemas de SSR
 // En react-map-gl v8, necesitamos importar desde 'react-map-gl/mapbox'
@@ -42,6 +45,7 @@ export function ClinicsMap({ userLocation, clinics, userAddress, selectedClinicI
   const [isMounted, setIsMounted] = useState(false);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [markersReady, setMarkersReady] = useState(false);
+  const [popupClinicId, setPopupClinicId] = useState<string | null>(null);
   const mapRef = useRef<any>(null);
   const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_API_TOKEN || '';
 
@@ -247,6 +251,9 @@ export function ClinicsMap({ userLocation, clinics, userAddress, selectedClinicI
           ? (index === 0 ? '#eab308' : index === 1 ? '#64748b' : '#d97706') // yellow-500, slate-500, amber-600
           : '#ef4444'; // red-500
 
+        const hasTravelTime = clinic.travelTime?.duration.value !== undefined && clinic.travelTime?.duration.value !== null;
+        const isPopupOpen = popupClinicId === clinic.id;
+
         return (
           <Marker
             key={clinic.id}
@@ -254,35 +261,78 @@ export function ClinicsMap({ userLocation, clinics, userAddress, selectedClinicI
             latitude={lat}
             anchor="bottom"
           >
-            <div className="relative group">
-              {/* Badge de ranking */}
-              {showRanking && ranking && (
-                <div className={`absolute -top-2 -right-2 ${markerRankingBgColor} text-white text-xs font-bold rounded-full w-8 h-8 flex items-center justify-center border-2 border-white shadow-lg z-20`}>
-                  {ranking}
+            <Popover
+              open={isPopupOpen}
+              onOpenChange={(open) => setPopupClinicId(open ? clinic.id : null)}
+              placement="top"
+              offset={12}
+              trigger="click"
+              zIndex={1000}
+              contentClassName="max-w-sm w-[320px] p-0"
+              content={
+                <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+                  {/* Header con badges */}
+                  <div className="p-4 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950">
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                      <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 flex-1">
+                        {clinic.name}
+                      </h3>
+                      {hasTravelTime && (
+                        <Badge variant={index === 0 ? 'primary' : index === 1 ? 'secondary' : index === 2 ? 'warning' : 'default'} size="sm">
+                          {clinic.travelTime?.duration.text}
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {clinic.banned && (
+                        <Badge variant="danger" size="sm">
+                          Baneada
+                        </Badge>
+                      )}
+                      {!clinic.enabled && (
+                        <Badge variant="warning" size="sm">
+                          Deshabilitada
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+                  {/* Contenido de la clínica */}
+                  <div className="p-4">
+                    <ClinicCardContent clinic={clinic} />
+                  </div>
                 </div>
-              )}
-              
-              <div className={`${markerSize} ${markerBgColor} rounded-full border-2 ${markerBorderColor} shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-all duration-200 ${isSelected ? 'scale-110' : ''}`}>
-                <svg
-                  className={`${iconSize} text-white`}
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+              }
+            >
+              <div className="relative group">
+                {/* Badge de ranking */}
+                {showRanking && ranking && (
+                  <div className={`absolute -top-2 -right-2 ${markerRankingBgColor} text-white text-xs font-bold rounded-full w-8 h-8 flex items-center justify-center border-2 border-white shadow-lg z-20`}>
+                    {ranking}
+                  </div>
+                )}
+
+                <div className={`${markerSize} ${markerBgColor} rounded-full border-2 ${markerBorderColor} shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-all duration-200 ${isSelected ? 'scale-110' : ''}`}>
+                  <svg
+                    className={`${iconSize} text-white`}
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <div className={`absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1.5 ${tooltipBgColor} text-white text-sm rounded-lg whitespace-nowrap shadow-xl transition-opacity pointer-events-none z-10 max-w-[200px] ${isSelected && !isPopupOpen ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                  <div className="truncate">{clinic.name}</div>
+                  <div
+                    className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent"
+                    style={{ borderTopColor: tooltipArrowColor }}
+                  ></div>
+                </div>
               </div>
-              <div className={`absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1.5 ${tooltipBgColor} text-white text-sm rounded-lg whitespace-nowrap shadow-xl transition-opacity pointer-events-none z-10 max-w-[200px] ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
-                <div className="truncate">{clinic.name}</div>
-                <div 
-                  className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent"
-                  style={{ borderTopColor: tooltipArrowColor }}
-                ></div>
-              </div>
-            </div>
+            </Popover>
           </Marker>
         );
       })}
