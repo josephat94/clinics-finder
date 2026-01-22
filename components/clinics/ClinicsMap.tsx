@@ -196,7 +196,7 @@ export function ClinicsMap({ userLocation, clinics, userAddress, selectedClinicI
   }
 
   return (
-    <div className="relative w-full h-full">
+    <div className="relative w-full h-full rounded-3xl overflow-hidden">
       <Map
         ref={mapRef}
         mapboxAccessToken={mapboxToken}

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { AuthButton } from '@/components/auth/AuthButton';
 import { useAuth } from '@/hooks/use-auth';
 import { useRole } from '@/hooks/use-role';
+import Image from 'next/image';
 
 export function Navbar() {
   const { isAuthenticated } = useAuth();
@@ -15,8 +16,9 @@ export function Navbar() {
         <div className="flex items-center justify-between">
           <Link
             href="/"
-            className="text-xl font-bold text-black dark:text-white hover:opacity-80 transition-opacity"
+            className="text-xl font-bold text-black dark:text-white hover:opacity-80 transition-opacity flex items-center gap-2"
           >
+            <Image src="/icon.png" alt="Clinics Finder" width={40} height={40} />
             Clinics Finder
           </Link>
 

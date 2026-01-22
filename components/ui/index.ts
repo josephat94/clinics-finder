@@ -7,3 +7,4 @@ export { Modal, type ModalProps } from './modal';
 export { Popover, PopoverContent, PopoverTrigger, type PopoverProps, type PopoverContentProps, type PopoverTriggerProps } from './popover';
 export { ListItem, type ListItemProps } from './list-item';
 export { ConfirmationModal, type ConfirmationModalProps } from './confirmation-modal';
+export { Skeleton, type SkeletonProps } from './skeleton';

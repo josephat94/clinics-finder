@@ -147,7 +147,7 @@ export default function SearchClinicClient() {
       <div className="shrink-0 flex items-center justify-between p-4 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
         <div>
           <h1 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
-            Clínicas cercanas
+            Clínicas cercanas ({clinics.length})
           </h1>
           <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-0.5">
             {clinics.length} clínica{clinics.length !== 1 ? 's' : ''} cerca de{' '}
@@ -172,10 +172,10 @@ export default function SearchClinicClient() {
       </div>
 
       {/* Layout de dos columnas */}
-      <div className="flex-1 flex overflow-hidden min-h-0">
+      <div className="flex-1 flex overflow-y-auto max-h-[calc(100vh-10rem)]">
         {/* Columna izquierda: Lista de cards */}
-        <div className={`${showMap ? 'hidden' : 'flex'} md:flex w-full md:w-1/2 lg:w-2/5 xl:w-1/3 flex-col border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden min-h-0`}>
-          <div className="flex-1 overflow-y-auto p-4 space-y-8 min-h-0">
+        <div className={`${showMap ? 'hidden' : 'flex'} md:flex w-full sm:w-1/2 lg:w-2/5 xl:w-1/3 flex-col border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 min-h-0`}>
+          <div className="flex-1 p-4 space-y-8 min-h-0">
             {clinics.map((clinic, index) => {
               const hasTravelTime = clinic.travelTime?.duration.value !== undefined && clinic.travelTime?.duration.value !== null;
               const isSelected = selectedClinicId === clinic.id;
@@ -230,7 +230,7 @@ export default function SearchClinicClient() {
         </div>
 
         {/* Columna derecha: Mapa */}
-        <div className={`${showMap ? 'flex' : 'hidden'} md:flex flex-1 relative bg-zinc-100 dark:bg-zinc-950 min-h-0 overflow-hidden`}>
+        <div className={`${showMap ? 'flex' : 'hidden'} sm:flex flex-1 bg-zinc-100 dark:bg-zinc-950 min-h-0 overflow-hidden sticky top-0 px-6 rounded-3xl`}>
           <ClinicsMap
             userLocation={userLocation}
             clinics={clinics}
