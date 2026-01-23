@@ -115,7 +115,7 @@ export function ClinicsPageClient({
 </div>
       <div className={viewMode === "list" ? "w-full" : "w-full"}>
         <h1 className="text-3xl font-bold text-black dark:text-zinc-50 mb-8">
-          Clínicas
+          Clínicas ({filteredClinics.length})
         </h1>
 
         {filteredClinics.length === 0 ? (
