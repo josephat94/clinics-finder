@@ -12,6 +12,7 @@
     "@floating-ui/react": "^0.27.16",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.90.1",
+    "@vercel/analytics": "^1.6.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.26.2",
     "mapbox-gl": "^3.18.0",
