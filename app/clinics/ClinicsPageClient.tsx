@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SearchIntoInvetory } from "@/components/search-into-inventory/SearchIntoInvetory";
 import { Container } from "@/components/ui/container/Container";
@@ -9,7 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Clinic } from "@/types/clinic";
 import { secondsToMinutesAndSeconds } from "@/utils/time";
 import { Button } from "@/components/ui/button";
-import { FaListAlt, FaPlus, FaTable } from "react-icons/fa";
+import { Input } from "@/components/ui/input";
+import { FaListAlt, FaPlus, FaTable, FaSortAlphaDown, FaSortAlphaUp, FaSearch, FaClock } from "react-icons/fa";
 import { ClinicModal } from "@/components/clinics/ClinicModal";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { ClinicCardContent } from "@/components/clinics/ClinicCardContent";
@@ -34,6 +35,10 @@ export function ClinicsPageClient({
 
   // Estado para el modal de edición
   const [clinicToEdit, setClinicToEdit] = useState<ClinicWithTravelTime | null>(null);
+
+  // Estados para filtros y ordenamiento
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc" | "newest">("asc");
 
   // Inicializar clínicas en el store
   useEffect(() => {
@@ -89,6 +94,42 @@ export function ClinicsPageClient({
     return "danger";
   }
 
+  // Filtrar y ordenar clínicas
+  const filteredAndSortedClinics = useMemo(() => {
+    let result = [...filteredClinics];
+
+    // Filtrar por nombre
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      result = result.filter((clinic) =>
+        clinic.name.toLowerCase().includes(query)
+      );
+    }
+
+    // Ordenar
+    if (sortOrder === "newest") {
+      // Ordenar por fecha de creación (más nuevo primero)
+      result.sort((a, b) => {
+        const dateA = new Date(a.created_at).getTime();
+        const dateB = new Date(b.created_at).getTime();
+        return dateB - dateA; // Más reciente primero
+      });
+    } else {
+      // Ordenar por nombre
+      result.sort((a, b) => {
+        const nameA = a.name.toLowerCase();
+        const nameB = b.name.toLowerCase();
+        if (sortOrder === "asc") {
+          return nameA.localeCompare(nameB);
+        } else {
+          return nameB.localeCompare(nameA);
+        }
+      });
+    }
+
+    return result;
+  }, [filteredClinics, searchQuery, sortOrder]);
+
   const gridCols= viewMode === "grid" ? "md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1";
 
   return (
@@ -97,6 +138,52 @@ export function ClinicsPageClient({
         options={availableStates}
         initialClinics={initialClinics}
       />
+
+      {/* Filtros y búsqueda interna */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-4 p-4 bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800">
+        <div className="flex-1 w-full sm:w-auto">
+          <div className="relative">
+            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-400 dark:text-zinc-500" />
+            <Input
+              type="text"
+              placeholder="Buscar por nombre..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 w-full"
+            />
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-zinc-600 dark:text-zinc-400">Ordenar:</span>
+          <Button
+            variant={sortOrder === "asc" ? "primary" : "outline"}
+            size="sm"
+            onClick={() => setSortOrder("asc")}
+            className="flex items-center gap-2"
+          >
+            <FaSortAlphaUp />
+            A-Z
+          </Button>
+          <Button
+            variant={sortOrder === "desc" ? "primary" : "outline"}
+            size="sm"
+            onClick={() => setSortOrder("desc")}
+            className="flex items-center gap-2"
+          >
+            <FaSortAlphaDown />
+            Z-A
+          </Button>
+          <Button
+            variant={sortOrder === "newest" ? "primary" : "outline"}
+            size="sm"
+            onClick={() => setSortOrder("newest")}
+            className="flex items-center gap-2"
+          >
+            <FaClock />
+            Más nuevo
+          </Button>
+        </div>
+      </div>
 
 <div className="flex items-center justify-end w-full gap-6" >
 
@@ -115,19 +202,21 @@ export function ClinicsPageClient({
 </div>
       <div className={viewMode === "list" ? "w-full" : "w-full"}>
         <h1 className="text-3xl font-bold text-black dark:text-zinc-50 mb-8">
-          Clínicas ({filteredClinics.length})
+          Clínicas ({filteredAndSortedClinics.length})
         </h1>
 
-        {filteredClinics.length === 0 ? (
+        {filteredAndSortedClinics.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-600 dark:text-zinc-400">
-              No hay clínicas registradas aún.
+              {searchQuery.trim()
+                ? `No se encontraron clínicas que coincidan con "${searchQuery}"`
+                : "No hay clínicas registradas aún."}
             </p>
           </div>
         ) : (
           <div className={`grid gap-6 ${gridCols} ${viewMode === "list" ? "w-full" : "w-full"} items-stretch`}>
             <AnimatePresence mode="popLayout">
-              {filteredClinics.map((clinic, index) => {
+                {filteredAndSortedClinics.map((clinic, index) => {
                 // Determinar la variante basada en si tiene travelTime y su posición
                 const hasTravelTime = clinic.travelTime !== undefined;
                 let variant: "normal" | "first" | "second" | "third" = "normal";

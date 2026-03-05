@@ -18,7 +18,7 @@ export const SearchIntoInvetory = ({
   options,
 }: SearchIntoInvetoryProps) => {
   // Stores
-  const { state, search, extraFilter, setState, setSearch, setExtraFilter, clearFilters } = useFiltersStore();
+  const { state, search, setState, setSearch, clearFilters } = useFiltersStore();
   const { resetFilters } = useClinicsStore();
   const router = useRouter();
 
@@ -33,10 +33,6 @@ export const SearchIntoInvetory = ({
       search,
     });
 
-    if (extraFilter) {
-      params.append('extraFilter', extraFilter);
-    }
-
     // Navegar a la página de búsqueda con los query params
     router.push(`/search-clinic?${params.toString()}`);
   };
@@ -47,12 +43,12 @@ export const SearchIntoInvetory = ({
   };
 
   return (
-    <div className="grid grid-cols-[3fr_4fr_2fr_4fr] gap-4 items-start">
-      <div className="flex items-center h-full">
+    <div className="flex items-center gap-4">
+      <div className="flex items-center h-full min-w-[300px]">
         <Select
           options={options.map((option) => ({
             value: option.code,
-            label: option.name,
+            label: `${option.code} - ${option.name}`,
           }))}
           id="state"
           label="Estado"
@@ -74,14 +70,6 @@ export const SearchIntoInvetory = ({
           }
         }}
       />
-      <Input
-        label="Filtro extra en Nombre"
-        placeholder="Filtrar por Nombre"
-        value={extraFilter}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setExtraFilter(e.target.value)
-        }
-      />
       <div>
         <label className="block text-sm font-medium mb-1.5 text-zinc-900 dark:text-zinc-100 invisible">
           acciones
@@ -90,19 +78,19 @@ export const SearchIntoInvetory = ({
           <Button
             onClick={handleSearch}
             disabled={!state || !search}
-            className="w-full"
+            size="md"
+            title="Buscar"
           >
-            <FaSearch/>
-            Buscar
+            <FaSearch />
           </Button>
           <Button
             variant="outline"
             onClick={handleClearFilters}
-            disabled={!state && !search && !extraFilter}
-            className="w-full"
+            disabled={!state && !search}
+            size="md"
+            title="Limpiar Filtros"
           >
-            <FaTrash/>
-            Limpiar Filtros
+            <FaTrash />
           </Button>
         </div>
       </div>
