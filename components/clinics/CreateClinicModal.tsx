@@ -22,6 +22,7 @@ export function CreateClinicModal({
   const [formData, setFormData] = useState<ClinicInsert>({
     name: "",
     phone: null,
+    secondary_phone: null,
     fax: null,
     email: null,
     address: null,
@@ -31,6 +32,7 @@ export function CreateClinicModal({
     website: null,
     enabled: true,
     banned: false,
+    bilingual: false,
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -108,6 +110,7 @@ export function CreateClinicModal({
       setFormData({
         name: "",
         phone: null,
+        secondary_phone: null,
         fax: null,
         email: null,
         address: null,
@@ -117,6 +120,7 @@ export function CreateClinicModal({
         website: null,
         enabled: true,
         banned: false,
+        bilingual: false,
       });
 
       // Cerrar el modal y notificar éxito
@@ -138,6 +142,7 @@ export function CreateClinicModal({
       setFormData({
         name: "",
         phone: null,
+        secondary_phone: null,
         fax: null,
         email: null,
         address: null,
@@ -147,6 +152,7 @@ export function CreateClinicModal({
         website: null,
         enabled: true,
         banned: false,
+        bilingual: false,
       });
       setError(null);
       onClose();
@@ -209,7 +215,23 @@ export function CreateClinicModal({
                 htmlFor="banned"
                 className="text-sm font-medium text-zinc-900 dark:text-zinc-100"
               >
-                Clínica baneada
+                Clínica en BlackList
+              </label>
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="bilingual"
+                name="bilingual"
+                checked={formData.bilingual ?? false}
+                onChange={handleCheckboxChange}
+                className="h-4 w-4 rounded border-zinc-300 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-zinc-700 dark:text-blue-400 dark:focus:ring-blue-500"
+              />
+              <label
+                htmlFor="bilingual"
+                className="text-sm font-medium text-zinc-900 dark:text-zinc-100"
+              >
+                Clínica bilingüe
               </label>
             </div>
           </div>
@@ -225,6 +247,17 @@ export function CreateClinicModal({
             placeholder="+1 234 567 8900"
           />
 
+          <Input
+            label="Teléfono Secundario"
+            name="secondary_phone"
+            type="tel"
+            value={formData.secondary_phone || ""}
+            onChange={handleChange}
+            placeholder="+1 234 567 8900"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
             label="Fax"
             name="fax"

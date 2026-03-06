@@ -14,6 +14,7 @@ export interface Database {
           id: string;
           name: string;
           phone: string | null;
+          secondary_phone: string | null;
           fax: string | null;
           email: string | null;
           address: string | null;
@@ -25,6 +26,7 @@ export interface Database {
           lng: number | null;
           enabled: boolean;
           banned: boolean;
+          bilingual: boolean;
           created_at: string; // timestamptz
           updated_at: string; // timestamptz
         };
@@ -32,6 +34,7 @@ export interface Database {
           id?: string;
           name: string;
           phone?: string | null;
+          secondary_phone?: string | null;
           fax?: string | null;
           email?: string | null;
           address?: string | null;
@@ -41,6 +44,7 @@ export interface Database {
           website?: string | null;
           enabled?: boolean;
           banned?: boolean;
+          bilingual?: boolean;
           lat?: number | null;
           lng?: number | null;
           created_at?: string; // timestamptz
@@ -50,6 +54,7 @@ export interface Database {
           id: string;
           name: string;
           phone: string | null;
+          secondary_phone: string | null;
           fax: string | null;
           email: string | null;
           address: string | null;
@@ -59,6 +64,7 @@ export interface Database {
           website: string | null;
           enabled: boolean;
           banned: boolean;
+          bilingual: boolean;
           lat: number | null;
           lng: number | null;
           created_at: string; // timestamptz

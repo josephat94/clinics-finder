@@ -10,9 +10,16 @@ export function ClinicCardContent({ clinic }: ClinicCardContentProps) {
   return (
     <>
       <div className="flex items-start justify-between mb-2">
-        <h2 className={`text-xl font-semibold ${clinic.banned ? "line-through text-zinc-500 dark:text-zinc-500" : "text-black dark:text-zinc-50"}`}>
-          {clinic.name}
-        </h2>
+        <div className="flex items-center gap-2 flex-wrap">
+          <h2 className={`text-xl font-semibold ${clinic.banned ? "line-through text-zinc-500 dark:text-zinc-500" : "text-black dark:text-zinc-50"}`}>
+            {clinic.name}
+          </h2>
+          {clinic.bilingual && (
+            <Badge variant="secondary" size="sm">
+              Bilingüe
+            </Badge>
+          )}
+        </div>
       </div>
       
       {clinic.address && (
@@ -46,6 +53,15 @@ export function ClinicCardContent({ clinic }: ClinicCardContentProps) {
             </div>
           )}
         </div>
+
+        {clinic.secondary_phone && (
+          <div className="flex items-start gap-1">
+            <FaPhoneAlt />
+            <p className={`text-sm ${clinic.banned ? "text-zinc-400 dark:text-zinc-600" : "text-gray-600 dark:text-zinc-400"}`}>
+              Tel Secundario: {clinic.secondary_phone}
+            </p>
+          </div>
+        )}
 
         {clinic.email && (
           <div className="flex items-start gap-1">
