@@ -387,7 +387,7 @@ export function ClinicsPageClient({
                     <div className="flex gap-2">
                     {clinic.banned && (
                       <Badge variant="danger" size="sm">
-                        Baneada
+                            In BlackList
                       </Badge>
                     )}
                     {!clinic.enabled && (

@@ -209,7 +209,7 @@ export default function SearchClinicClient() {
                     <>
                       {clinic.banned && (
                         <Badge variant="danger" size="sm">
-                          Baneada
+                          In BlackList
                         </Badge>
                       )}
                       {!clinic.enabled && (

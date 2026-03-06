@@ -286,7 +286,7 @@ export function ClinicsMap({ userLocation, clinics, userAddress, selectedClinicI
                     <div className="flex flex-wrap gap-2">
                       {clinic.banned && (
                         <Badge variant="danger" size="sm">
-                          Baneada
+                          In BlackList
                         </Badge>
                       )}
                       {!clinic.enabled && (
