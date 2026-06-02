@@ -32,12 +32,20 @@ export function Navbar() {
                   Clínicas
                 </Link>
                 {isAdmin && (
-                  <Link
-                    href="/admin/users"
-                    className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors"
-                  >
-                    Usuarios
-                  </Link>
+                  <>
+                    <Link
+                      href="/admin/history"
+                      className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors"
+                    >
+                      Historial
+                    </Link>
+                    <Link
+                      href="/admin/users"
+                      className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors"
+                    >
+                      Usuarios
+                    </Link>
+                  </>
                 )}
               </>
             )}

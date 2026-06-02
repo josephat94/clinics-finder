@@ -71,6 +71,44 @@ export interface Database {
           updated_at: string; // timestamptz
         }>;
       };
+      clinic_audit_logs: {
+        Row: {
+          id: string;
+          clinic_id: string | null;
+          clinic_name: string | null;
+          action: 'create' | 'update' | 'delete';
+          actor_id: string | null;
+          actor_email: string | null;
+          old_data: Json | null;
+          new_data: Json | null;
+          changed_fields: string[] | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          clinic_id?: string | null;
+          clinic_name?: string | null;
+          action: 'create' | 'update' | 'delete';
+          actor_id?: string | null;
+          actor_email?: string | null;
+          old_data?: Json | null;
+          new_data?: Json | null;
+          changed_fields?: string[] | null;
+          created_at?: string;
+        };
+        Update: Partial<{
+          id: string;
+          clinic_id: string | null;
+          clinic_name: string | null;
+          action: 'create' | 'update' | 'delete';
+          actor_id: string | null;
+          actor_email: string | null;
+          old_data: Json | null;
+          new_data: Json | null;
+          changed_fields: string[] | null;
+          created_at: string;
+        }>;
+      };
     };
     Views: {
       [_ in never]: never;

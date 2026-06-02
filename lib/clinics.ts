@@ -2,6 +2,12 @@ import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import type { Database } from "@/types/database";
 import { geocodeAddress } from "@/lib/google";
+import {
+  clinicToAuditData,
+  getChangedFields,
+  logClinicAudit,
+  type AuditActor,
+} from "@/lib/clinic-audit";
 
 // Tipos derivados de la base de datos
 type Clinic = Database["public"]["Tables"]["clinics"]["Row"];
@@ -56,7 +62,10 @@ export async function getClinicById(id: string): Promise<Clinic | null> {
 /**
  * Crea una nueva clínica
  */
-export async function createClinic(clinic: ClinicInsert): Promise<Clinic> {
+export async function createClinic(
+  clinic: ClinicInsert,
+  actor?: AuditActor
+): Promise<Clinic> {
   const cookieStore = await cookies();
   const supabase = await createClient(cookieStore);
 
@@ -70,7 +79,19 @@ export async function createClinic(clinic: ClinicInsert): Promise<Clinic> {
     throw new Error(`Error al crear la clínica: ${error.message}`);
   }
 
-  return data as Clinic;
+  const created = data as Clinic;
+
+  if (actor) {
+    await logClinicAudit({
+      action: "create",
+      actor,
+      clinicId: created.id,
+      clinicName: created.name,
+      newData: clinicToAuditData(created),
+    });
+  }
+
+  return created;
 }
 
 /**
@@ -78,10 +99,13 @@ export async function createClinic(clinic: ClinicInsert): Promise<Clinic> {
  */
 export async function updateClinic(
   id: string,
-  updates: ClinicUpdate
+  updates: ClinicUpdate,
+  actor?: AuditActor
 ): Promise<Clinic> {
   const cookieStore = await cookies();
   const supabase = await createClient(cookieStore);
+
+  const previous = actor ? await getClinicById(id) : null;
 
   // Usar una aserción más específica para evitar problemas de tipos
   const clinicsTable = supabase.from("clinics") as any;
@@ -96,15 +120,44 @@ export async function updateClinic(
     throw new Error(`Error al actualizar la clínica: ${error.message}`);
   }
 
-  return data as Clinic;
+  const updated = data as Clinic;
+
+  if (actor && previous) {
+    await logClinicAudit({
+      action: "update",
+      actor,
+      clinicId: updated.id,
+      clinicName: updated.name,
+      oldData: clinicToAuditData(previous),
+      newData: clinicToAuditData(updated),
+      changedFields: getChangedFields(previous, updated),
+    });
+  }
+
+  return updated;
 }
 
 /**
  * Elimina una clínica
  */
-export async function deleteClinic(id: string): Promise<void> {
+export async function deleteClinic(
+  id: string,
+  actor?: AuditActor
+): Promise<void> {
   const cookieStore = await cookies();
   const supabase = await createClient(cookieStore);
+
+  const previous = actor ? await getClinicById(id) : null;
+
+  if (actor && previous) {
+    await logClinicAudit({
+      action: "delete",
+      actor,
+      clinicId: previous.id,
+      clinicName: previous.name,
+      oldData: clinicToAuditData(previous),
+    });
+  }
 
   const { error } = await supabase.from("clinics").delete().eq("id", id);
 

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { deleteClinic, getClinicById, updateClinic } from "@/lib/clinics";
+import { requireAuthenticatedUser } from "@/lib/auth-server";
 import type { ClinicUpdate } from "@/types/clinic";
 
 /**
@@ -11,6 +12,11 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const auth = await requireAuthenticatedUser();
+    if ("error" in auth) {
+      return NextResponse.json({ error: auth.error }, { status: auth.status });
+    }
+
     const { id } = await params;
 
     if (!id) {
@@ -30,7 +36,7 @@ export async function DELETE(
     }
 
     // Eliminar la clínica
-    await deleteClinic(id);
+    await deleteClinic(id, auth.actor);
 
     return NextResponse.json(
       { message: "Clínica eliminada exitosamente" },
@@ -52,6 +58,11 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const auth = await requireAuthenticatedUser();
+    if ("error" in auth) {
+      return NextResponse.json({ error: auth.error }, { status: auth.status });
+    }
+
     const { id } = await params;
 
     if (!id) {
@@ -104,7 +115,7 @@ export async function PUT(
     }
 
     // Actualizar la clínica
-    const updatedClinic = await updateClinic(id, body);
+    const updatedClinic = await updateClinic(id, body, auth.actor);
 
     return NextResponse.json({ clinic: updatedClinic }, { status: 200 });
   } catch (error) {

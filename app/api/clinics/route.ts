@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getClinicsByState, getAllClinics, createClinic } from "@/lib/clinics";
 import { geocodeAddress, getTravelTimes } from "@/lib/google";
 import { haversineKm } from "@/lib/distance-algoritms";
+import { requireAuthenticatedUser } from "@/lib/auth-server";
 import type { ClinicInsert } from "@/lib/clinics";
 
 /**
@@ -120,6 +121,11 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
+    const auth = await requireAuthenticatedUser();
+    if ("error" in auth) {
+      return NextResponse.json({ error: auth.error }, { status: auth.status });
+    }
+
     const body: ClinicInsert = await request.json();
 
     // Validar que el nombre sea requerido
@@ -156,7 +162,7 @@ export async function POST(request: NextRequest) {
       clinicToInsert.enabled = true;
     }
 
-    const clinic = await createClinic(clinicToInsert);
+    const clinic = await createClinic(clinicToInsert, auth.actor);
 
     return NextResponse.json({ clinic }, { status: 201 });
   } catch (error) {
