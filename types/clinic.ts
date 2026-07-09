@@ -27,11 +27,17 @@ export interface Clinic {
 
 /**
  * Tipo para crear una nueva clínica (campos opcionales excepto los requeridos)
+ * lat/lng son opcionales porque suelen calcularse por geocoding en el servidor
  */
-export type ClinicInsert = Omit<Clinic, 'id' | 'created_at' | 'updated_at'> & {
+export type ClinicInsert = Omit<
+  Clinic,
+  'id' | 'created_at' | 'updated_at' | 'lat' | 'lng'
+> & {
   id?: string;
   created_at?: string;
   updated_at?: string;
+  lat?: number | null;
+  lng?: number | null;
 };
 
 /**
