@@ -22,6 +22,8 @@ export interface Database {
           zipcode: string | null;
           notes: string | null;
           website: string | null;
+          opening_time: string | null;
+          closing_time: string | null;
           lat: number | null;
           lng: number | null;
           enabled: boolean;
@@ -42,6 +44,8 @@ export interface Database {
           zipcode?: string | null;
           notes?: string | null;
           website?: string | null;
+          opening_time?: string | null;
+          closing_time?: string | null;
           enabled?: boolean;
           banned?: boolean;
           bilingual?: boolean;
@@ -62,6 +66,8 @@ export interface Database {
           zipcode: string | null;
           notes: string | null;
           website: string | null;
+          opening_time: string | null;
+          closing_time: string | null;
           enabled: boolean;
           banned: boolean;
           bilingual: boolean;

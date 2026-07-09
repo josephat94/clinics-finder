@@ -9,7 +9,7 @@ export interface ListItemProps extends React.ButtonHTMLAttributes<HTMLButtonElem
 }
 
 const ListItem = React.forwardRef<HTMLButtonElement, ListItemProps>(
-  ({ children, icon, variant = 'default', className, ...props }, ref) => {
+  ({ children, icon, variant = 'default', className, disabled, ...props }, ref) => {
     const baseStyles =
       'flex items-center gap-2 px-3 py-2 text-sm rounded-md transition-colors cursor-pointer w-full text-left';
 
@@ -20,10 +20,19 @@ const ListItem = React.forwardRef<HTMLButtonElement, ListItemProps>(
         'text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20',
     };
 
+    const disabledStyles =
+      'opacity-40 text-zinc-400 dark:text-zinc-500 cursor-not-allowed hover:bg-transparent dark:hover:bg-transparent';
+
     return (
       <button
         ref={ref}
-        className={cn(baseStyles, variants[variant], className)}
+        disabled={disabled}
+        className={cn(
+          baseStyles,
+          variants[variant],
+          disabled && disabledStyles,
+          className
+        )}
         {...props}
       >
         {icon && <span className="flex-shrink-0">{icon}</span>}

@@ -102,10 +102,13 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
                 disabled={option.disabled}
                 className={cn(
                   selectedValue === option.value &&
-                    'bg-zinc-100 dark:bg-zinc-800 font-medium'
+                    !option.disabled &&
+                    'bg-zinc-100 dark:bg-zinc-800 font-medium',
+                  option.disabled && 'line-through'
                 )}
                 role="option"
                 aria-selected={selectedValue === option.value}
+                aria-disabled={option.disabled}
               >
                 {option.label}
               </ListItem>

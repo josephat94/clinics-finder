@@ -1,4 +1,4 @@
-import { FaAt, FaGlobe, FaMapMarkerAlt, FaPhoneAlt, FaPrint } from 'react-icons/fa';
+import { FaAt, FaClock, FaGlobe, FaMapMarkerAlt, FaPhoneAlt, FaPrint } from 'react-icons/fa';
 import { Badge } from '@/components/ui/badge';
 import type { ClinicWithTravelTime } from '@/stores';
 
@@ -85,6 +85,20 @@ export function ClinicCardContent({ clinic }: ClinicCardContentProps) {
               >
                 {clinic.website}
               </a>
+            </p>
+          </div>
+        )}
+
+        {(clinic.opening_time || clinic.closing_time) && (
+          <div className="flex items-start gap-1">
+            <FaClock />
+            <p className={`text-sm ${clinic.banned ? "text-zinc-400 dark:text-zinc-600" : "text-gray-600 dark:text-zinc-400"}`}>
+              Horario:{" "}
+              {clinic.opening_time && clinic.closing_time
+                ? `${clinic.opening_time} - ${clinic.closing_time}`
+                : clinic.opening_time
+                ? `Desde ${clinic.opening_time}`
+                : `Hasta ${clinic.closing_time}`}
             </p>
           </div>
         )}

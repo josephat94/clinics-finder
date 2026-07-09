@@ -1,6 +1,13 @@
 export { Button, type ButtonProps } from './button';
 export { Input, type InputProps } from './input';
 export { Select, type SelectProps } from './select';
+export {
+  TimeSelect,
+  HOUR_OPTIONS,
+  timeToMinutes,
+  isValidTimeRange,
+  type TimeSelectProps,
+} from './time-select';
 export { Card, type CardProps } from './card';
 export { Badge, type BadgeProps } from './badge';
 export { Modal, type ModalProps } from './modal';

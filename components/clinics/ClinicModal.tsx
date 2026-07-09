@@ -4,9 +4,28 @@ import { useState, useEffect } from "react";
 import { Modal } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
+import { TimeSelect, isValidTimeRange } from "@/components/ui/time-select";
 import { Button } from "@/components/ui/button";
 import { US_STATES } from "@/utils/states";
 import type { ClinicInsert, Clinic } from "@/types/clinic";
+
+const EMPTY_CLINIC_FORM: ClinicInsert = {
+  name: "",
+  phone: null,
+  secondary_phone: null,
+  fax: null,
+  email: null,
+  address: null,
+  state: null,
+  zipcode: null,
+  notes: null,
+  website: null,
+  opening_time: null,
+  closing_time: null,
+  enabled: true,
+  banned: false,
+  bilingual: false,
+};
 
 export interface ClinicModalProps {
   open: boolean;
@@ -23,21 +42,7 @@ export function ClinicModal({
 }: ClinicModalProps) {
   const isEditMode = !!clinic;
 
-  const [formData, setFormData] = useState<ClinicInsert>({
-    name: "",
-    phone: null,
-    secondary_phone: null,
-    fax: null,
-    email: null,
-    address: null,
-    state: null,
-    zipcode: null,
-    notes: null,
-    website: null,
-    enabled: true,
-    banned: false,
-    bilingual: false,
-  });
+  const [formData, setFormData] = useState<ClinicInsert>(EMPTY_CLINIC_FORM);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -56,27 +61,15 @@ export function ClinicModal({
         zipcode: clinic.zipcode,
         notes: clinic.notes,
         website: clinic.website,
+        opening_time: clinic.opening_time,
+        closing_time: clinic.closing_time,
         enabled: clinic.enabled ?? true,
         banned: clinic.banned ?? false,
         bilingual: clinic.bilingual ?? false,
       });
     } else if (open && !clinic) {
       // Resetear formulario en modo creación
-      setFormData({
-        name: "",
-        phone: null,
-        secondary_phone: null,
-        fax: null,
-        email: null,
-        address: null,
-        state: null,
-        zipcode: null,
-        notes: null,
-        website: null,
-        enabled: true,
-        banned: false,
-        bilingual: false,
-      });
+      setFormData(EMPTY_CLINIC_FORM);
     }
     setError(null);
   }, [open, clinic]);
@@ -135,6 +128,15 @@ export function ClinicModal({
         }
       }
 
+      // Validar que apertura < cierre
+      if (!isValidTimeRange(formData.opening_time, formData.closing_time)) {
+        setError(
+          "La hora de apertura debe ser anterior a la hora de cierre"
+        );
+        setIsSubmitting(false);
+        return;
+      }
+
       const url = isEditMode ? `/api/clinics/${clinic.id}` : "/api/clinics";
       const method = isEditMode ? "PUT" : "POST";
 
@@ -155,21 +157,7 @@ export function ClinicModal({
       }
 
       // Limpiar el formulario
-      setFormData({
-        name: "",
-        phone: null,
-        secondary_phone: null,
-        fax: null,
-        email: null,
-        address: null,
-        state: null,
-        zipcode: null,
-        notes: null,
-        website: null,
-        enabled: true,
-        banned: false,
-        bilingual: false,
-      });
+      setFormData(EMPTY_CLINIC_FORM);
 
       // Cerrar el modal y notificar éxito
       onClose();
@@ -189,21 +177,7 @@ export function ClinicModal({
 
   const handleClose = () => {
     if (!isSubmitting) {
-      setFormData({
-        name: "",
-        phone: null,
-        secondary_phone: null,
-        fax: null,
-        email: null,
-        address: null,
-        state: null,
-        zipcode: null,
-        notes: null,
-        website: null,
-        enabled: true,
-        banned: false,
-        bilingual: false,
-      });
+      setFormData(EMPTY_CLINIC_FORM);
       setError(null);
       onClose();
     }
@@ -373,6 +347,52 @@ export function ClinicModal({
             value={formData.zipcode || ""}
             onChange={handleChange}
             placeholder="12345"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <TimeSelect
+            label="Hora de apertura"
+            name="opening_time"
+            value={formData.opening_time || ""}
+            onChange={(value) => {
+              setFormData((prev) => ({
+                ...prev,
+                opening_time: value || null,
+              }));
+              if (error) setError(null);
+            }}
+            maxExclusive={formData.closing_time}
+            placeholder="Selecciona hora de apertura"
+            popoverZIndex={250}
+            error={
+              !!formData.opening_time &&
+              !!formData.closing_time &&
+              !isValidTimeRange(formData.opening_time, formData.closing_time)
+            }
+            errorText="Debe ser anterior a la hora de cierre"
+          />
+
+          <TimeSelect
+            label="Hora de cierre"
+            name="closing_time"
+            value={formData.closing_time || ""}
+            onChange={(value) => {
+              setFormData((prev) => ({
+                ...prev,
+                closing_time: value || null,
+              }));
+              if (error) setError(null);
+            }}
+            minExclusive={formData.opening_time}
+            placeholder="Selecciona hora de cierre"
+            popoverZIndex={250}
+            error={
+              !!formData.opening_time &&
+              !!formData.closing_time &&
+              !isValidTimeRange(formData.opening_time, formData.closing_time)
+            }
+            errorText="Debe ser posterior a la hora de apertura"
           />
         </div>
 
