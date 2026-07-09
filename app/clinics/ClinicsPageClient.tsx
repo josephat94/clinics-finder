@@ -158,7 +158,9 @@ export function ClinicsPageClient({
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-sm text-zinc-600 dark:text-zinc-400">Ordenar:</span>
+          <span className="text-sm text-zinc-600 dark:text-zinc-400">
+            Ordenar:
+          </span>
           <Button
             variant={sortOrder === "asc" ? "primary" : "outline"}
             size="sm"
@@ -189,30 +191,39 @@ export function ClinicsPageClient({
         </div>
       </div>
 
-<div className="flex items-center justify-end w-full gap-6" >
-
-  <div className="flex items-center gap-2">
-  <Button disabled={viewMode === "list"} variant="outline" size="md" onClick={() => setViewMode("list")}>
-  <FaListAlt />
-    </Button>
-    <Button disabled={viewMode === "grid"} variant="outline" size="md" onClick={() => setViewMode("grid")}>
-    <FaTable />
-    </Button>
-    <Button
-      variant="outline"
-      size="md"
-      onClick={() => setIsMapModalOpen(true)}
-      aria-label="Ver clínicas en el mapa"
-      title="Ver clínicas en el mapa"
-    >
-      <FaMapMarkedAlt />
-    </Button>
-  </div>
-    <Button variant="outline" size="md" onClick={openCreateModal}>
-      <FaPlus/>
-      Agregar Clínica
-    </Button>
-</div>
+      <div className="flex items-center justify-end w-full gap-6">
+        <div className="flex items-center gap-2">
+          <Button
+            disabled={viewMode === "list"}
+            variant="outline"
+            size="md"
+            onClick={() => setViewMode("list")}
+          >
+            <FaListAlt />
+          </Button>
+          <Button
+            disabled={viewMode === "grid"}
+            variant="outline"
+            size="md"
+            onClick={() => setViewMode("grid")}
+          >
+            <FaTable />
+          </Button>
+          <Button
+            variant="outline"
+            size="md"
+            onClick={() => setIsMapModalOpen(true)}
+            aria-label="Ver clínicas en el mapa"
+            title="Ver clínicas en el mapa"
+          >
+            <FaMapMarkedAlt />
+          </Button>
+        </div>
+        <Button variant="outline" size="md" onClick={openCreateModal}>
+          <FaPlus />
+          Agregar Clínica
+        </Button>
+      </div>
       <div className={viewMode === "list" ? "w-full" : "w-full"}>
         <h1 className="text-3xl font-bold text-black dark:text-zinc-50 mb-8">
           Clínicas ({filteredAndSortedClinics.length})
@@ -227,197 +238,208 @@ export function ClinicsPageClient({
             </p>
           </div>
         ) : (
-          <div className={`grid gap-6 ${gridCols} ${viewMode === "list" ? "w-full" : "w-full"} items-stretch`}>
-            <AnimatePresence mode="popLayout">
-                {filteredAndSortedClinics.map((clinic, index) => {
-                // Determinar la variante basada en si tiene travelTime y su posición
-                const hasTravelTime = clinic.travelTime !== undefined;
-                let variant: "normal" | "first" | "second" | "third" = "normal";
+          <div
+            className={`grid gap-6 ${gridCols} ${viewMode === "list" ? "w-full" : "w-full"} items-stretch`}
+          >
+            {filteredAndSortedClinics.map((clinic, index) => {
+              // Determinar la variante basada en si tiene travelTime y su posición
+              const hasTravelTime = clinic.travelTime !== undefined;
+              let variant: "normal" | "first" | "second" | "third" = "normal";
 
-                let variantFloatingBadge: "success" | "warning" | "danger" | "info" = "success";
+              let variantFloatingBadge:
+                | "success"
+                | "warning"
+                | "danger"
+                | "info" = "success";
 
-                if (hasTravelTime) {
-                  if (index === 0){
-                    variant = "first";
-                    const minutes= secondsToMinutesAndSeconds(clinic.travelTime?.duration.value ?? 0);
-                    variantFloatingBadge =  getBadgeVariantFromMinutes(minutes?.minutes ?? 0);
-                  } 
-                  else if (index === 1){
-                    variant = "second";
-                    const minutes= secondsToMinutesAndSeconds(clinic.travelTime?.duration.value ?? 0);
-                    variantFloatingBadge =  getBadgeVariantFromMinutes(minutes?.minutes ?? 0);
-                  }
-                  else if (index === 2){
-                    variant = "third";
-                    const minutes= secondsToMinutesAndSeconds(clinic.travelTime?.duration.value ?? 0);
-                    variantFloatingBadge =  getBadgeVariantFromMinutes(minutes?.minutes ?? 0);
-                  }
+              if (hasTravelTime) {
+                if (index === 0) {
+                  variant = "first";
+                  const minutes = secondsToMinutesAndSeconds(
+                    clinic.travelTime?.duration.value ?? 0,
+                  );
+                  variantFloatingBadge = getBadgeVariantFromMinutes(
+                    minutes?.minutes ?? 0,
+                  );
+                } else if (index === 1) {
+                  variant = "second";
+                  const minutes = secondsToMinutesAndSeconds(
+                    clinic.travelTime?.duration.value ?? 0,
+                  );
+                  variantFloatingBadge = getBadgeVariantFromMinutes(
+                    minutes?.minutes ?? 0,
+                  );
+                } else if (index === 2) {
+                  variant = "third";
+                  const minutes = secondsToMinutesAndSeconds(
+                    clinic.travelTime?.duration.value ?? 0,
+                  );
+                  variantFloatingBadge = getBadgeVariantFromMinutes(
+                    minutes?.minutes ?? 0,
+                  );
                 }
+              }
 
-                // Animaciones base para todas las cards
-                const baseVariants = {
+              // Animaciones base para todas las cards
+              const baseVariants = {
+                hidden: {
+                  opacity: 0,
+                  y: 20,
+                  scale: 0.95,
+                },
+                visible: {
+                  opacity: 1,
+                  y: 0,
+                  scale: 1,
+                  transition: {
+                    duration: 0.3,
+                    delay: index * 0.05,
+                  },
+                },
+                exit: {
+                  opacity: 0,
+                  scale: 0.95,
+                  y: -20,
+                  transition: {
+                    duration: 0.2,
+                  },
+                },
+              };
+
+              // Animaciones especiales para variantes destacadas
+              const specialVariants: Record<string, any> = {
+                first: {
                   hidden: {
                     opacity: 0,
-                    y: 20,
-                    scale: 0.95,
+                    y: 30,
+                    scale: 0.9,
                   },
                   visible: {
                     opacity: 1,
                     y: 0,
                     scale: 1,
                     transition: {
-                      duration: 0.3,
-                      delay: index * 0.05,
+                      type: "spring",
+                      stiffness: 300,
+                      damping: 20,
+                      delay: index * 0.1,
                     },
                   },
                   exit: {
                     opacity: 0,
-                    scale: 0.95,
-                    y: -20,
+                    scale: 0.9,
+                    y: -30,
                     transition: {
                       duration: 0.2,
                     },
                   },
-                };
-
-                // Animaciones especiales para variantes destacadas
-                const specialVariants: Record<string, any> = {
-                  first: {
-                    hidden: {
-                      opacity: 0,
-                      y: 30,
-                      scale: 0.9,
-                    },
-                    visible: {
-                      opacity: 1,
-                      y: 0,
-                      scale: 1,
-                      transition: {
-                        type: "spring",
-                        stiffness: 300,
-                        damping: 20,
-                        delay: index * 0.1,
-                      },
-                    },
-                    exit: {
-                      opacity: 0,
-                      scale: 0.9,
-                      y: -30,
-                      transition: {
-                        duration: 0.2,
-                      },
+                },
+                second: {
+                  hidden: {
+                    opacity: 0,
+                    y: 25,
+                    scale: 0.92,
+                  },
+                  visible: {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    transition: {
+                      type: "spring",
+                      stiffness: 280,
+                      damping: 22,
+                      delay: index * 0.08,
                     },
                   },
-                  second: {
-                    hidden: {
-                      opacity: 0,
-                      y: 25,
-                      scale: 0.92,
-                    },
-                    visible: {
-                      opacity: 1,
-                      y: 0,
-                      scale: 1,
-                      transition: {
-                        type: "spring",
-                        stiffness: 280,
-                        damping: 22,
-                        delay: index * 0.08,
-                      },
-                    },
-                    exit: {
-                      opacity: 0,
-                      scale: 0.92,
-                      y: -25,
-                      transition: {
-                        duration: 0.2,
-                      },
+                  exit: {
+                    opacity: 0,
+                    scale: 0.92,
+                    y: -25,
+                    transition: {
+                      duration: 0.2,
                     },
                   },
-                  third: {
-                    hidden: {
-                      opacity: 0,
-                      y: 25,
-                      scale: 0.92,
-                    },
-                    visible: {
-                      opacity: 1,
-                      y: 0,
-                      scale: 1,
-                      transition: {
-                        type: "spring",
-                        stiffness: 260,
-                        damping: 24,
-                        delay: index * 0.06,
-                      },
-                    },
-                    exit: {
-                      opacity: 0,
-                      scale: 0.92,
-                      y: -25,
-                      transition: {
-                        duration: 0.2,
-                      },
+                },
+                third: {
+                  hidden: {
+                    opacity: 0,
+                    y: 25,
+                    scale: 0.92,
+                  },
+                  visible: {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    transition: {
+                      type: "spring",
+                      stiffness: 260,
+                      damping: 24,
+                      delay: index * 0.06,
                     },
                   },
-                };
+                  exit: {
+                    opacity: 0,
+                    scale: 0.92,
+                    y: -25,
+                    transition: {
+                      duration: 0.2,
+                    },
+                  },
+                },
+              };
 
-                const animationVariants = 
-                  variant === "first" || variant === "second" || variant === "third"
-                    ? specialVariants[variant]
-                    : baseVariants;
+              const animationVariants =
+                variant === "first" ||
+                variant === "second" ||
+                variant === "third"
+                  ? specialVariants[variant]
+                  : baseVariants;
 
-                return (
-                  <motion.div
+              return (
+                <div key={clinic.id}>
+                  <Card
+                    showOptions={true}
+                    onEdit={() => handleEditClick(clinic)}
+                    onDelete={() => handleDeleteClick(clinic)}
                     key={clinic.id}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                    variants={animationVariants}
-                    layout
-                    className="h-full"
-                  >
-                    <Card
-                showOptions={true}
-                onEdit={() => handleEditClick(clinic)}
-                onDelete={() => handleDeleteClick(clinic)}
-                  key={clinic.id}
-                  variant={variant}
-                  travelTime={clinic.travelTime}
-                  floatingBadge={
-                    hasTravelTime ? (
+                    variant={variant}
+                    travelTime={clinic.travelTime}
+                    floatingBadge={
+                      hasTravelTime ? (
+                        <>
+                          <Badge variant={variantFloatingBadge} size="lg">
+                            {clinic.travelTime?.duration.text}
+                          </Badge>
+                        </>
+                      ) : undefined
+                    }
+                    className={
+                      clinic.banned
+                        ? "opacity-80 border-red-500 dark:border-red-600 bg-red-50/30 dark:bg-red-950/20"
+                        : ""
+                    }
+                    badges={
                       <>
-                        <Badge variant={variantFloatingBadge} size="lg">
-                          {clinic.travelTime?.duration.text}
-                        </Badge>
+                        <div className="flex gap-2">
+                          {clinic.banned && (
+                            <Badge variant="danger" size="sm">
+                              In BlackList
+                            </Badge>
+                          )}
+                          {!clinic.enabled && (
+                            <Badge variant="warning" size="sm">
+                              Deshabilitada
+                            </Badge>
+                          )}
+                        </div>
                       </>
-                    ) : undefined
-                  }
-                  className={clinic.banned ? "opacity-80 border-red-500 dark:border-red-600 bg-red-50/30 dark:bg-red-950/20" : ""}
-
-                  badges={
-                    <>
-                    <div className="flex gap-2">
-                    {clinic.banned && (
-                      <Badge variant="danger" size="sm">
-                            In BlackList
-                      </Badge>
-                    )}
-                    {!clinic.enabled && (
-                      <Badge variant="warning" size="sm">
-                        Deshabilitada
-                      </Badge>
-                    )}
-                  </div>
-                    </>
-                  }
-                >
-                      <ClinicCardContent clinic={clinic} />
-                    </Card>
-                  </motion.div>
-                );
-              })}
-            </AnimatePresence>
+                    }
+                  >
+                    <ClinicCardContent clinic={clinic} />
+                  </Card>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
