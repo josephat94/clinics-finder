@@ -10,8 +10,9 @@ import { Clinic } from "@/types/clinic";
 import { secondsToMinutesAndSeconds } from "@/utils/time";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { FaListAlt, FaPlus, FaTable, FaSortAlphaDown, FaSortAlphaUp, FaSearch, FaClock } from "react-icons/fa";
+import { FaListAlt, FaMapMarkedAlt, FaPlus, FaTable, FaSortAlphaDown, FaSortAlphaUp, FaSearch, FaClock } from "react-icons/fa";
 import { ClinicModal } from "@/components/clinics/ClinicModal";
+import { ClinicsMapModal } from "@/components/clinics/ClinicsMapModal";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { ClinicCardContent } from "@/components/clinics/ClinicCardContent";
 import { useClinicsStore, useUIStore, type ClinicWithTravelTime } from "@/stores";
@@ -35,6 +36,9 @@ export function ClinicsPageClient({
 
   // Estado para el modal de edición
   const [clinicToEdit, setClinicToEdit] = useState<ClinicWithTravelTime | null>(null);
+
+  // Estado para el mapa de todas las clínicas
+  const [isMapModalOpen, setIsMapModalOpen] = useState(false);
 
   // Estados para filtros y ordenamiento
   const [searchQuery, setSearchQuery] = useState("");
@@ -193,6 +197,15 @@ export function ClinicsPageClient({
     </Button>
     <Button disabled={viewMode === "grid"} variant="outline" size="md" onClick={() => setViewMode("grid")}>
     <FaTable />
+    </Button>
+    <Button
+      variant="outline"
+      size="md"
+      onClick={() => setIsMapModalOpen(true)}
+      aria-label="Ver clínicas en el mapa"
+      title="Ver clínicas en el mapa"
+    >
+      <FaMapMarkedAlt />
     </Button>
   </div>
     <Button variant="outline" size="md" onClick={openCreateModal}>
@@ -432,6 +445,14 @@ export function ClinicsPageClient({
         cancelText="Cancelar"
         variant="danger"
         isLoading={isDeleting}
+      />
+
+      <ClinicsMapModal
+        open={isMapModalOpen}
+        onClose={() => setIsMapModalOpen(false)}
+        clinics={filteredAndSortedClinics}
+        title="Mapa de clínicas"
+        showRanking={false}
       />
     </Container>
   );

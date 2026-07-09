@@ -58,8 +58,10 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
       lg: 'max-w-2xl',
       xl: 'max-w-4xl',
       '2xl': 'max-w-6xl',
-      full: 'max-w-full mx-4',
+      full: 'max-w-full w-[calc(100%-2rem)] h-[calc(100vh-2rem)] mx-4 flex flex-col overflow-hidden',
     };
+
+    const isFullSize = size === 'full';
 
     const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
       if (closeOnOverlayClick && e.target === e.currentTarget) {
@@ -139,7 +141,7 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
             >
           {/* Header */}
           {(title || showCloseButton) && (
-            <div className="flex items-center justify-between p-6 border-b border-zinc-200 dark:border-zinc-800">
+            <div className="flex items-center justify-between p-6 border-b border-zinc-200 dark:border-zinc-800 flex-shrink-0">
               <div className="flex-1">
                 {title && (
                   <h2
@@ -184,7 +186,9 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
           )}
 
               {/* Body */}
-              <div className="p-6">{children}</div>
+              <div className={cn('p-6', isFullSize && 'flex-1 min-h-0 flex flex-col')}>
+                {children}
+              </div>
             </motion.div>
           </div>
         )}

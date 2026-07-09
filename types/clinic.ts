@@ -16,6 +16,8 @@ export interface Clinic {
   website: string | null;
   opening_time: string | null;
   closing_time: string | null;
+  lat: number | null;
+  lng: number | null;
   enabled: boolean;
   banned: boolean;
   bilingual: boolean;

@@ -1,18 +1,17 @@
 'use client';
 
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useState, useMemo, useEffect, useRef, memo, useCallback } from 'react';
 import dynamic from 'next/dynamic';
+import { Source, Layer, type LayerProps } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import type { ClinicWithTravelTime } from '@/stores';
 import type { LatLng } from '@/lib/google';
 import { FaUser, FaCrosshairs } from 'react-icons/fa';
 import { Button } from '@/components/ui/button';
-import { Popover } from '@/components/ui/popover';
 import { Badge } from '@/components/ui/badge';
 import { ClinicCardContent } from './ClinicCardContent';
 
 // Importación dinámica para evitar problemas de SSR
-// En react-map-gl v8, necesitamos importar desde 'react-map-gl/mapbox'
 const Map = dynamic(() => import('react-map-gl/mapbox').then((mod) => mod.default), {
   ssr: false,
 });
@@ -21,12 +20,34 @@ const Marker = dynamic(() => import('react-map-gl/mapbox').then((mod) => mod.Mar
   ssr: false,
 });
 
+/** Opaca todos los países excepto Estados Unidos */
+const nonUsaMaskLayer: LayerProps = {
+  id: 'non-usa-mask',
+  type: 'fill',
+  source: 'country-boundaries',
+  'source-layer': 'country_boundaries',
+  filter: [
+    'all',
+    ['==', ['get', 'disputed'], 'false'],
+    [
+      'any',
+      ['==', 'all', ['get', 'worldview']],
+      ['in', 'US', ['get', 'worldview']],
+    ],
+    ['!=', ['get', 'iso_3166_1'], 'US'],
+  ],
+  paint: {
+    'fill-color': '#0f172a',
+    'fill-opacity': 0.55,
+  },
+};
+
 interface ClinicsMapProps {
-  userLocation: LatLng;
+  userLocation?: LatLng | null;
   clinics: ClinicWithTravelTime[];
   userAddress?: string;
   selectedClinicId?: string | null;
-  showRanking?: boolean; // Para mostrar 1st, 2nd, 3rd
+  showRanking?: boolean;
 }
 
 interface ViewState {
@@ -41,111 +62,145 @@ const defaultCenter: ViewState = {
   zoom: 4,
 };
 
-export function ClinicsMap({ userLocation, clinics, userAddress, selectedClinicId, showRanking = true }: ClinicsMapProps) {
+const rankingLabels = ['1st', '2nd', '3rd'] as const;
+const rankingBgColors = ['bg-yellow-500', 'bg-slate-500', 'bg-amber-600'] as const;
+const rankingBorderColors = [
+  'border-yellow-500',
+  'border-slate-500',
+  'border-amber-600',
+] as const;
+
+interface ClinicMarkerProps {
+  clinic: ClinicWithTravelTime;
+  index: number;
+  isSelected: boolean;
+  isPopupOpen: boolean;
+  showRanking: boolean;
+  onSelect: (clinicId: string) => void;
+}
+
+const ClinicMarker = memo(function ClinicMarker({
+  clinic,
+  index,
+  isSelected,
+  isPopupOpen,
+  showRanking,
+  onSelect,
+}: ClinicMarkerProps) {
+  if (typeof clinic.lat !== 'number' || typeof clinic.lng !== 'number') {
+    return null;
+  }
+
+  const ranking = showRanking && index < 3 ? rankingLabels[index] : null;
+  const markerSize = isSelected ? 'w-14 h-14' : 'w-12 h-12';
+  const iconSize = isSelected ? 'w-7 h-7' : 'w-6 h-6';
+  const markerBorderColor = isSelected
+    ? 'border-blue-500 ring-4 ring-blue-500/30'
+    : ranking
+    ? rankingBorderColors[index]
+    : 'border-white';
+
+  return (
+    <Marker longitude={clinic.lng} latitude={clinic.lat} anchor="bottom">
+      <button
+        type="button"
+        className="relative group bg-transparent border-0 p-0"
+        onClick={(e) => {
+          e.stopPropagation();
+          onSelect(clinic.id);
+        }}
+        aria-label={clinic.name}
+      >
+        {ranking && (
+          <div
+            className={`absolute -top-2 -right-2 ${rankingBgColors[index]} text-white text-xs font-bold rounded-full w-8 h-8 flex items-center justify-center border-2 border-white shadow-lg z-20`}
+          >
+            {ranking}
+          </div>
+        )}
+
+        <div
+          className={`${markerSize} bg-red-500 rounded-full border-2 ${markerBorderColor} shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform duration-150 ${
+            isSelected || isPopupOpen ? 'scale-110' : ''
+          }`}
+        >
+          <svg
+            className={`${iconSize} text-white`}
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fillRule="evenodd"
+              d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </div>
+
+        <div
+          className={`absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1.5 bg-red-500 text-white text-sm rounded-lg whitespace-nowrap shadow-xl transition-opacity pointer-events-none z-10 max-w-[200px] ${
+            isSelected && !isPopupOpen
+              ? 'opacity-100'
+              : 'opacity-0 group-hover:opacity-100'
+          }`}
+        >
+          <div className="truncate">{clinic.name}</div>
+          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-red-500" />
+        </div>
+      </button>
+    </Marker>
+  );
+});
+
+export function ClinicsMap({
+  userLocation,
+  clinics,
+  userAddress,
+  selectedClinicId,
+  showRanking = true,
+}: ClinicsMapProps) {
   const [isMounted, setIsMounted] = useState(false);
   const [mapLoaded, setMapLoaded] = useState(false);
-  const [markersReady, setMarkersReady] = useState(false);
   const [popupClinicId, setPopupClinicId] = useState<string | null>(null);
   const mapRef = useRef<any>(null);
+  const hasFittedBounds = useRef(false);
   const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_API_TOKEN || '';
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  useEffect(() => {
-    if (mapLoaded) {
-      // Pequeño delay para asegurar que el mapa esté completamente renderizado
-      const timer = setTimeout(() => {
-        setMarkersReady(true);
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [mapLoaded]);
+  const hasValidUserLocation =
+    !!userLocation &&
+    typeof userLocation.lat === 'number' &&
+    typeof userLocation.lng === 'number' &&
+    !isNaN(userLocation.lat) &&
+    !isNaN(userLocation.lng);
 
-    // Verificar que userLocation tenga valores válidos
-    const hasValidUserLocation = userLocation &&
-        typeof userLocation.lat === 'number' &&
-        typeof userLocation.lng === 'number' &&
-        !isNaN(userLocation.lat) &&
-        !isNaN(userLocation.lng);
+  const clinicsWithCoords = useMemo(
+    () =>
+      clinics.filter(
+        (c) =>
+          typeof c.lat === 'number' &&
+          typeof c.lng === 'number' &&
+          !isNaN(c.lat) &&
+          !isNaN(c.lng)
+      ),
+    [clinics]
+  );
 
-    // Efecto para ajustar el zoom a todos los resultados cuando se cargan
-    useEffect(() => {
-        if (!mapLoaded || !markersReady || !mapRef.current || !hasValidUserLocation || clinics.length === 0) {
-            return;
-        }
-
-        const map = mapRef.current.getMap();
-        if (!map) return;
-
-        // Calcular bounds para incluir todas las ubicaciones
-        const lats = [
-            userLocation.lat,
-            ...clinics
-                .map((c) => (c as any).lat)
-                .filter((lat): lat is number => typeof lat === 'number' && !isNaN(lat)),
-        ];
-        const lngs = [
-            userLocation.lng,
-            ...clinics
-                .map((c) => (c as any).lng)
-                .filter((lng): lng is number => typeof lng === 'number' && !isNaN(lng)),
-        ];
-
-        if (lats.length === 0 || lngs.length === 0) return;
-
-        const minLat = Math.min(...lats);
-        const maxLat = Math.max(...lats);
-        const minLng = Math.min(...lngs);
-        const maxLng = Math.max(...lngs);
-
-        // Usar fitBounds para ajustar el mapa a todos los markers
-        map.fitBounds(
-            [
-                [minLng, minLat], // southwest corner
-                [maxLng, maxLat], // northeast corner
-            ],
-            {
-                padding: { top: 50, bottom: 50, left: 50, right: 50 }, // Padding en píxeles
-                maxZoom: 15, // Zoom máximo para evitar acercarse demasiado
-                duration: 1000, // Duración de la animación en ms
-            }
-        );
-    }, [mapLoaded, markersReady, userLocation, clinics, hasValidUserLocation]);
-
-  const handleFlyToUser = () => {
-    if (!mapRef.current || !userLocation) return;
-    
-    const map = mapRef.current.getMap();
-    if (map) {
-      map.flyTo({
-        center: [userLocation.lng, userLocation.lat],
-        zoom: 14,
-        duration: 1500,
-        essential: true,
-      });
-    }
-  };
-
-  // Calcular el viewport inicial para mostrar todas las ubicaciones
   const initialViewState = useMemo(() => {
-    if (!userLocation || clinics.length === 0) {
+    if (clinicsWithCoords.length === 0 && !hasValidUserLocation) {
       return defaultCenter;
     }
 
-    // Calcular bounds para incluir todas las ubicaciones
     const lats = [
-      userLocation.lat,
-      ...clinics
-        .map((c) => (c as any).lat)
-        .filter((lat): lat is number => typeof lat === 'number'),
+      ...(hasValidUserLocation && userLocation ? [userLocation.lat] : []),
+      ...clinicsWithCoords.map((c) => c.lat as number),
     ];
     const lngs = [
-      userLocation.lng,
-      ...clinics
-        .map((c) => (c as any).lng)
-        .filter((lng): lng is number => typeof lng === 'number'),
+      ...(hasValidUserLocation && userLocation ? [userLocation.lng] : []),
+      ...clinicsWithCoords.map((c) => c.lng as number),
     ];
 
     if (lats.length === 0 || lngs.length === 0) {
@@ -156,11 +211,6 @@ export function ClinicsMap({ userLocation, clinics, userAddress, selectedClinicI
     const maxLat = Math.max(...lats);
     const minLng = Math.min(...lngs);
     const maxLng = Math.max(...lngs);
-
-    const centerLat = (minLat + maxLat) / 2;
-    const centerLng = (minLng + maxLng) / 2;
-
-    // Calcular zoom basado en la distancia
     const latDiff = maxLat - minLat;
     const lngDiff = maxLng - minLng;
     const maxDiff = Math.max(latDiff, lngDiff);
@@ -171,21 +221,90 @@ export function ClinicsMap({ userLocation, clinics, userAddress, selectedClinicI
     if (maxDiff > 0.5) zoom = 7;
     if (maxDiff > 1) zoom = 6;
     if (maxDiff > 2) zoom = 5;
+    if (maxDiff > 5) zoom = 4;
 
     return {
-      latitude: centerLat,
-      longitude: centerLng,
+      latitude: (minLat + maxLat) / 2,
+      longitude: (minLng + maxLng) / 2,
       zoom,
     };
-  }, [userLocation, clinics]);
+  }, [userLocation, clinicsWithCoords, hasValidUserLocation]);
 
-  const [viewState, setViewState] = useState<ViewState>(initialViewState);
+  // Ajustar bounds solo una vez al cargar
+  useEffect(() => {
+    if (
+      !mapLoaded ||
+      !mapRef.current ||
+      clinicsWithCoords.length === 0 ||
+      hasFittedBounds.current
+    ) {
+      return;
+    }
+
+    const map = mapRef.current.getMap();
+    if (!map) return;
+
+    const lats = [
+      ...(hasValidUserLocation && userLocation ? [userLocation.lat] : []),
+      ...clinicsWithCoords.map((c) => c.lat as number),
+    ];
+    const lngs = [
+      ...(hasValidUserLocation && userLocation ? [userLocation.lng] : []),
+      ...clinicsWithCoords.map((c) => c.lng as number),
+    ];
+
+    if (lats.length === 0 || lngs.length === 0) return;
+
+    hasFittedBounds.current = true;
+    map.fitBounds(
+      [
+        [Math.min(...lngs), Math.min(...lats)],
+        [Math.max(...lngs), Math.max(...lats)],
+      ],
+      {
+        padding: { top: 50, bottom: 50, left: 50, right: 50 },
+        maxZoom: 15,
+        duration: 800,
+      }
+    );
+  }, [mapLoaded, userLocation, clinicsWithCoords, hasValidUserLocation]);
+
+  const handleFlyToUser = () => {
+    if (!mapRef.current || !hasValidUserLocation || !userLocation) return;
+    const map = mapRef.current.getMap();
+    if (map) {
+      map.flyTo({
+        center: [userLocation.lng, userLocation.lat],
+        zoom: 14,
+        duration: 1200,
+        essential: true,
+      });
+    }
+  };
+
+  const handleSelectClinic = useCallback((clinicId: string) => {
+    setPopupClinicId((current) => (current === clinicId ? null : clinicId));
+  }, []);
+
+  const popupClinic = useMemo(
+    () => clinicsWithCoords.find((c) => c.id === popupClinicId) ?? null,
+    [clinicsWithCoords, popupClinicId]
+  );
+
+  const popupIndex = useMemo(
+    () =>
+      popupClinic
+        ? clinicsWithCoords.findIndex((c) => c.id === popupClinic.id)
+        : -1,
+    [clinicsWithCoords, popupClinic]
+  );
 
   if (!mapboxToken) {
     return (
       <div className="flex items-center justify-center h-full bg-zinc-100 dark:bg-zinc-900 rounded-lg">
         <p className="text-red-600 dark:text-red-400">
-          Error: La API key de Mapbox no está configurada. Agrega NEXT_PUBLIC_MAPBOX_API_TOKEN a tus variables de entorno.
+          Error: La API key de Mapbox no está configurada. Agrega
+          NEXT_PUBLIC_MAPBOX_API_TOKEN a tus variables de entorno.
         </p>
       </div>
     );
@@ -204,163 +323,110 @@ export function ClinicsMap({ userLocation, clinics, userAddress, selectedClinicI
       <Map
         ref={mapRef}
         mapboxAccessToken={mapboxToken}
-        {...viewState}
-        onMove={(evt: { viewState: ViewState }) => setViewState(evt.viewState)}
-        onLoad={() => {
-          setMapLoaded(true);
-          // Debug: verificar que userLocation esté disponible
-          if (hasValidUserLocation) {
-            console.log('Map loaded, userLocation:', userLocation);
-          }
-        }}
+        initialViewState={initialViewState}
+        onLoad={() => setMapLoaded(true)}
+        onClick={() => setPopupClinicId(null)}
         style={{ width: '100%', height: '100%' }}
         mapStyle="mapbox://styles/mapbox/streets-v12"
+        reuseMaps
       >
-  
+        {mapLoaded && (
+          <Source
+            id="country-boundaries"
+            type="vector"
+            url="mapbox://mapbox.country-boundaries-v1"
+          >
+            <Layer {...nonUsaMaskLayer} />
+          </Source>
+        )}
 
-      {/* Pines de las clínicas */}
-      {isMounted && markersReady && clinics.map((clinic, index) => {
-        const lat = (clinic as any).lat;
-        const lng = (clinic as any).lng;
-        
-        if (!lat || !lng) return null;
+        {mapLoaded &&
+          clinicsWithCoords.map((clinic, index) => (
+            <ClinicMarker
+              key={clinic.id}
+              clinic={clinic}
+              index={index}
+              isSelected={selectedClinicId === clinic.id}
+              isPopupOpen={popupClinicId === clinic.id}
+              showRanking={showRanking}
+              onSelect={handleSelectClinic}
+            />
+          ))}
 
-        const isSelected = selectedClinicId === clinic.id;
-        const markerSize = isSelected ? 'w-14 h-14' : 'w-12 h-12';
-        const iconSize = isSelected ? 'w-7 h-7' : 'w-6 h-6';
-        const borderColor = isSelected ? 'border-blue-500 ring-4 ring-blue-500/30' : 'border-white';
-        
-        // Determinar el ranking (1st, 2nd, 3rd)
-        const ranking = index < 3 ? ['1st', '2nd', '3rd'][index] : null;
-        const rankingBgColors = [
-          'bg-yellow-500', // 1st
-          'bg-slate-500',  // 2nd
-          'bg-amber-600',   // 3rd
-        ];
-        const rankingBorderColors = [
-          'border-yellow-500', // 1st
-          'border-slate-500',  // 2nd
-          'border-amber-600',   // 3rd
-        ];
-        const markerBgColor = 'bg-red-500';
-        const markerRankingBgColor = ranking ? rankingBgColors[index] : 'bg-red-500';
-        const markerBorderColor = isSelected ? 'border-blue-500 ring-4 ring-blue-500/30' : ranking ? rankingBorderColors[index] : 'border-white';
-        const tooltipBgColor ='bg-red-500';
-        // Para el tooltip arrow, necesitamos el color en formato RGB
-        const tooltipArrowColor = ranking 
-          ? (index === 0 ? '#eab308' : index === 1 ? '#64748b' : '#d97706') // yellow-500, slate-500, amber-600
-          : '#ef4444'; // red-500
-
-        const hasTravelTime = clinic.travelTime?.duration.value !== undefined && clinic.travelTime?.duration.value !== null;
-        const isPopupOpen = popupClinicId === clinic.id;
-
-        return (
+        {hasValidUserLocation && mapLoaded && userLocation && (
           <Marker
-            key={clinic.id}
-            longitude={lng}
-            latitude={lat}
+            longitude={userLocation.lng}
+            latitude={userLocation.lat}
             anchor="bottom"
           >
-            <Popover
-              open={isPopupOpen}
-              onOpenChange={(open) => setPopupClinicId(open ? clinic.id : null)}
-              placement="top"
-              offset={12}
-              trigger="click"
-              zIndex={1000}
-              contentClassName="max-w-sm w-[320px] p-0"
-              content={
-                <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-                  {/* Header con badges */}
-                  <div className="p-4 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950">
-                    <div className="flex items-start justify-between gap-2 mb-2">
-                      <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 flex-1">
-                        {clinic.name}
-                      </h3>
-                      {hasTravelTime && (
-                        <Badge variant={index === 0 ? 'primary' : index === 1 ? 'secondary' : index === 2 ? 'warning' : 'default'} size="sm">
-                          {clinic.travelTime?.duration.text}
-                        </Badge>
-                      )}
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {clinic.banned && (
-                        <Badge variant="danger" size="sm">
-                          In BlackList
-                        </Badge>
-                      )}
-                      {!clinic.enabled && (
-                        <Badge variant="warning" size="sm">
-                          Deshabilitada
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
-                  {/* Contenido de la clínica */}
-                  <div className="p-4">
-                    <ClinicCardContent clinic={clinic} />
-                  </div>
-                </div>
-              }
-            >
-              <div className="relative group">
-                {/* Badge de ranking */}
-                {showRanking && ranking && (
-                  <div className={`absolute -top-2 -right-2 ${markerRankingBgColor} text-white text-xs font-bold rounded-full w-8 h-8 flex items-center justify-center border-2 border-white shadow-lg z-20`}>
-                    {ranking}
-                  </div>
-                )}
-
-                <div className={`${markerSize} ${markerBgColor} rounded-full border-2 ${markerBorderColor} shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-all duration-200 ${isSelected ? 'scale-110' : ''}`}>
-                  <svg
-                    className={`${iconSize} text-white`}
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </div>
-                <div className={`absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1.5 ${tooltipBgColor} text-white text-sm rounded-lg whitespace-nowrap shadow-xl transition-opacity pointer-events-none z-10 max-w-[200px] ${isSelected && !isPopupOpen ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
-                  <div className="truncate">{clinic.name}</div>
-                  <div
-                    className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent"
-                    style={{ borderTopColor: tooltipArrowColor }}
-                  ></div>
-                </div>
+            <div className="relative group" style={{ zIndex: 1000 }}>
+              <div className="w-10 h-10 bg-blue-500 rounded-full border-2 border-white shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform">
+                <FaUser />
               </div>
-            </Popover>
-          </Marker>
-        );
-      })}
-
-          {/* Pin del usuario */}
-          {hasValidUserLocation && isMounted && markersReady && (
-        <Marker
-          longitude={userLocation.lng}
-          latitude={userLocation.lat}
-          anchor="bottom"
-        >
-          <div className="relative group" style={{ zIndex: 1000 }}>
-            <div className="w-10 h-10 bg-blue-500 rounded-full border-2 border-white shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform">
-          <FaUser/>
+              {userAddress && (
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1.5 bg-blue-500 text-white text-sm rounded-lg whitespace-nowrap shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                  {userAddress}
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-blue-500" />
+                </div>
+              )}
             </div>
-            {userAddress && (
-              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1.5 bg-blue-500 text-white text-sm rounded-lg whitespace-nowrap shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-                {userAddress}
-                <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-blue-500"></div>
-              </div>
-            )}
-           </div>
-         </Marker>
-       )}
+          </Marker>
+        )}
       </Map>
-      
-      {/* Botón flotante para volver a la ubicación del usuario */}
-      {hasValidUserLocation && isMounted && markersReady && (
+
+      {/* Un solo popup compartido: evita montar 200+ Popovers */}
+      {popupClinic && (
+        <div className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:w-[360px] z-20 max-h-[50%] overflow-y-auto rounded-lg shadow-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+          <div className="p-4 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 sticky top-0">
+            <div className="flex items-start justify-between gap-2 mb-2">
+              <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 flex-1">
+                {popupClinic.name}
+              </h3>
+              <button
+                type="button"
+                onClick={() => setPopupClinicId(null)}
+                className="text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 text-sm px-2"
+                aria-label="Cerrar detalle"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {popupClinic.travelTime?.duration?.text && (
+                <Badge
+                  variant={
+                    popupIndex === 0
+                      ? 'primary'
+                      : popupIndex === 1
+                      ? 'secondary'
+                      : popupIndex === 2
+                      ? 'warning'
+                      : 'default'
+                  }
+                  size="sm"
+                >
+                  {popupClinic.travelTime.duration.text}
+                </Badge>
+              )}
+              {popupClinic.banned && (
+                <Badge variant="danger" size="sm">
+                  In BlackList
+                </Badge>
+              )}
+              {!popupClinic.enabled && (
+                <Badge variant="warning" size="sm">
+                  Deshabilitada
+                </Badge>
+              )}
+            </div>
+          </div>
+          <div className="p-4">
+            <ClinicCardContent clinic={popupClinic} />
+          </div>
+        </div>
+      )}
+
+      {hasValidUserLocation && mapLoaded && (
         <div className="absolute top-4 right-4 z-10">
           <Button
             onClick={handleFlyToUser}
