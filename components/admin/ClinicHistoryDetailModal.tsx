@@ -125,14 +125,15 @@ export function ClinicHistoryDetailModal({
                       </td>
                       {log.action === 'update' && (
                         <td className="py-2.5 px-3 text-zinc-600 dark:text-zinc-400">
-                          {formatAuditValue(log.old_data?.[field])}
+                          {formatAuditValue(log.old_data?.[field], field)}
                         </td>
                       )}
                       <td className="py-2.5 px-3 text-zinc-900 dark:text-zinc-100">
                         {formatAuditValue(
                           log.action === 'delete'
                             ? log.old_data?.[field]
-                            : log.new_data?.[field]
+                            : log.new_data?.[field],
+                          field
                         )}
                       </td>
                     </tr>

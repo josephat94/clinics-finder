@@ -4,9 +4,14 @@ import { useState, useEffect } from "react";
 import { Modal } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
-import { TimeSelect, isValidTimeRange } from "@/components/ui/time-select";
+import { WeeklyScheduleEditor } from "@/components/ui/weekly-schedule-editor";
 import { Button } from "@/components/ui/button";
 import { US_STATES } from "@/utils/states";
+import {
+  normalizeWeeklySchedule,
+  serializeWeeklySchedule,
+  validateWeeklySchedule,
+} from "@/utils/clinic-schedule";
 import type { ClinicInsert, Clinic } from "@/types/clinic";
 
 const EMPTY_CLINIC_FORM: ClinicInsert = {
@@ -20,8 +25,7 @@ const EMPTY_CLINIC_FORM: ClinicInsert = {
   zipcode: null,
   notes: null,
   website: null,
-  opening_time: null,
-  closing_time: null,
+  weekly_schedule: [],
   lat: null,
   lng: null,
   enabled: true,
@@ -63,8 +67,7 @@ export function ClinicModal({
         zipcode: clinic.zipcode,
         notes: clinic.notes,
         website: clinic.website,
-        opening_time: clinic.opening_time,
-        closing_time: clinic.closing_time,
+        weekly_schedule: normalizeWeeklySchedule(clinic.weekly_schedule),
         lat: clinic.lat,
         lng: clinic.lng,
         enabled: clinic.enabled ?? true,
@@ -132,14 +135,17 @@ export function ClinicModal({
         }
       }
 
-      // Validar que apertura < cierre
-      if (!isValidTimeRange(formData.opening_time, formData.closing_time)) {
-        setError(
-          "La hora de apertura debe ser anterior a la hora de cierre"
-        );
+      const scheduleError = validateWeeklySchedule(formData.weekly_schedule);
+      if (scheduleError) {
+        setError(scheduleError);
         setIsSubmitting(false);
         return;
       }
+
+      const payload = {
+        ...formData,
+        weekly_schedule: serializeWeeklySchedule(formData.weekly_schedule),
+      };
 
       const url = isEditMode ? `/api/clinics/${clinic.id}` : "/api/clinics";
       const method = isEditMode ? "PUT" : "POST";
@@ -149,7 +155,7 @@ export function ClinicModal({
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       const data = await response.json();
@@ -354,51 +360,17 @@ export function ClinicModal({
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <TimeSelect
-            label="Hora de apertura"
-            name="opening_time"
-            value={formData.opening_time || ""}
-            onChange={(value) => {
-              setFormData((prev) => ({
-                ...prev,
-                opening_time: value || null,
-              }));
-              if (error) setError(null);
-            }}
-            maxExclusive={formData.closing_time}
-            placeholder="Selecciona hora de apertura"
-            popoverZIndex={250}
-            error={
-              !!formData.opening_time &&
-              !!formData.closing_time &&
-              !isValidTimeRange(formData.opening_time, formData.closing_time)
-            }
-            errorText="Debe ser anterior a la hora de cierre"
-          />
-
-          <TimeSelect
-            label="Hora de cierre"
-            name="closing_time"
-            value={formData.closing_time || ""}
-            onChange={(value) => {
-              setFormData((prev) => ({
-                ...prev,
-                closing_time: value || null,
-              }));
-              if (error) setError(null);
-            }}
-            minExclusive={formData.opening_time}
-            placeholder="Selecciona hora de cierre"
-            popoverZIndex={250}
-            error={
-              !!formData.opening_time &&
-              !!formData.closing_time &&
-              !isValidTimeRange(formData.opening_time, formData.closing_time)
-            }
-            errorText="Debe ser posterior a la hora de apertura"
-          />
-        </div>
+        <WeeklyScheduleEditor
+          value={formData.weekly_schedule}
+          onChange={(weekly_schedule) => {
+            setFormData((prev) => ({
+              ...prev,
+              weekly_schedule,
+            }));
+            if (error) setError(null);
+          }}
+          error={error}
+        />
 
         <div>
           <label

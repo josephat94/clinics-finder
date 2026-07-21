@@ -8,6 +8,11 @@ export {
   isValidTimeRange,
   type TimeSelectProps,
 } from './time-select';
+export { OpenDaysSelector, type OpenDaysSelectorProps } from './open-days-selector';
+export {
+  WeeklyScheduleEditor,
+  type WeeklyScheduleEditorProps,
+} from './weekly-schedule-editor';
 export { Card, type CardProps } from './card';
 export { Badge, type BadgeProps } from './badge';
 export { Modal, type ModalProps } from './modal';

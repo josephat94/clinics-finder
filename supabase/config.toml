@@ -1,0 +1,13 @@
+# Clinics Finder — Supabase local config
+# Proyecto remoto: xllincqcuxbwpxyqqrgl
+
+project_id = "xllincqcuxbwpxyqqrgl"
+
+[db]
+major_version = 15
+
+[api]
+enabled = true
+
+[studio]
+enabled = true

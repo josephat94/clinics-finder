@@ -2,6 +2,13 @@
  * Interfaz para la entidad Clinic
  * Esta interfaz coincide con la estructura de la tabla clinics en Supabase
  */
+import type {
+  ClinicScheduleBlock,
+  ClinicScheduleHours,
+} from '@/utils/clinic-schedule';
+
+export type { ClinicScheduleBlock, ClinicScheduleHours };
+
 export interface Clinic {
   id: string;
   name: string;
@@ -14,8 +21,7 @@ export interface Clinic {
   zipcode: string | null;
   notes: string | null;
   website: string | null;
-  opening_time: string | null;
-  closing_time: string | null;
+  weekly_schedule: ClinicScheduleBlock[];
   lat: number | null;
   lng: number | null;
   enabled: boolean;

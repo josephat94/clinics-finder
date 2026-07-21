@@ -58,7 +58,7 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
       lg: 'max-w-2xl',
       xl: 'max-w-4xl',
       '2xl': 'max-w-6xl',
-      full: 'max-w-full w-[calc(100%-2rem)] h-[calc(100vh-2rem)] mx-4 flex flex-col overflow-hidden',
+      full: 'max-w-full w-[calc(100%-2rem)] h-[calc(100vh-2rem)] mx-4',
     };
 
     const isFullSize = size === 'full';
@@ -107,7 +107,7 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
       <AnimatePresence>
         {open && (
           <div
-            className="fixed inset-0 z-[100] flex items-center justify-center"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
             role="dialog"
             aria-modal="true"
             aria-labelledby={title ? 'modal-title' : undefined}
@@ -133,15 +133,16 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
               exit="exit"
               variants={modalVariants}
               className={cn(
-                'relative z-[100] w-full bg-white dark:bg-zinc-900 rounded-lg shadow-xl border border-zinc-200 dark:border-zinc-800',
+                'relative z-[100] flex w-full max-h-[calc(100vh-2rem)] flex-col overflow-hidden bg-white dark:bg-zinc-900 rounded-lg shadow-xl border border-zinc-200 dark:border-zinc-800',
                 sizeClasses[size],
+                isFullSize && 'h-[calc(100vh-2rem)]',
                 className
               )}
               onClick={(e) => e.stopPropagation()}
             >
           {/* Header */}
           {(title || showCloseButton) && (
-            <div className="flex items-center justify-between p-6 border-b border-zinc-200 dark:border-zinc-800 flex-shrink-0">
+            <div className="flex flex-shrink-0 items-center justify-between border-b border-zinc-200 p-6 dark:border-zinc-800">
               <div className="flex-1">
                 {title && (
                   <h2
@@ -186,7 +187,7 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
           )}
 
               {/* Body */}
-              <div className={cn('p-6', isFullSize && 'flex-1 min-h-0 flex flex-col')}>
+              <div className="min-h-0 flex-1 overflow-y-auto p-6">
                 {children}
               </div>
             </motion.div>

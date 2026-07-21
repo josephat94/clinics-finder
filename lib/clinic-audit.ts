@@ -7,12 +7,12 @@ import type {
   ClinicAuditLogsResponse,
 } from '@/types/clinic-audit';
 
+import type { Clinic } from '@/types/clinic';
+
 export interface AuditActor {
   id: string;
   email: string | null;
 }
-
-type Clinic = Database['public']['Tables']['clinics']['Row'];
 
 type AuditLogInsert =
   Database['public']['Tables']['clinic_audit_logs']['Insert'];
@@ -32,7 +32,8 @@ export function getChangedFields(before: Clinic, after: Clinic): string[] {
   return [...fields].filter((key) => {
     if (AUDIT_IGNORE_FIELDS.has(key)) return false;
     return (
-      JSON.stringify(before[key]) !== JSON.stringify(after[key])
+      JSON.stringify(before[key as keyof Clinic]) !==
+      JSON.stringify(after[key as keyof Clinic])
     );
   });
 }

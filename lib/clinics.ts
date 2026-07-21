@@ -1,6 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
-import type { Database } from "@/types/database";
+import type { Database, Json } from "@/types/database";
 import { geocodeAddress } from "@/lib/google";
 import {
   clinicToAuditData,
@@ -8,11 +8,40 @@ import {
   logClinicAudit,
   type AuditActor,
 } from "@/lib/clinic-audit";
+import {
+  normalizeWeeklySchedule,
+  serializeWeeklySchedule,
+} from "@/utils/clinic-schedule";
+import type { Clinic, ClinicInsert, ClinicUpdate } from "@/types/clinic";
 
-// Tipos derivados de la base de datos
-type Clinic = Database["public"]["Tables"]["clinics"]["Row"];
-type ClinicInsert = Database["public"]["Tables"]["clinics"]["Insert"];
-type ClinicUpdate = Database["public"]["Tables"]["clinics"]["Update"];
+type ClinicRow = Database["public"]["Tables"]["clinics"]["Row"];
+type ClinicDbInsert = Database["public"]["Tables"]["clinics"]["Insert"];
+type ClinicDbUpdate = Database["public"]["Tables"]["clinics"]["Update"];
+
+function mapClinicRow(row: ClinicRow): Clinic {
+  return {
+    ...row,
+    weekly_schedule: normalizeWeeklySchedule(row.weekly_schedule),
+  };
+}
+
+function toDbInsert(clinic: ClinicInsert): ClinicDbInsert {
+  const { weekly_schedule, ...rest } = clinic;
+  return {
+    ...rest,
+    weekly_schedule: serializeWeeklySchedule(weekly_schedule) as unknown as Json,
+  };
+}
+
+function toDbUpdate(updates: ClinicUpdate): ClinicDbUpdate {
+  const { weekly_schedule, ...rest } = updates;
+  return {
+    ...rest,
+    ...(weekly_schedule !== undefined
+      ? { weekly_schedule: serializeWeeklySchedule(weekly_schedule) as unknown as Json }
+      : {}),
+  };
+}
 
 // Re-exportar tipos para facilitar su uso
 export type { Clinic, ClinicInsert, ClinicUpdate };
@@ -33,7 +62,7 @@ export async function getAllClinics(): Promise<Clinic[]> {
     throw new Error(`Error al obtener las clínicas: ${error.message}`);
   }
 
-  return data || [];
+  return (data || []).map(mapClinicRow);
 }
 
 /**
@@ -56,7 +85,7 @@ export async function getClinicById(id: string): Promise<Clinic | null> {
     throw new Error(`Error al obtener la clínica: ${error.message}`);
   }
 
-  return data;
+  return mapClinicRow(data);
 }
 
 /**
@@ -71,7 +100,7 @@ export async function createClinic(
 
   const { data, error } = await supabase
     .from("clinics")
-    .insert(clinic as any)
+    .insert(toDbInsert(clinic) as any)
     .select()
     .single();
 
@@ -79,7 +108,7 @@ export async function createClinic(
     throw new Error(`Error al crear la clínica: ${error.message}`);
   }
 
-  const created = data as Clinic;
+  const created = mapClinicRow(data as ClinicRow);
 
   if (actor) {
     await logClinicAudit({
@@ -111,7 +140,7 @@ export async function updateClinic(
   const clinicsTable = supabase.from("clinics") as any;
 
   const { data, error } = await clinicsTable
-    .update(updates)
+    .update(toDbUpdate(updates))
     .eq("id", id)
     .select()
     .single();
@@ -120,7 +149,7 @@ export async function updateClinic(
     throw new Error(`Error al actualizar la clínica: ${error.message}`);
   }
 
-  const updated = data as Clinic;
+  const updated = mapClinicRow(data as ClinicRow);
 
   if (actor && previous) {
     await logClinicAudit({
@@ -187,7 +216,7 @@ export async function getClinicsByState(stateCode: string): Promise<Clinic[]> {
     );
   }
 
-  return data || [];
+  return (data || []).map(mapClinicRow);
 }
 
 export async function geocodeClinics(

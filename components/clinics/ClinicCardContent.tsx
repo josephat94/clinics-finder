@@ -1,5 +1,6 @@
 import { FaAt, FaClock, FaGlobe, FaMapMarkerAlt, FaPhoneAlt, FaPrint } from 'react-icons/fa';
 import { Badge } from '@/components/ui/badge';
+import { formatWeeklySchedule } from '@/utils/clinic-schedule';
 import type { ClinicWithTravelTime } from '@/stores';
 
 interface ClinicCardContentProps {
@@ -7,6 +8,10 @@ interface ClinicCardContentProps {
 }
 
 export function ClinicCardContent({ clinic }: ClinicCardContentProps) {
+  const scheduleLines = formatWeeklySchedule(clinic.weekly_schedule, {
+    short: true,
+  });
+
   return (
     <>
       <div className="flex items-start justify-between mb-2">
@@ -89,17 +94,17 @@ export function ClinicCardContent({ clinic }: ClinicCardContentProps) {
           </div>
         )}
 
-        {(clinic.opening_time || clinic.closing_time) && (
+        {scheduleLines.length > 0 && (
           <div className="flex items-start gap-1">
-            <FaClock />
-            <p className={`text-sm ${clinic.banned ? "text-zinc-400 dark:text-zinc-600" : "text-gray-600 dark:text-zinc-400"}`}>
-              Horario:{" "}
-              {clinic.opening_time && clinic.closing_time
-                ? `${clinic.opening_time} - ${clinic.closing_time}`
-                : clinic.opening_time
-                ? `Desde ${clinic.opening_time}`
-                : `Hasta ${clinic.closing_time}`}
-            </p>
+            <FaClock className="mt-0.5 shrink-0" />
+            <div className={`text-sm ${clinic.banned ? "text-zinc-400 dark:text-zinc-600" : "text-gray-600 dark:text-zinc-400"}`}>
+              <p>Horario:</p>
+              <ul className="mt-1 space-y-0.5">
+                {scheduleLines.map((line) => (
+                  <li key={line}>{line}</li>
+                ))}
+              </ul>
+            </div>
           </div>
         )}
       </div>

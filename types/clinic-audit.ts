@@ -1,3 +1,8 @@
+import {
+  formatWeeklyScheduleText,
+  normalizeWeeklySchedule,
+} from '@/utils/clinic-schedule';
+
 export type ClinicAuditAction = 'create' | 'update' | 'delete';
 
 export interface ClinicAuditLog {
@@ -29,6 +34,7 @@ export const CLINIC_FIELD_LABELS: Record<string, string> = {
   zipcode: 'Código postal',
   notes: 'Notas',
   website: 'Sitio web',
+  weekly_schedule: 'Horarios semanales',
   lat: 'Latitud',
   lng: 'Longitud',
   enabled: 'Habilitada',
@@ -42,9 +48,20 @@ export const AUDIT_ACTION_LABELS: Record<ClinicAuditAction, string> = {
   delete: 'Eliminación',
 };
 
-export function formatAuditValue(value: unknown): string {
+export function formatAuditValue(value: unknown, field?: string): string {
   if (value === null || value === undefined || value === '') return '—';
   if (typeof value === 'boolean') return value ? 'Sí' : 'No';
+  if (field === 'weekly_schedule') {
+    return (
+      formatWeeklyScheduleText(normalizeWeeklySchedule(value), {
+        short: true,
+      }) || '—'
+    );
+  }
+  if (Array.isArray(value)) {
+    if (!value.length) return '—';
+    return value.join(', ');
+  }
   return String(value);
 }
 
