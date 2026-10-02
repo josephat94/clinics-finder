@@ -7,7 +7,7 @@ import { ModalExamples } from './ModalExamples';
 
 export default function DesignSystemPage() {
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-black py-16 px-4">
+    <div className="hub-shell font-body min-h-screen py-16 px-4">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold text-black dark:text-zinc-50 mb-2">
           Design System

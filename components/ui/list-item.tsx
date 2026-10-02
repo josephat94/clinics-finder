@@ -15,13 +15,13 @@ const ListItem = React.forwardRef<HTMLButtonElement, ListItemProps>(
 
     const variants = {
       default:
-        'text-zinc-900 dark:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800',
+        'text-hub-fg hover:bg-[#fef3c7]',
       danger:
-        'text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20',
+        'text-hub-danger hover:bg-red-50',
     };
 
     const disabledStyles =
-      'opacity-40 text-zinc-400 dark:text-zinc-500 cursor-not-allowed hover:bg-transparent dark:hover:bg-transparent';
+      'opacity-40 text-hub-muted cursor-not-allowed hover:bg-transparent';
 
     return (
       <button

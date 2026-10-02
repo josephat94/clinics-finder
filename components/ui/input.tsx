@@ -26,18 +26,18 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
 
     const baseStyles =
-      'flex w-full rounded-lg border bg-transparent px-3 py-2 text-base transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-zinc-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50';
+      'glass-field flex w-full min-h-11 rounded-2xl border border-transparent px-3 py-2 text-base text-hub-fg transition-shadow duration-200 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-hub-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0f172a] focus-visible:ring-offset-2 focus-visible:ring-offset-hub-bg disabled:cursor-not-allowed disabled:opacity-50';
 
     const stateStyles = error
-      ? 'border-red-500 focus-visible:ring-red-500 dark:border-red-500'
-      : 'border-zinc-300 focus-visible:ring-black dark:border-zinc-700 dark:focus-visible:ring-white';
+      ? 'ring-2 ring-hub-danger'
+      : '';
 
     return (
       <div className="w-full">
         {label && (
           <label
             htmlFor={inputId}
-            className="block text-sm font-medium mb-1.5 text-zinc-900 dark:text-zinc-100"
+            className="block text-sm font-medium mb-1.5 text-hub-fg"
           >
             {label}
           </label>
@@ -60,7 +60,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {error && errorText && (
           <p
             id={`${inputId}-error`}
-            className="mt-1.5 text-sm text-red-600 dark:text-red-400"
+            className="mt-1.5 text-sm text-hub-danger"
             role="alert"
           >
             {errorText}
@@ -69,7 +69,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {!error && helperText && (
           <p
             id={`${inputId}-helper`}
-            className="mt-1.5 text-sm text-zinc-500 dark:text-zinc-400"
+            className="mt-1.5 text-sm text-hub-muted"
           >
             {helperText}
           </p>

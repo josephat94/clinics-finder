@@ -273,9 +273,7 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
                     zIndex: zIndex,
                   }}
                   className={cn(
-                    'rounded-lg border border-zinc-200 dark:border-zinc-800',
-                    'bg-white dark:bg-zinc-900',
-                    'shadow-lg',
+                    'glass-card text-hub-fg rounded-2xl',
                     'p-4',
                     'min-w-[200px]',
                     contentClassName

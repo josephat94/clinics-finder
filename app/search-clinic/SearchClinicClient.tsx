@@ -111,11 +111,11 @@ export default function SearchClinicClient() {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[600px]">
-        <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-lg p-6 max-w-md">
-          <h2 className="text-lg font-semibold text-red-900 dark:text-red-100 mb-2">
+        <div className="glass-card rounded-2xl p-6 max-w-md">
+          <h2 className="text-lg font-semibold text-hub-danger mb-2">
             Error en la búsqueda
           </h2>
-          <p className="text-red-700 dark:text-red-300 mb-4">{error}</p>
+          <p className="text-hub-fg mb-4">{error}</p>
           <Button onClick={handleBack} variant="outline" className="w-full">
             <FaArrowLeft className="mr-2" />
             Volver a búsqueda
@@ -128,7 +128,7 @@ export default function SearchClinicClient() {
   if (!userLocation || clinics.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[600px]">
-        <p className="text-zinc-600 dark:text-zinc-400 mb-4">
+        <p className="text-hub-fg mb-4">
           No se encontraron resultados
         </p>
         <Button onClick={handleBack} variant="outline">
@@ -140,14 +140,14 @@ export default function SearchClinicClient() {
   }
 
   return (
-    <div className="h-full flex flex-col bg-zinc-50 dark:bg-zinc-900 overflow-hidden">
+    <div className="hub-shell font-body h-full flex flex-col overflow-hidden">
       {/* Header */}
-      <div className="shrink-0 flex items-center justify-between p-4 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+      <div className="glass-bar shrink-0 flex items-center justify-between p-4">
         <div>
-          <h1 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
+          <h1 className="text-xl font-bold text-hub-fg">
             Clínicas cercanas ({clinics.length})
           </h1>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-0.5">
+          <p className="text-sm text-hub-muted mt-0.5">
             {clinics.length} clínica{clinics.length !== 1 ? 's' : ''} cerca de{' '}
             <span className="font-medium">{search}</span>
           </p>
@@ -172,7 +172,7 @@ export default function SearchClinicClient() {
       {/* Layout de dos columnas */}
       <div className="flex-1 flex overflow-y-auto max-h-[calc(100vh-10rem)]">
         {/* Columna izquierda: Lista de cards */}
-        <div className={`${showMap ? 'hidden' : 'flex'} md:flex w-full sm:w-1/2 lg:w-2/5 xl:w-1/3 flex-col border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 min-h-0`}>
+        <div className={`${showMap ? 'hidden' : 'flex'} md:flex glass-card w-full sm:w-1/2 lg:w-2/5 xl:w-1/3 flex-col border-r border-white/60 min-h-0`}>
           <div className="flex-1 p-4 space-y-8 min-h-0">
             {clinics.map((clinic, index) => {
               const hasTravelTime = clinic.travelTime?.duration.value !== undefined && clinic.travelTime?.duration.value !== null;
@@ -228,7 +228,7 @@ export default function SearchClinicClient() {
         </div>
 
         {/* Columna derecha: Mapa */}
-        <div className={`${showMap ? 'flex' : 'hidden'} sm:flex flex-1 bg-zinc-100 dark:bg-zinc-950 min-h-0 overflow-hidden sticky top-0 px-6 rounded-3xl`}>
+        <div className={`${showMap ? 'flex' : 'hidden'} sm:flex flex-1 bg-[#dbeafe]/70 min-h-0 overflow-hidden sticky top-0 px-6 rounded-3xl`}>
           <ClinicsMap
             userLocation={userLocation}
             clinics={clinics}

@@ -13,11 +13,11 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
 
     const variants = {
       default:
-        'bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100',
+        'bg-[#fef3c7] text-hub-fg',
       primary:
-        'bg-black text-white dark:bg-white dark:text-black',
+        'bg-hub-accent text-white',
       secondary:
-        'bg-zinc-200 text-zinc-900 dark:bg-zinc-700 dark:text-zinc-100',
+        'bg-[#dbeafe] text-hub-fg',
       success:
         'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
       warning:

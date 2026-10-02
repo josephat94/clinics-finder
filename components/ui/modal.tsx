@@ -133,7 +133,7 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
               exit="exit"
               variants={modalVariants}
               className={cn(
-                'relative z-[100] flex w-full max-h-[calc(100vh-2rem)] flex-col overflow-hidden bg-white dark:bg-zinc-900 rounded-lg shadow-xl border border-zinc-200 dark:border-zinc-800',
+                'glass-card text-hub-fg relative z-[100] flex w-full max-h-[calc(100vh-2rem)] flex-col overflow-hidden rounded-2xl',
                 sizeClasses[size],
                 isFullSize && 'h-[calc(100vh-2rem)]',
                 className
@@ -142,12 +142,12 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
             >
           {/* Header */}
           {(title || showCloseButton) && (
-            <div className="flex flex-shrink-0 items-center justify-between border-b border-zinc-200 p-6 dark:border-zinc-800">
+            <div className="flex flex-shrink-0 items-center justify-between border-b border-white/60 p-6">
               <div className="flex-1">
                 {title && (
                   <h2
                     id="modal-title"
-                    className="text-xl font-semibold text-black dark:text-zinc-100"
+                    className="text-xl font-semibold text-hub-fg"
                   >
                     {title}
                   </h2>
@@ -155,7 +155,7 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
                 {description && (
                   <p
                     id="modal-description"
-                    className="mt-1 text-sm text-zinc-600 dark:text-zinc-400"
+                    className="mt-1 text-sm text-hub-muted"
                   >
                     {description}
                   </p>

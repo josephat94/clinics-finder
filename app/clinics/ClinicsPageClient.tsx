@@ -137,17 +137,17 @@ export function ClinicsPageClient({
   const gridCols= viewMode === "grid" ? "md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1";
 
   return (
-    <Container className="min-h-screen bg-zinc-50 dark:bg-black py-16 px-4 flex flex-col gap-8">
+    <Container className="hub-shell font-body min-h-screen py-16 px-4 flex flex-col gap-8">
       <SearchIntoInvetory
         options={availableStates}
         initialClinics={initialClinics}
       />
 
       {/* Filtros y búsqueda interna */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-4 p-4 bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800">
+      <div className="glass-card flex flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-4 p-4 rounded-2xl">
         <div className="flex-1 w-full sm:w-auto">
           <div className="relative">
-            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-400 dark:text-zinc-500" />
+            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-hub-fg" />
             <Input
               type="text"
               placeholder="Buscar por nombre..."
@@ -158,7 +158,7 @@ export function ClinicsPageClient({
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-sm text-zinc-600 dark:text-zinc-400">
+          <span className="text-sm text-hub-muted">
             Ordenar:
           </span>
           <Button
@@ -225,13 +225,13 @@ export function ClinicsPageClient({
         </Button>
       </div>
       <div className={viewMode === "list" ? "w-full" : "w-full"}>
-        <h1 className="text-3xl font-bold text-black dark:text-zinc-50 mb-8">
+        <h1 className="text-3xl font-bold text-hub-fg mb-8">
           Clínicas ({filteredAndSortedClinics.length})
         </h1>
 
         {filteredAndSortedClinics.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-600 dark:text-zinc-400">
+            <p className="text-hub-muted">
               {searchQuery.trim()
                 ? `No se encontraron clínicas que coincidan con "${searchQuery}"`
                 : "No hay clínicas registradas aún."}

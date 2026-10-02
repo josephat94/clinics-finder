@@ -64,11 +64,11 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
     const effectiveVariant = variant || 'normal';
 
     const baseStyles =
-      'bg-white dark:bg-zinc-900 p-6 rounded-lg shadow-sm border transition-colors relative w-full h-auto flex flex-col';
+      'text-hub-fg p-6 rounded-2xl border transition-[box-shadow,transform] duration-200 relative w-full h-auto flex flex-col';
 
     const variants = {
       normal:
-        'border-zinc-200 dark:border-zinc-800',
+        'glass-card border-transparent',
       first:
         'border-yellow-500 dark:border-yellow-400 border-2 shadow-lg ring-2 ring-yellow-500/30 dark:ring-yellow-400/30 bg-yellow-50/10 dark:bg-yellow-950/10',
       second:

@@ -10,17 +10,17 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'primary', size = 'md', ...props }, ref) => {
     const baseStyles =
-      'inline-flex items-center gap-3 justify-center rounded-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer';
+      'inline-flex items-center gap-3 justify-center rounded-2xl font-medium transition-[opacity,box-shadow,transform] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0f172a] focus-visible:ring-offset-2 focus-visible:ring-offset-hub-bg disabled:pointer-events-none disabled:opacity-50 cursor-pointer';
 
     const variants = {
       primary:
-        'bg-black text-white hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 focus-visible:ring-black dark:focus-visible:ring-white',
+        'bg-hub-accent text-white shadow-[0_8px_18px_rgba(37,99,235,0.28)] hover:opacity-90',
       secondary:
-        'bg-zinc-100 text-zinc-900 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-100 dark:hover:bg-zinc-700 focus-visible:ring-zinc-500',
+        'glass-card text-hub-fg',
       outline:
-        'border-2 border-zinc-300 bg-transparent hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800 focus-visible:ring-zinc-500',
+        'border-2 border-hub-primary bg-white/40 text-hub-fg hover:bg-[#fef3c7]',
       ghost:
-        'bg-transparent hover:bg-zinc-100 dark:hover:bg-zinc-800 focus-visible:ring-zinc-500',
+        'bg-transparent text-hub-fg hover:bg-white/50',
       danger:
         'bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-500',
     };

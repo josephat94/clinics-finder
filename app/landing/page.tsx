@@ -6,23 +6,22 @@ import { Card } from '@/components/ui/card';
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-zinc-50 to-white dark:from-zinc-900 dark:to-zinc-950">
-      {/* Hero Section */}
+    <div className="hub-shell font-body min-h-screen">
       <section className="relative overflow-hidden px-4 py-20 sm:py-32">
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
-            <h1 className="text-5xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-6xl lg:text-7xl">
+            <h1 className="font-heading text-5xl font-bold tracking-tight text-hub-fg sm:text-6xl lg:text-7xl">
               Encuentra la{' '}
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <span className="text-hub-accent">
                 clínica perfecta
               </span>{' '}
               cerca de ti
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-zinc-600 dark:text-zinc-400 sm:text-xl">
+            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-hub-muted sm:text-xl">
               Busca clínicas por ubicación, calcula distancias y tiempos de viaje en tiempo real. 
               La forma más rápida y sencilla de encontrar atención médica cerca de ti.
             </p>
-            <div className="mt-10 flex items-center justify-center gap-4">
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
               <Link href="/clinics">
                 <Button size="lg" variant="primary" className="text-lg px-8">
                   Buscar Clínicas
@@ -38,27 +37,27 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Features Section */}
       <section className="px-4 py-20 sm:py-24">
         <div className="mx-auto max-w-7xl">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-4xl">
+            <h2 className="font-heading text-3xl font-bold tracking-tight text-hub-fg sm:text-4xl">
               Características principales
             </h2>
-            <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-400">
+            <p className="mt-4 text-lg text-hub-muted">
               Todo lo que necesitas para encontrar la clínica ideal
             </p>
           </div>
 
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            <Card className="p-8">
+            <Card className="glass-card glass-card-hover p-8">
               <div className="mb-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/30">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fef3c7]">
                   <svg
-                    className="h-6 w-6 text-blue-600 dark:text-blue-400"
+                    className="h-6 w-6 text-hub-fg"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
+                    aria-hidden="true"
                   >
                     <path
                       strokeLinecap="round"
@@ -75,23 +74,24 @@ export default function LandingPage() {
                   </svg>
                 </div>
               </div>
-              <h3 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
+              <h3 className="text-xl font-semibold text-hub-fg mb-2">
                 Búsqueda por Ubicación
               </h3>
-              <p className="text-zinc-600 dark:text-zinc-400">
+              <p className="text-hub-muted">
                 Ingresa tu dirección o ciudad y encuentra las clínicas más cercanas. 
                 Utilizamos geocodificación avanzada para resultados precisos.
               </p>
             </Card>
 
-            <Card className="p-8">
+            <Card className="glass-card glass-card-hover p-8">
               <div className="mb-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-purple-100 dark:bg-purple-900/30">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#dbeafe]">
                   <svg
-                    className="h-6 w-6 text-purple-600 dark:text-purple-400"
+                    className="h-6 w-6 text-hub-fg"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
+                    aria-hidden="true"
                   >
                     <path
                       strokeLinecap="round"
@@ -102,23 +102,24 @@ export default function LandingPage() {
                   </svg>
                 </div>
               </div>
-              <h3 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
+              <h3 className="text-xl font-semibold text-hub-fg mb-2">
                 Tiempos de Viaje en Tiempo Real
               </h3>
-              <p className="text-zinc-600 dark:text-zinc-400">
+              <p className="text-hub-muted">
                 Calcula distancias y tiempos de viaje precisos usando Google Maps API. 
                 Obtén información actualizada sobre cuánto tardarás en llegar.
               </p>
             </Card>
 
-            <Card className="p-8">
+            <Card className="glass-card glass-card-hover p-8">
               <div className="mb-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-green-100 dark:bg-green-900/30">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fef3c7]">
                   <svg
-                    className="h-6 w-6 text-green-600 dark:text-green-400"
+                    className="h-6 w-6 text-hub-fg"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
+                    aria-hidden="true"
                   >
                     <path
                       strokeLinecap="round"
@@ -129,23 +130,24 @@ export default function LandingPage() {
                   </svg>
                 </div>
               </div>
-              <h3 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
+              <h3 className="text-xl font-semibold text-hub-fg mb-2">
                 Filtros Avanzados
               </h3>
-              <p className="text-zinc-600 dark:text-zinc-400">
+              <p className="text-hub-muted">
                 Filtra clínicas por estado, busca por nombre y ordena por distancia. 
                 Encuentra exactamente lo que necesitas con nuestros filtros inteligentes.
               </p>
             </Card>
 
-            <Card className="p-8">
+            <Card className="glass-card glass-card-hover p-8">
               <div className="mb-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-yellow-100 dark:bg-yellow-900/30">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#dbeafe]">
                   <svg
-                    className="h-6 w-6 text-yellow-600 dark:text-yellow-400"
+                    className="h-6 w-6 text-hub-fg"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
+                    aria-hidden="true"
                   >
                     <path
                       strokeLinecap="round"
@@ -156,23 +158,24 @@ export default function LandingPage() {
                   </svg>
                 </div>
               </div>
-              <h3 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
+              <h3 className="text-xl font-semibold text-hub-fg mb-2">
                 Información Detallada
               </h3>
-              <p className="text-zinc-600 dark:text-zinc-400">
+              <p className="text-hub-muted">
                 Accede a información completa de cada clínica: dirección, teléfono, 
                 email y ubicación exacta. Todo en un solo lugar.
               </p>
             </Card>
 
-            <Card className="p-8">
+            <Card className="glass-card glass-card-hover p-8">
               <div className="mb-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-red-100 dark:bg-red-900/30">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fef3c7]">
                   <svg
-                    className="h-6 w-6 text-red-600 dark:text-red-400"
+                    className="h-6 w-6 text-hub-fg"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
+                    aria-hidden="true"
                   >
                     <path
                       strokeLinecap="round"
@@ -183,23 +186,24 @@ export default function LandingPage() {
                   </svg>
                 </div>
               </div>
-              <h3 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
+              <h3 className="text-xl font-semibold text-hub-fg mb-2">
                 Gestión de Usuarios
               </h3>
-              <p className="text-zinc-600 dark:text-zinc-400">
+              <p className="text-hub-muted">
                 Sistema de autenticación seguro con roles de administrador. 
                 Los administradores pueden gestionar clínicas y usuarios fácilmente.
               </p>
             </Card>
 
-            <Card className="p-8">
+            <Card className="glass-card glass-card-hover p-8">
               <div className="mb-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-indigo-100 dark:bg-indigo-900/30">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#dbeafe]">
                   <svg
-                    className="h-6 w-6 text-indigo-600 dark:text-indigo-400"
+                    className="h-6 w-6 text-hub-fg"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
+                    aria-hidden="true"
                   >
                     <path
                       strokeLinecap="round"
@@ -210,10 +214,10 @@ export default function LandingPage() {
                   </svg>
                 </div>
               </div>
-              <h3 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
+              <h3 className="text-xl font-semibold text-hub-fg mb-2">
                 Resultados Rápidos
               </h3>
-              <p className="text-zinc-600 dark:text-zinc-400">
+              <p className="text-hub-muted">
                 Algoritmo Haversine para cálculos de distancia ultra rápidos. 
                 Obtén resultados instantáneos ordenados por proximidad.
               </p>
@@ -222,53 +226,52 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* How It Works Section */}
-      <section className="px-4 py-20 sm:py-24 bg-zinc-100/50 dark:bg-zinc-800/30">
+      <section className="px-4 py-20 sm:py-24">
         <div className="mx-auto max-w-7xl">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-4xl">
+            <h2 className="font-heading text-3xl font-bold tracking-tight text-hub-fg sm:text-4xl">
               ¿Cómo funciona?
             </h2>
-            <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-400">
+            <p className="mt-4 text-lg text-hub-muted">
               Encuentra tu clínica en tres simples pasos
             </p>
           </div>
 
           <div className="grid gap-8 md:grid-cols-3">
             <div className="text-center">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-blue-600 text-white text-2xl font-bold mb-4">
+              <div className="glass-card mx-auto flex h-16 w-16 items-center justify-center rounded-full text-hub-fg text-2xl font-bold mb-4">
                 1
               </div>
-              <h3 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
+              <h3 className="text-xl font-semibold text-hub-fg mb-2">
                 Ingresa tu ubicación
               </h3>
-              <p className="text-zinc-600 dark:text-zinc-400">
+              <p className="text-hub-muted">
                 Escribe tu dirección o ciudad en el buscador. 
                 Nuestro sistema geocodificará tu ubicación automáticamente.
               </p>
             </div>
 
             <div className="text-center">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-purple-600 text-white text-2xl font-bold mb-4">
+              <div className="glass-card mx-auto flex h-16 w-16 items-center justify-center rounded-full text-hub-fg text-2xl font-bold mb-4">
                 2
               </div>
-              <h3 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
+              <h3 className="text-xl font-semibold text-hub-fg mb-2">
                 Filtra y busca
               </h3>
-              <p className="text-zinc-600 dark:text-zinc-400">
+              <p className="text-hub-muted">
                 Usa los filtros por estado o busca por nombre de clínica. 
                 Las opciones se actualizan en tiempo real.
               </p>
             </div>
 
             <div className="text-center">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-600 text-white text-2xl font-bold mb-4">
+              <div className="glass-card mx-auto flex h-16 w-16 items-center justify-center rounded-full text-hub-fg text-2xl font-bold mb-4">
                 3
               </div>
-              <h3 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
+              <h3 className="text-xl font-semibold text-hub-fg mb-2">
                 Encuentra y contacta
               </h3>
-              <p className="text-zinc-600 dark:text-zinc-400">
+              <p className="text-hub-muted">
                 Revisa las clínicas ordenadas por distancia, ve tiempos de viaje 
                 y contacta directamente con la información proporcionada.
               </p>
@@ -277,14 +280,13 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="px-4 py-20 sm:py-24">
         <div className="mx-auto max-w-4xl">
-          <Card className="p-12 text-center bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 border-blue-200 dark:border-blue-800">
-            <h2 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-4xl mb-4">
+          <Card className="p-12 text-center">
+            <h2 className="font-heading text-3xl font-bold tracking-tight text-hub-fg sm:text-4xl mb-4">
               ¿Listo para encontrar tu clínica?
             </h2>
-            <p className="text-lg text-zinc-600 dark:text-zinc-400 mb-8">
+            <p className="text-lg text-hub-muted mb-8">
               Comienza a buscar ahora y encuentra la atención médica que necesitas
             </p>
             <Link href="/clinics">

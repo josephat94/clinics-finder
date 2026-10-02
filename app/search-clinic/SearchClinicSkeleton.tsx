@@ -5,9 +5,9 @@ import { Card } from '@/components/ui/card';
 
 export function SearchClinicSkeleton() {
   return (
-    <div className="h-full flex flex-col bg-zinc-50 dark:bg-zinc-900 overflow-hidden">
+    <div className="hub-shell font-body h-full flex flex-col overflow-hidden">
       {/* Header Skeleton */}
-      <div className="shrink-0 flex items-center justify-between p-4 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+      <div className="glass-bar shrink-0 flex items-center justify-between p-4">
         <div className="flex-1">
           <Skeleton className="h-7 w-48 mb-2" />
           <Skeleton className="h-4 w-64" />
@@ -21,7 +21,7 @@ export function SearchClinicSkeleton() {
       {/* Layout de dos columnas */}
       <div className="flex-1 flex overflow-hidden">
         {/* Columna izquierda: Lista de cards skeleton */}
-        <div className="hidden md:flex w-full sm:w-1/2 lg:w-2/5 xl:w-1/3 flex-col border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 min-h-0">
+        <div className="glass-card hidden md:flex w-full sm:w-1/2 lg:w-2/5 xl:w-1/3 flex-col border-r border-white/60 min-h-0">
           <div className="flex-1 p-4 space-y-8 min-h-0 overflow-y-auto">
             {[1, 2, 3, 4].map((index) => (
               <Card key={index} className="p-6">
@@ -72,8 +72,8 @@ export function SearchClinicSkeleton() {
         </div>
 
         {/* Columna derecha: Mapa skeleton */}
-        <div className="flex-1 bg-zinc-100 dark:bg-zinc-950 min-h-0 overflow-hidden px-6 rounded-3xl">
-          <Skeleton className="w-full h-full rounded-lg" />
+        <div className="flex-1 bg-[#dbeafe]/70 min-h-0 overflow-hidden px-6 py-6 rounded-3xl">
+          <Skeleton className="w-full h-full rounded-2xl bg-[#93c5fd]" />
         </div>
       </div>
     </div>

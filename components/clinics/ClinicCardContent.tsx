@@ -16,7 +16,7 @@ export function ClinicCardContent({ clinic }: ClinicCardContentProps) {
     <>
       <div className="flex items-start justify-between mb-2">
         <div className="flex items-center gap-2 flex-wrap">
-          <h2 className={`text-xl font-semibold ${clinic.banned ? "line-through text-zinc-500 dark:text-zinc-500" : "text-black dark:text-zinc-50"}`}>
+          <h2 className={`text-xl font-semibold ${clinic.banned ? "line-through text-hub-muted" : "text-hub-fg"}`}>
             {clinic.name}
           </h2>
           {clinic.bilingual && (
@@ -30,7 +30,7 @@ export function ClinicCardContent({ clinic }: ClinicCardContentProps) {
       {clinic.address && (
         <div className="flex items-start gap-1 w-full">
           <FaMapMarkerAlt />
-          <p className={`mb-1 text-sm ${clinic.banned ? "text-zinc-400 dark:text-zinc-600" : "text-gray-600 dark:text-zinc-400"}`}>
+          <p className={`mb-1 text-sm ${clinic.banned ? "text-hub-muted" : "text-hub-muted"}`}>
             {clinic.address}
             {clinic.state && `, ${clinic.state}`}
             {clinic.zipcode && ` ${clinic.zipcode}`}
@@ -43,7 +43,7 @@ export function ClinicCardContent({ clinic }: ClinicCardContentProps) {
           {clinic.phone && (
             <div className="flex items-start gap-1">
               <FaPhoneAlt />
-              <p className={`text-sm ${clinic.banned ? "text-zinc-400 dark:text-zinc-600" : "text-gray-600 dark:text-zinc-400"}`}>
+              <p className={`text-sm ${clinic.banned ? "text-hub-muted" : "text-hub-muted"}`}>
                 Tel: {clinic.phone}
               </p>
             </div>
@@ -52,7 +52,7 @@ export function ClinicCardContent({ clinic }: ClinicCardContentProps) {
           {clinic.fax && (
             <div className="flex items-start gap-1">
               <FaPrint />
-              <p className={`text-sm ${clinic.banned ? "text-zinc-400 dark:text-zinc-600" : "text-gray-600 dark:text-zinc-400"}`}>
+              <p className={`text-sm ${clinic.banned ? "text-hub-muted" : "text-hub-muted"}`}>
                 Fax: {clinic.fax}
               </p>
             </div>
@@ -62,7 +62,7 @@ export function ClinicCardContent({ clinic }: ClinicCardContentProps) {
         {clinic.secondary_phone && (
           <div className="flex items-start gap-1">
             <FaPhoneAlt />
-            <p className={`text-sm ${clinic.banned ? "text-zinc-400 dark:text-zinc-600" : "text-gray-600 dark:text-zinc-400"}`}>
+            <p className={`text-sm ${clinic.banned ? "text-hub-muted" : "text-hub-muted"}`}>
               Tel Secundario: {clinic.secondary_phone}
             </p>
           </div>
@@ -71,7 +71,7 @@ export function ClinicCardContent({ clinic }: ClinicCardContentProps) {
         {clinic.email && (
           <div className="flex items-start gap-1">
             <FaAt />
-            <p className={`text-sm ${clinic.banned ? "text-zinc-400 dark:text-zinc-600" : "text-gray-600 dark:text-zinc-400"}`}>
+            <p className={`text-sm ${clinic.banned ? "text-hub-muted" : "text-hub-muted"}`}>
               {clinic.email}
             </p>
           </div>
@@ -80,13 +80,13 @@ export function ClinicCardContent({ clinic }: ClinicCardContentProps) {
         {clinic.website && (
           <div className="flex items-start gap-1">
             <FaGlobe /> 
-            <p className={`text-sm ${clinic.banned ? "text-zinc-400 dark:text-zinc-600" : "text-gray-600 dark:text-zinc-400"}`}>
+            <p className={`text-sm ${clinic.banned ? "text-hub-muted" : "text-hub-muted"}`}>
               Sitio Web:{" "}
               <a
                 href={clinic.website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`${clinic.banned ? "text-zinc-500 dark:text-zinc-600 line-through cursor-not-allowed" : "text-blue-600 dark:text-blue-400 hover:underline"}`}
+                className={`${clinic.banned ? "text-hub-muted line-through cursor-not-allowed" : "text-hub-accent hover:underline"}`}
               >
                 {clinic.website}
               </a>
@@ -97,7 +97,7 @@ export function ClinicCardContent({ clinic }: ClinicCardContentProps) {
         {scheduleLines.length > 0 && (
           <div className="flex items-start gap-1">
             <FaClock className="mt-0.5 shrink-0" />
-            <div className={`text-sm ${clinic.banned ? "text-zinc-400 dark:text-zinc-600" : "text-gray-600 dark:text-zinc-400"}`}>
+            <div className={`text-sm ${clinic.banned ? "text-hub-muted" : "text-hub-muted"}`}>
               <p>Horario:</p>
               <ul className="mt-1 space-y-0.5">
                 {scheduleLines.map((line) => (
@@ -111,7 +111,7 @@ export function ClinicCardContent({ clinic }: ClinicCardContentProps) {
       
       {clinic.notes && (
         <div className="flex items-start gap-1">
-          <p className={`text-xs mt-3 pt-3 border-t ${clinic.banned ? "text-zinc-400 dark:text-zinc-600 border-zinc-300 dark:border-zinc-800" : "text-gray-500 dark:text-zinc-500 border-zinc-200 dark:border-zinc-700"}`}>
+          <p className="text-xs mt-3 pt-3 border-t text-hub-muted border-[#fde68a]">
             *NOTAS:    {clinic.notes}
           </p>
         </div>

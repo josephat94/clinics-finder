@@ -70,18 +70,18 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
     };
 
     const baseStyles =
-      'flex w-full items-center justify-between rounded-lg border bg-white dark:bg-zinc-900 px-3 py-2 text-base text-black dark:text-zinc-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50';
+      'glass-field flex w-full min-h-11 items-center justify-between rounded-2xl border border-transparent px-3 py-2 text-base text-hub-fg transition-shadow duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0f172a] focus-visible:ring-offset-2 focus-visible:ring-offset-hub-bg disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer';
 
     const stateStyles = error
-      ? 'border-red-500 focus-visible:ring-red-500 dark:border-red-500'
-      : 'border-zinc-300 focus-visible:ring-black dark:border-zinc-700 dark:focus-visible:ring-white';
+      ? 'ring-2 ring-hub-danger'
+      : '';
 
     return (
       <div className="w-full">
         {label && (
           <label
             htmlFor={selectId}
-            className="block text-sm font-medium mb-1.5 text-zinc-900 dark:text-zinc-100"
+            className="block text-sm font-medium mb-1.5 text-hub-fg"
           >
             {label}
             {required && <span className="text-red-500 ml-1">*</span>}
@@ -91,7 +91,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
         content={
           <div>
           {options?.length === 0 ? (
-            <div className="px-3 py-2 text-sm text-zinc-500 dark:text-zinc-400">
+            <div className="px-3 py-2 text-sm text-hub-muted">
               No hay opciones disponibles
             </div>
           ) : (
@@ -103,7 +103,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
                 className={cn(
                   selectedValue === option.value &&
                     !option.disabled &&
-                    'bg-zinc-100 dark:bg-zinc-800 font-medium',
+                    'bg-[#fef3c7] font-medium',
                   option.disabled && 'line-through'
                 )}
                 role="option"
@@ -149,7 +149,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
             aria-haspopup="listbox"
             {...props}
           >
-            <span className={cn('flex-1 text-left', !selectedOption && 'text-zinc-500 dark:text-zinc-400')}>
+            <span className={cn('flex-1 text-left', !selectedOption && 'text-hub-muted')}>
               {selectedOption ? selectedOption.label : placeholder}
             </span>
             <FaChevronDown
@@ -164,7 +164,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
         {error && errorText && (
           <p
             id={`${selectId}-error`}
-            className="mt-1.5 text-sm text-red-600 dark:text-red-400"
+            className="mt-1.5 text-sm text-hub-danger"
             role="alert"
           >
             {errorText}
@@ -173,7 +173,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
         {!error && helperText && (
           <p
             id={`${selectId}-helper`}
-            className="mt-1.5 text-sm text-zinc-500 dark:text-zinc-400"
+            className="mt-1.5 text-sm text-hub-muted"
           >
             {helperText}
           </p>

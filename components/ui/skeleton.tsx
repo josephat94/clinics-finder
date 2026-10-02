@@ -20,7 +20,7 @@ const Skeleton = React.forwardRef<HTMLDivElement, SkeletonProps>(
     ...props 
   }, ref) => {
     const baseStyles =
-      'bg-zinc-200 dark:bg-zinc-800 rounded';
+      'bg-[#fcd34d] rounded-xl';
 
     const variants = {
       rectangular: 'rounded',
