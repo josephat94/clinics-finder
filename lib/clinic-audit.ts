@@ -8,6 +8,7 @@ import type {
 } from '@/types/clinic-audit';
 
 import type { Clinic } from '@/types/clinic';
+import { apiMessage } from '@/i18n/api';
 
 export interface AuditActor {
   id: string;
@@ -66,7 +67,7 @@ export async function logClinicAudit(params: {
     .insert(entry as any);
 
   if (error) {
-    throw new Error(`Error al registrar auditoría: ${error.message}`);
+    throw new Error(await apiMessage('auditWrite', { detail: error.message }));
   }
 }
 
@@ -101,7 +102,7 @@ export async function getClinicAuditLogs(filters?: {
   const { data, error, count } = await query;
 
   if (error) {
-    throw new Error(`Error al obtener historial: ${error.message}`);
+    throw new Error(await apiMessage('auditRead', { detail: error.message }));
   }
 
   return {

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Button } from './button';
@@ -32,7 +33,7 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
     },
     ref
   ) => {
-    // Cerrar con la tecla Escape
+    const t = useTranslations('common');
     useEffect(() => {
       const handleEscape = (e: KeyboardEvent) => {
         if (e.key === 'Escape' && open) {
@@ -167,7 +168,7 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
                   size="sm"
                   onClick={onClose}
                   className="ml-4 -mr-2 h-8 w-8 p-0"
-                  aria-label="Cerrar modal"
+                  aria-label={t('closeModal')}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

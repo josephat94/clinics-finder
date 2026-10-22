@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Button, Input, Select } from "../ui";
 import { FaSearch, FaTrash } from "react-icons/fa";
 import { useFiltersStore, useClinicsStore } from "@/stores";
@@ -17,6 +18,7 @@ export interface SearchIntoInvetoryProps {
 export const SearchIntoInvetory = ({
   options,
 }: SearchIntoInvetoryProps) => {
+  const t = useTranslations("clinics");
   // Stores
   const { state, search, setState, setSearch, clearFilters } = useFiltersStore();
   const { resetFilters } = useClinicsStore();
@@ -51,8 +53,8 @@ export const SearchIntoInvetory = ({
             label: `${option.code} - ${option.name}`,
           }))}
           id="state"
-          label="Estado"
-          placeholder="Selecciona un estado"
+          label={t("state")}
+          placeholder={t("selectState")}
           value={state}
           onChange={setState}
         >
@@ -60,8 +62,8 @@ export const SearchIntoInvetory = ({
         </Select>
       </div>
       <Input
-        label="Buscar por dirección"
-        placeholder="Ingresa tu dirección o ciudad"
+        label={t("searchByAddress")}
+        placeholder={t("addressSearchPlaceholder")}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         onKeyDown={(e) => {
@@ -79,7 +81,7 @@ export const SearchIntoInvetory = ({
             onClick={handleSearch}
             disabled={!state || !search}
             size="md"
-            title="Buscar"
+            title={t("search")}
           >
             <FaSearch />
           </Button>
@@ -88,7 +90,7 @@ export const SearchIntoInvetory = ({
             onClick={handleClearFilters}
             disabled={!state && !search}
             size="md"
-            title="Limpiar Filtros"
+            title={t("clearFilters")}
           >
             <FaTrash />
           </Button>

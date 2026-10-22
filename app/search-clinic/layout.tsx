@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { getLocale, getTranslations } from "next-intl/server";
 import "../globals.css";
 
 const geistSans = Geist({
@@ -12,18 +13,22 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Clinics Finder",
-  description: "Encuentra clínicas cerca de ti",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("common");
+  return {
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+  };
+}
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
   return (
-    <html lang="es" className="overflow-y-hidden">
+    <html lang={locale} className="overflow-y-hidden">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

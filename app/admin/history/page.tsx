@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { ClinicHistoryTable } from '@/components/admin/ClinicHistoryTable';
 import { ClinicHistoryTableSkeleton } from '@/components/admin/ClinicHistoryTableSkeleton';
 import { Container } from '@/components/ui/container/Container';
@@ -13,6 +14,7 @@ export default function ClinicHistoryPage() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
   const { isAdmin, loading: roleLoading } = useRole();
+  const t = useTranslations('admin');
 
   useEffect(() => {
     if (!authLoading && !roleLoading) {
@@ -47,10 +49,10 @@ export default function ClinicHistoryPage() {
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100 mb-2">
-            Historial de clínicas
+            {t('historyTitle')}
           </h1>
           <p className="text-zinc-600 dark:text-zinc-400">
-            Registro de creaciones, ediciones y eliminaciones en el inventario
+            {t('historySubtitle')}
           </p>
         </div>
 

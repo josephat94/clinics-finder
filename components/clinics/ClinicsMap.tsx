@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect, useRef, memo, useCallback } from 'react';
+import { useTranslations } from 'next-intl';
 import dynamic from 'next/dynamic';
 import { Source, Layer, type LayerProps } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -159,6 +160,7 @@ export function ClinicsMap({
   selectedClinicId,
   showRanking = true,
 }: ClinicsMapProps) {
+  const t = useTranslations('clinics');
   const [isMounted, setIsMounted] = useState(false);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [popupClinicId, setPopupClinicId] = useState<string | null>(null);
@@ -303,8 +305,7 @@ export function ClinicsMap({
     return (
       <div className="flex items-center justify-center h-full bg-zinc-100 dark:bg-zinc-900 rounded-lg">
         <p className="text-red-600 dark:text-red-400">
-          Error: La API key de Mapbox no está configurada. Agrega
-          NEXT_PUBLIC_MAPBOX_API_TOKEN a tus variables de entorno.
+          {t('mapboxMissing')}
         </p>
       </div>
     );
@@ -313,7 +314,7 @@ export function ClinicsMap({
   if (!isMounted) {
     return (
       <div className="flex items-center justify-center h-full bg-zinc-100 dark:bg-zinc-900 rounded-lg">
-        <p className="text-zinc-600 dark:text-zinc-400">Cargando mapa...</p>
+        <p className="text-zinc-600 dark:text-zinc-400">{t('loadingMap')}</p>
       </div>
     );
   }
@@ -386,7 +387,7 @@ export function ClinicsMap({
                 type="button"
                 onClick={() => setPopupClinicId(null)}
                 className="text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 text-sm px-2"
-                aria-label="Cerrar detalle"
+                aria-label={t('closeDetail')}
               >
                 ✕
               </button>
@@ -410,12 +411,12 @@ export function ClinicsMap({
               )}
               {popupClinic.banned && (
                 <Badge variant="danger" size="sm">
-                  In BlackList
+                  {t('blacklist')}
                 </Badge>
               )}
               {!popupClinic.enabled && (
                 <Badge variant="warning" size="sm">
-                  Deshabilitada
+                  {t('disabled')}
                 </Badge>
               )}
             </div>
@@ -432,7 +433,7 @@ export function ClinicsMap({
             onClick={handleFlyToUser}
             size="lg"
             className="rounded-full w-14 h-14 p-0 shadow-lg hover:shadow-xl transition-shadow"
-            aria-label="Centrar en mi ubicación"
+            aria-label={t('centerOnMe')}
           >
             <FaCrosshairs className="w-5 h-5" />
           </Button>

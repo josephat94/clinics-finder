@@ -2,12 +2,15 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/use-auth';
 
 export function RegisterForm() {
   const router = useRouter();
+  const t = useTranslations('auth');
+  const common = useTranslations('common');
   const { register } = useAuth();
   
   const [name, setName] = useState('');
@@ -22,12 +25,12 @@ export function RegisterForm() {
     setError('');
 
     if (password !== confirmPassword) {
-      setError('Las contraseñas no coinciden');
+      setError(t('passwordsMismatch'));
       return;
     }
 
     if (password.length < 6) {
-      setError('La contraseña debe tener al menos 6 caracteres');
+      setError(t('passwordMin'));
       return;
     }
 
@@ -39,7 +42,7 @@ export function RegisterForm() {
       router.push('/');
       router.refresh();
     } else {
-      setError(result.error || 'Error al registrarse');
+      setError(result.error || t('registerError'));
       setLoading(false);
     }
   };
@@ -49,8 +52,8 @@ export function RegisterForm() {
       <div>
         <Input
           type="text"
-          label="Nombre (opcional)"
-          placeholder="Tu nombre"
+          label={t('nameOptional')}
+          placeholder={t('namePlaceholder')}
           value={name}
           onChange={(e) => setName(e.target.value)}
           disabled={loading}
@@ -60,8 +63,8 @@ export function RegisterForm() {
       <div>
         <Input
           type="email"
-          label="Email"
-          placeholder="tu@email.com"
+          label={common('email')}
+          placeholder={t('emailPlaceholder')}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -72,20 +75,20 @@ export function RegisterForm() {
       <div>
         <Input
           type="password"
-          label="Contraseña"
+          label={common('password')}
           placeholder="••••••••"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
           disabled={loading}
-          helperText="Mínimo 6 caracteres"
+          helperText={t('passwordHint')}
         />
       </div>
 
       <div>
         <Input
           type="password"
-          label="Confirmar contraseña"
+          label={t('confirmPassword')}
           placeholder="••••••••"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
@@ -107,7 +110,7 @@ export function RegisterForm() {
         className="w-full"
         disabled={loading}
       >
-        {loading ? 'Registrando...' : 'Registrarse'}
+        {loading ? t('registering') : t('register')}
       </Button>
     </form>
   );

@@ -1,22 +1,34 @@
 'use client';
 
-import { FaTrash } from 'react-icons/fa';
-import { Button } from '@/components/ui/button';
-import { OpenDaysSelector } from '@/components/ui/open-days-selector';
-import { TimeSelect, isValidTimeRange } from '@/components/ui/time-select';
+import { useTranslations } from "next-intl";
+import { FaTrash } from "react-icons/fa";
+import { Button } from "@/components/ui/button";
+import { OpenDaysSelector } from "@/components/ui/open-days-selector";
+import { TimeSelect, isValidTimeRange } from "@/components/ui/time-select";
 import {
   createEmptyScheduleBlock,
   createEmptyScheduleHours,
   getUsedDaysFromSchedule,
   type ClinicScheduleBlock,
   type ClinicScheduleHours,
+  type ScheduleValidationError,
   type WeekdayValue,
-} from '@/utils/clinic-schedule';
+} from "@/utils/clinic-schedule";
+
+const DAY_KEY = {
+  monday: "dayMonday",
+  tuesday: "dayTuesday",
+  wednesday: "dayWednesday",
+  thursday: "dayThursday",
+  friday: "dayFriday",
+  saturday: "daySaturday",
+  sunday: "daySunday",
+} as const;
 
 export interface WeeklyScheduleEditorProps {
   value: ClinicScheduleBlock[];
   onChange: (schedule: ClinicScheduleBlock[]) => void;
-  error?: string | null;
+  error?: ScheduleValidationError | null;
   disabled?: boolean;
 }
 
@@ -26,30 +38,47 @@ export function WeeklyScheduleEditor({
   error,
   disabled = false,
 }: WeeklyScheduleEditorProps) {
+  const t = useTranslations("clinics");
+  const common = useTranslations("common");
   const blocks = value.length ? value : [];
 
-  const updateBlock = (
-    index: number,
-    patch: Partial<ClinicScheduleBlock>
-  ) => {
+  const formatError = (issue: ScheduleValidationError) => {
+    const block = issue.block + 1;
+    if (issue.code === "missingDays")
+      return t("scheduleMissingDays", { block });
+    if (issue.code === "missingHours")
+      return t("scheduleMissingHours", { block });
+    if (issue.code === "overlap") return t("scheduleOverlap", { block });
+    if (issue.code === "duplicateDay") {
+      return t("scheduleDuplicateDay", { block, day: t(DAY_KEY[issue.day]) });
+    }
+    const range = issue.range + 1;
+    if (issue.code === "bothTimes")
+      return t("scheduleBothTimes", { block, range });
+    if (issue.code === "incompleteRange")
+      return t("scheduleIncomplete", { block, range });
+    return t("scheduleTimeOrder", { block, range });
+  };
+
+  const updateBlock = (index: number, patch: Partial<ClinicScheduleBlock>) => {
     onChange(
       blocks.map((block, blockIndex) =>
-        blockIndex === index ? { ...block, ...patch } : block
-      )
+        blockIndex === index ? { ...block, ...patch } : block,
+      ),
     );
   };
 
   const updateHourRange = (
     blockIndex: number,
     hourIndex: number,
-    patch: Partial<ClinicScheduleHours>
+    patch: Partial<ClinicScheduleHours>,
   ) => {
     const block = blocks[blockIndex];
     if (!block) return;
 
     updateBlock(blockIndex, {
       hours: block.hours.map((hour, currentHourIndex) =>
-        currentHourIndex === hourIndex ? { ...hour, ...patch } : hour
+        currentHourIndex === hourIndex ? { ...hour, ...patch } : hour,
       ),
     });
   };
@@ -76,19 +105,23 @@ export function WeeklyScheduleEditor({
     if (!block || block.hours.length <= 1) return;
 
     updateBlock(blockIndex, {
-      hours: block.hours.filter((_, currentHourIndex) => currentHourIndex !== hourIndex),
+      hours: block.hours.filter(
+        (_, currentHourIndex) => currentHourIndex !== hourIndex,
+      ),
     });
   };
 
   const getBlockError = (blockIndex: number) => {
-    if (!error?.startsWith(`Horario ${blockIndex + 1}`)) return undefined;
-    return error.replace(`Horario ${blockIndex + 1}`, '').replace(/^:\s*/, '').replace(/^, rango \d+:\s*/, '');
+    if (!error || error.block !== blockIndex) return undefined;
+    if ("range" in error) return undefined;
+    return formatError(error);
   };
 
   const getHourRangeError = (blockIndex: number, hourIndex: number) => {
-    const prefix = `Horario ${blockIndex + 1}, rango ${hourIndex + 1}:`;
-    if (!error?.startsWith(prefix)) return undefined;
-    return error.replace(prefix, '').trim();
+    if (!error || error.block !== blockIndex || !("range" in error))
+      return undefined;
+    if (error.range !== hourIndex) return undefined;
+    return formatError(error);
   };
 
   return (
@@ -96,29 +129,28 @@ export function WeeklyScheduleEditor({
       <div className="flex items-start justify-between gap-3">
         <div>
           <h3 className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
-            Horarios semanales
+            {t("scheduleTitle")}
           </h3>
           <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-            Agrupa días con el mismo horario y agrega varios rangos si abren
-            en la mañana y en la tarde.
+            {t("scheduleHelp")}
           </p>
         </div>
         <Button
+          className="min-w-fit"
           type="button"
           variant="outline"
           size="sm"
           disabled={disabled}
           onClick={addBlock}
         >
-          Agregar horario
+          {t("addSchedule")}
         </Button>
       </div>
 
       {blocks.length === 0 ? (
         <div className="rounded-lg border border-dashed border-zinc-300 px-4 py-6 text-center dark:border-zinc-700">
           <p className="text-sm text-zinc-500 dark:text-zinc-400">
-            Sin horarios configurados. Usa &quot;Agregar horario&quot; para
-            definir cuándo abre la clínica.
+            {t("noSchedule")}
           </p>
         </div>
       ) : (
@@ -134,7 +166,7 @@ export function WeeklyScheduleEditor({
               >
                 <div className="flex items-center justify-between gap-3">
                   <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
-                    Horario {blockIndex + 1}
+                    {t("scheduleBlock", { index: blockIndex + 1 })}
                   </span>
                   <Button
                     type="button"
@@ -145,18 +177,20 @@ export function WeeklyScheduleEditor({
                     className="text-red-600 hover:text-red-700 dark:text-red-400"
                   >
                     <FaTrash className="h-3.5 w-3.5" />
-                    Eliminar
+                    {common("delete")}
                   </Button>
                 </div>
 
                 <OpenDaysSelector
-                  label="Días"
+                  label={t("days")}
                   value={block.days}
                   disabledDays={disabledDays}
                   onChange={(days: WeekdayValue[]) =>
                     updateBlock(blockIndex, { days })
                   }
-                  error={!!blockError && blockError.includes('día')}
+                  error={
+                    error?.code === "missingDays" && error.block === blockIndex
+                  }
                   errorText={blockError}
                   disabled={disabled}
                 />
@@ -164,7 +198,7 @@ export function WeeklyScheduleEditor({
                 <div className="space-y-3">
                   <div className="flex items-center justify-between gap-3">
                     <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
-                      Rangos horarios
+                      {t("hourRanges")}
                     </span>
                     <Button
                       type="button"
@@ -173,7 +207,7 @@ export function WeeklyScheduleEditor({
                       disabled={disabled}
                       onClick={() => addHourRange(blockIndex)}
                     >
-                      Agregar rango
+                      {t("addRange")}
                     </Button>
                   </div>
 
@@ -187,7 +221,7 @@ export function WeeklyScheduleEditor({
                       >
                         <div className="flex items-center justify-between gap-3">
                           <span className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-                            Rango {hourIndex + 1}
+                            {t("range", { index: hourIndex + 1 })}
                           </span>
                           {block.hours.length > 1 && (
                             <Button
@@ -195,18 +229,20 @@ export function WeeklyScheduleEditor({
                               variant="ghost"
                               size="sm"
                               disabled={disabled}
-                              onClick={() => removeHourRange(blockIndex, hourIndex)}
+                              onClick={() =>
+                                removeHourRange(blockIndex, hourIndex)
+                              }
                               className="text-red-600 hover:text-red-700 dark:text-red-400"
                             >
                               <FaTrash className="h-3 w-3" />
-                              Quitar
+                              {t("remove")}
                             </Button>
                           )}
                         </div>
 
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                           <TimeSelect
-                            label="Hora de apertura"
+                            label={t("openingTime")}
                             name={`opening_time_${blockIndex}_${hourIndex}`}
                             value={hour.opening_time}
                             onChange={(openingTime) =>
@@ -215,19 +251,22 @@ export function WeeklyScheduleEditor({
                               })
                             }
                             maxExclusive={hour.closing_time || null}
-                            placeholder="Selecciona hora de apertura"
+                            placeholder={t("selectOpening")}
                             popoverZIndex={250}
                             disabled={disabled}
                             error={
                               !!hour.opening_time &&
                               !!hour.closing_time &&
-                              !isValidTimeRange(hour.opening_time, hour.closing_time)
+                              !isValidTimeRange(
+                                hour.opening_time,
+                                hour.closing_time,
+                              )
                             }
-                            errorText="Debe ser anterior a la hora de cierre"
+                            errorText={t("beforeClosing")}
                           />
 
                           <TimeSelect
-                            label="Hora de cierre"
+                            label={t("closingTime")}
                             name={`closing_time_${blockIndex}_${hourIndex}`}
                             value={hour.closing_time}
                             onChange={(closingTime) =>
@@ -236,15 +275,18 @@ export function WeeklyScheduleEditor({
                               })
                             }
                             minExclusive={hour.opening_time || null}
-                            placeholder="Selecciona hora de cierre"
+                            placeholder={t("selectClosing")}
                             popoverZIndex={250}
                             disabled={disabled}
                             error={
                               !!hour.opening_time &&
                               !!hour.closing_time &&
-                              !isValidTimeRange(hour.opening_time, hour.closing_time)
+                              !isValidTimeRange(
+                                hour.opening_time,
+                                hour.closing_time,
+                              )
                             }
-                            errorText="Debe ser posterior a la hora de apertura"
+                            errorText={t("afterOpening")}
                           />
                         </div>
 
@@ -258,23 +300,16 @@ export function WeeklyScheduleEditor({
                   })}
                 </div>
 
-                {blockError &&
-                  !blockError.includes('día') &&
-                  !error?.includes(', rango ') && (
-                    <p className="text-sm text-red-600 dark:text-red-400">
-                      {blockError}
-                    </p>
-                  )}
+                {blockError && error?.code !== "missingDays" && (
+                  <p className="text-sm text-red-600 dark:text-red-400">
+                    {blockError}
+                  </p>
+                )}
               </div>
             );
           })}
         </div>
       )}
-
-      {error &&
-        !error.startsWith('Horario ') && (
-          <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-        )}
     </div>
   );
 }

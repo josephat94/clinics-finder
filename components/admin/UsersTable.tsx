@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -31,6 +32,9 @@ interface UsersTableProps {
 
 export function UsersTable({ refreshKey, onRefresh }: UsersTableProps) {
   const { user: currentUser } = useAuth();
+  const t = useTranslations('admin');
+  const common = useTranslations('common');
+  const locale = useLocale();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -49,20 +53,20 @@ export function UsersTable({ refreshKey, onRefresh }: UsersTableProps) {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Error al cargar usuarios');
+        throw new Error(data.error || t('loadUsersError'));
       }
 
       setUsers(data.users || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al cargar usuarios');
+      setError(err instanceof Error ? err.message : t('loadUsersError'));
     } finally {
       setLoading(false);
     }
   };
 
   const formatDate = (dateString: string | null) => {
-    if (!dateString) return 'Nunca';
-    return new Date(dateString).toLocaleDateString('es-ES', {
+    if (!dateString) return t('never');
+    return new Date(dateString).toLocaleDateString(locale === 'en' ? 'en-US' : 'es-ES', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -96,7 +100,7 @@ export function UsersTable({ refreshKey, onRefresh }: UsersTableProps) {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Error al eliminar usuario');
+        throw new Error(data.error || t('deleteUserError'));
       }
 
       setDeletingUser(null);
@@ -104,7 +108,7 @@ export function UsersTable({ refreshKey, onRefresh }: UsersTableProps) {
       onRefresh?.();
     } catch (err) {
       console.error('Error al eliminar usuario:', err);
-      alert(err instanceof Error ? err.message : 'Error al eliminar usuario');
+      alert(err instanceof Error ? err.message : t('deleteUserError'));
     }
   };
 
@@ -118,7 +122,7 @@ export function UsersTable({ refreshKey, onRefresh }: UsersTableProps) {
         <div className="text-center">
           <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>
           <Button variant="outline" size="sm" onClick={fetchUsers}>
-            Reintentar
+            {common('retry')}
           </Button>
         </div>
       </Card>
@@ -129,7 +133,7 @@ export function UsersTable({ refreshKey, onRefresh }: UsersTableProps) {
     return (
       <Card className="p-6">
         <p className="text-center text-zinc-600 dark:text-zinc-400">
-          No hay usuarios registrados
+          {t('emptyUsers')}
         </p>
       </Card>
     );
@@ -142,25 +146,25 @@ export function UsersTable({ refreshKey, onRefresh }: UsersTableProps) {
           <thead>
             <tr className="border-b border-zinc-200 dark:border-zinc-800">
               <th className="text-left py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                Nombre
+                {common('name')}
               </th>
               <th className="text-left py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                Email
+                {common('email')}
               </th>
               <th className="text-left py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                Rol
+                {common('role')}
               </th>
               <th className="text-left py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                Estado
+                {t('status')}
               </th>
               <th className="text-left py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                Creado
+                {t('created')}
               </th>
               <th className="text-left py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                Último acceso
+                {t('lastAccess')}
               </th>
               <th className="text-right py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                Acciones
+                {common('actions')}
               </th>
             </tr>
           </thead>
@@ -180,14 +184,14 @@ export function UsersTable({ refreshKey, onRefresh }: UsersTableProps) {
                   <Badge
                     variant={user.role === 'admin' ? 'warning' : 'info'}
                   >
-                    {user.role === 'admin' ? 'Administrador' : 'Usuario'}
+                    {user.role === 'admin' ? common('admin') : common('user')}
                   </Badge>
                 </td>
                 <td className="py-3 px-4">
                   <Badge
                     variant={user.emailConfirmed ? 'success' : 'warning'}
                   >
-                    {user.emailConfirmed ? 'Confirmado' : 'Pendiente'}
+                    {user.emailConfirmed ? t('confirmed') : t('pending')}
                   </Badge>
                 </td>
                 <td className="py-3 px-4 text-sm text-zinc-600 dark:text-zinc-400">
@@ -207,7 +211,7 @@ export function UsersTable({ refreshKey, onRefresh }: UsersTableProps) {
                             onClick={() => handleEdit(user)}
                             icon={<FaEdit className="w-4 h-4" />}
                           >
-                            Editar
+                            {common('edit')}
                           </ListItem>
                           {currentUser?.id !== user.id && (
                             <ListItem
@@ -215,7 +219,7 @@ export function UsersTable({ refreshKey, onRefresh }: UsersTableProps) {
                               icon={<FaTrash className="w-4 h-4" />}
                               variant="danger"
                             >
-                              Eliminar
+                              {common('delete')}
                             </ListItem>
                           )}
                         </div>
@@ -227,7 +231,7 @@ export function UsersTable({ refreshKey, onRefresh }: UsersTableProps) {
                         variant="ghost"
                         size="sm"
                         className="h-8 w-8 p-0"
-                        aria-label="Opciones"
+                        aria-label={common('options')}
                       >
                         <FaEllipsisV className="w-4 h-4" />
                       </Button>
@@ -245,7 +249,7 @@ export function UsersTable({ refreshKey, onRefresh }: UsersTableProps) {
         <Modal
           open={!!editingUser}
           onClose={() => setEditingUser(null)}
-          title="Editar usuario"
+          title={t('editUser')}
           size="md"
         >
           <EditUserForm
@@ -262,10 +266,13 @@ export function UsersTable({ refreshKey, onRefresh }: UsersTableProps) {
           open={!!deletingUser}
           onClose={() => setDeletingUser(null)}
           onConfirm={handleDeleteConfirm}
-          title="Eliminar usuario"
-          message={`¿Estás seguro de que deseas eliminar al usuario "${deletingUser.name}" (${deletingUser.email})? Esta acción no se puede deshacer.`}
-          confirmText="Eliminar"
-          cancelText="Cancelar"
+          title={t('deleteUser')}
+          message={t('deleteUserMessage', {
+            name: deletingUser.name,
+            email: deletingUser.email,
+          })}
+          confirmText={common('delete')}
+          cancelText={common('cancel')}
           variant="danger"
         />
       )}

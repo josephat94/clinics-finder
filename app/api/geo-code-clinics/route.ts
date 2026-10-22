@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getClinicsByState, getAllClinics, geocodeClinics } from '@/lib/clinics';
 import { geocodeAddress } from '@/lib/google';
+import { apiMessage } from '@/i18n/api';
 
 /**
  * GET /api/clinics
@@ -19,7 +20,7 @@ export async function GET() {
     return NextResponse.json({ clinics }, { status: 200 });
   } catch (error) {
     const errorMessage =
-      error instanceof Error ? error.message : 'Error desconocido';
+      error instanceof Error ? error.message : await apiMessage('unknownError');
     return NextResponse.json(
       { error: errorMessage },
       { status: 500 }

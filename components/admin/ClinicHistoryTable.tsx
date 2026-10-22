@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -9,19 +10,10 @@ import { Select } from '@/components/ui/select';
 import { ClinicHistoryDetailModal } from './ClinicHistoryDetailModal';
 import { ClinicHistoryTableSkeleton } from './ClinicHistoryTableSkeleton';
 import {
-  AUDIT_ACTION_LABELS,
-  getFieldLabel,
   type ClinicAuditAction,
   type ClinicAuditLog,
 } from '@/types/clinic-audit';
 import { FaEye, FaSearch } from 'react-icons/fa';
-
-const ACTION_FILTER_OPTIONS = [
-  { value: 'all', label: 'Todas las acciones' },
-  { value: 'create', label: 'Creaciones' },
-  { value: 'update', label: 'Ediciones' },
-  { value: 'delete', label: 'Eliminaciones' },
-];
 
 function getActionBadgeVariant(action: ClinicAuditAction) {
   switch (action) {
@@ -34,8 +26,8 @@ function getActionBadgeVariant(action: ClinicAuditAction) {
   }
 }
 
-function formatDateTime(dateString: string) {
-  return new Date(dateString).toLocaleString('es-ES', {
+function formatDateTime(dateString: string, locale: string) {
+  return new Date(dateString).toLocaleString(locale === 'en' ? 'en-US' : 'es-ES', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
@@ -44,28 +36,62 @@ function formatDateTime(dateString: string) {
   });
 }
 
-function summarizeChanges(log: ClinicAuditLog): string {
+const FIELD_KEYS = {
+  name: 'fieldName',
+  phone: 'fieldPhone',
+  secondary_phone: 'fieldSecondaryPhone',
+  fax: 'fieldFax',
+  email: 'fieldEmail',
+  address: 'fieldAddress',
+  state: 'fieldState',
+  zipcode: 'fieldZip',
+  notes: 'fieldNotes',
+  website: 'fieldWebsite',
+  weekly_schedule: 'fieldSchedule',
+  lat: 'fieldLat',
+  lng: 'fieldLng',
+  enabled: 'fieldEnabled',
+  banned: 'fieldBanned',
+  bilingual: 'fieldBilingual',
+} as const;
+
+function fieldLabel(
+  field: string,
+  t: (key: (typeof FIELD_KEYS)[keyof typeof FIELD_KEYS]) => string
+) {
+  const key = FIELD_KEYS[field as keyof typeof FIELD_KEYS];
+  return key ? t(key) : field;
+}
+
+function summarizeChanges(
+  log: ClinicAuditLog,
+  t: ReturnType<typeof useTranslations<'admin'>>,
+  unnamed: string
+): string {
   if (log.action === 'create') {
-    return `Clínica creada: ${log.clinic_name || 'Sin nombre'}`;
+    return t('createdClinic', { name: log.clinic_name || unnamed });
   }
 
   if (log.action === 'delete') {
-    return `Clínica eliminada: ${log.clinic_name || 'Sin nombre'}`;
+    return t('deletedClinic', { name: log.clinic_name || unnamed });
   }
 
   if (log.changed_fields?.length) {
-    const labels = log.changed_fields.slice(0, 3).map(getFieldLabel);
+    const labels = log.changed_fields.slice(0, 3).map((field) => fieldLabel(field, t));
     const suffix =
       log.changed_fields.length > 3
-        ? ` +${log.changed_fields.length - 3} más`
+        ? t('moreFields', { count: log.changed_fields.length - 3 })
         : '';
-    return `Modificó: ${labels.join(', ')}${suffix}`;
+    return `${t('editedFields', { fields: labels.join(', ') })}${suffix}`;
   }
 
-  return 'Edición sin detalle de campos';
+  return t('editWithoutDetail');
 }
 
 export function ClinicHistoryTable() {
+  const t = useTranslations('admin');
+  const common = useTranslations('common');
+  const locale = useLocale();
   const [logs, setLogs] = useState<ClinicAuditLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -95,12 +121,12 @@ export function ClinicHistoryTable() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Error al cargar el historial');
+        throw new Error(data.error || t('loadHistoryError'));
       }
 
       setLogs(data.logs || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al cargar el historial');
+      setError(err instanceof Error ? err.message : t('loadHistoryError'));
     } finally {
       setLoading(false);
     }
@@ -139,7 +165,7 @@ export function ClinicHistoryTable() {
           <div className="text-center">
             <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>
             <Button variant="outline" size="sm" onClick={fetchLogs}>
-              Reintentar
+              {common('retry')}
             </Button>
           </div>
         </Card>
@@ -147,11 +173,10 @@ export function ClinicHistoryTable() {
         <Card className="p-8">
           <div className="text-center space-y-2">
             <p className="text-zinc-900 dark:text-zinc-100 font-medium">
-              No hay registros en el historial
+              {t('emptyHistory')}
             </p>
             <p className="text-sm text-zinc-600 dark:text-zinc-400">
-              Las operaciones de creación, edición y eliminación de clínicas
-              aparecerán aquí.
+              {t('emptyHistoryHint')}
             </p>
           </div>
         </Card>
@@ -162,22 +187,22 @@ export function ClinicHistoryTable() {
               <thead>
                 <tr className="border-b border-zinc-200 dark:border-zinc-800">
                   <th className="text-left py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                    Fecha
+                    {t('date')}
                   </th>
                   <th className="text-left py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                    Acción
+                    {t('action')}
                   </th>
                   <th className="text-left py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                    Clínica
+                    {t('clinic')}
                   </th>
                   <th className="text-left py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                    Usuario
+                    {t('user')}
                   </th>
                   <th className="text-left py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                    Cambios
+                    {t('changes')}
                   </th>
                   <th className="text-right py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                    Detalle
+                    {t('detail')}
                   </th>
                 </tr>
               </thead>
@@ -188,21 +213,21 @@ export function ClinicHistoryTable() {
                     className="border-b border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
                   >
                     <td className="py-3 px-4 text-sm text-zinc-600 dark:text-zinc-400 whitespace-nowrap">
-                      {formatDateTime(log.created_at)}
+                      {formatDateTime(log.created_at, locale)}
                     </td>
                     <td className="py-3 px-4">
                       <Badge variant={getActionBadgeVariant(log.action)}>
-                        {AUDIT_ACTION_LABELS[log.action]}
+                        {t(log.action === 'create' ? 'actionCreate' : log.action === 'update' ? 'actionUpdate' : 'actionDelete')}
                       </Badge>
                     </td>
                     <td className="py-3 px-4 text-sm text-zinc-900 dark:text-zinc-100">
                       {log.clinic_name || '—'}
                     </td>
                     <td className="py-3 px-4 text-sm text-zinc-600 dark:text-zinc-400">
-                      {log.actor_email || 'Desconocido'}
+                      {log.actor_email || common('unknown')}
                     </td>
                     <td className="py-3 px-4 text-sm text-zinc-600 dark:text-zinc-400 max-w-xs truncate">
-                      {summarizeChanges(log)}
+                      {summarizeChanges(log, t, common('unnamed'))}
                     </td>
                     <td className="py-3 px-4">
                       <div className="flex justify-end">
@@ -212,7 +237,7 @@ export function ClinicHistoryTable() {
                           onClick={() => setSelectedLog(log)}
                         >
                           <FaEye className="mr-2 w-3.5 h-3.5" />
-                          Ver
+                          {t('view')}
                         </Button>
                       </div>
                     </td>
@@ -248,12 +273,19 @@ function HistoryFilters({
   onSearchChange,
   disabled,
 }: HistoryFiltersProps) {
+  const t = useTranslations('admin');
+  const options = [
+    { value: 'all', label: t('allActions') },
+    { value: 'create', label: t('creates') },
+    { value: 'update', label: t('updates') },
+    { value: 'delete', label: t('deletes') },
+  ];
   return (
     <div className="flex flex-col sm:flex-row gap-3">
       <div className="relative flex-1">
         <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
         <Input
-          placeholder="Buscar por clínica o usuario..."
+          placeholder={t('searchHistory')}
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           className="pl-10"
@@ -262,7 +294,7 @@ function HistoryFilters({
       </div>
       <div className="w-full sm:w-56">
         <Select
-          options={ACTION_FILTER_OPTIONS}
+          options={options}
           value={actionFilter}
           onChange={onActionChange}
           disabled={disabled}

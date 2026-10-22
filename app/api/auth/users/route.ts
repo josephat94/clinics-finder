@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 import { createClient as createAdminClient } from '@supabase/supabase-js';
+import { apiMessage } from '@/i18n/api';
 
 export async function GET(request: NextRequest) {
   try {
@@ -15,7 +16,7 @@ export async function GET(request: NextRequest) {
 
     if (userError || !user) {
       return NextResponse.json(
-        { error: 'No autorizado' },
+        { error: await apiMessage('unauthorized') },
         { status: 401 }
       );
     }
@@ -23,7 +24,7 @@ export async function GET(request: NextRequest) {
     const currentRole = user.user_metadata?.role;
     if (currentRole !== 'admin') {
       return NextResponse.json(
-        { error: 'Solo los administradores pueden ver usuarios' },
+        { error: await apiMessage('adminsOnlyView') },
         { status: 403 }
       );
     }
@@ -34,7 +35,7 @@ export async function GET(request: NextRequest) {
 
     if (!supabaseServiceKey) {
       return NextResponse.json(
-        { error: 'Service role key no configurada. Agrega SUPABASE_SERVICE_ROLE_KEY a tus variables de entorno.' },
+        { error: await apiMessage('serviceRoleEnv') },
         { status: 500 }
       );
     }
@@ -72,7 +73,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Error al obtener usuarios:', error);
     return NextResponse.json(
-      { error: 'Error interno del servidor' },
+      { error: await apiMessage('internalError') },
       { status: 500 }
     );
   }

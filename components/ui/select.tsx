@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { Popover } from './popover';
 import { ListItem } from './list-item';
@@ -41,7 +42,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
       label,
       helperText,
       errorText,
-      placeholder = 'Selecciona una opción',
+      placeholder,
       disabled = false,
       className,
       id,
@@ -52,6 +53,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
     },
     ref
   ) => {
+    const t = useTranslations('common');
     const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue || '');
     const [isOpen, setIsOpen] = useState(false);
     const selectId = id || `select-${Math.random().toString(36).substr(2, 9)}`;
@@ -150,7 +152,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
             {...props}
           >
             <span className={cn('flex-1 text-left', !selectedOption && 'text-hub-muted')}>
-              {selectedOption ? selectedOption.label : placeholder}
+              {selectedOption ? selectedOption.label : (placeholder ?? t('selectOption'))}
             </span>
             <FaChevronDown
               className={cn(

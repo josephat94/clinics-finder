@@ -1,16 +1,19 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export function ClinicHistoryTableSkeleton() {
+  const t = useTranslations('admin');
+  const headers = [t('date'), t('action'), t('clinic'), t('user'), t('changes'), ''];
   return (
     <Card className="p-6">
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
             <tr className="border-b border-zinc-200 dark:border-zinc-800">
-              {['Fecha', 'Acción', 'Clínica', 'Usuario', 'Cambios', ''].map((header) => (
+              {headers.map((header) => (
                 <th
                   key={header || 'actions'}
                   className="text-left py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100"

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
+import { apiMessage } from '@/i18n/api';
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,11 +16,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    return NextResponse.json({ message: 'Sesión cerrada exitosamente' });
+    return NextResponse.json({ message: await apiMessage('sessionClosed') });
   } catch (error) {
     console.error('Error en logout:', error);
     return NextResponse.json(
-      { error: 'Error interno del servidor' },
+      { error: await apiMessage('internalError') },
       { status: 500 }
     );
   }

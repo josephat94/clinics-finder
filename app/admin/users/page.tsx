@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { CreateUserForm } from '@/components/auth/CreateUserForm';
 import { UsersTable } from '@/components/admin/UsersTable';
 import { useAuth } from '@/hooks/use-auth';
@@ -19,6 +20,7 @@ export default function AdminUsersPage() {
   const { isAdmin, loading: roleLoading } = useRole();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
+  const t = useTranslations('admin');
 
   useEffect(() => {
     if (!authLoading && !roleLoading) {
@@ -58,10 +60,10 @@ export default function AdminUsersPage() {
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100 mb-2">
-              Gestión de Usuarios
+              {t('usersTitle')}
             </h1>
             <p className="text-zinc-600 dark:text-zinc-400">
-              Gestiona los usuarios del sistema
+              {t('usersSubtitle')}
             </p>
           </div>
           <Button
@@ -70,7 +72,7 @@ export default function AdminUsersPage() {
             onClick={() => setIsCreateModalOpen(true)}
           >
             <FaPlus className="mr-2" />
-            Crear usuario
+            {t('createUser')}
           </Button>
         </div>
 
@@ -79,7 +81,7 @@ export default function AdminUsersPage() {
         <Modal
           open={isCreateModalOpen}
           onClose={() => setIsCreateModalOpen(false)}
-          title="Crear nuevo usuario"
+          title={t('createUserTitle')}
           size="md"
         >
           <CreateUserForm

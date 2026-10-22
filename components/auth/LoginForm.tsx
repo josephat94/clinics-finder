@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/use-auth';
@@ -9,6 +10,8 @@ import { useAuth } from '@/hooks/use-auth';
 export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const t = useTranslations('auth');
+  const common = useTranslations('common');
   const { login } = useAuth();
   
   const [email, setEmail] = useState('');
@@ -28,7 +31,7 @@ export function LoginForm() {
       router.push(redirect);
       router.refresh();
     } else {
-      setError(result.error || 'Error al iniciar sesión');
+      setError(result.error || t('loginError'));
       setLoading(false);
     }
   };
@@ -38,8 +41,8 @@ export function LoginForm() {
       <div>
         <Input
           type="email"
-          label="Email"
-          placeholder="tu@email.com"
+          label={common('email')}
+          placeholder={t('emailPlaceholder')}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -50,7 +53,7 @@ export function LoginForm() {
       <div>
         <Input
           type="password"
-          label="Contraseña"
+          label={common('password')}
           placeholder="••••••••"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -72,7 +75,7 @@ export function LoginForm() {
         className="w-full"
         disabled={loading}
       >
-        {loading ? 'Iniciando sesión...' : 'Iniciar sesión'}
+        {loading ? t('signingIn') : common('signIn')}
       </Button>
     </form>
   );

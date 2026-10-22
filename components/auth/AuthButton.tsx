@@ -1,11 +1,13 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/use-auth';
 
 export function AuthButton() {
   const router = useRouter();
+  const t = useTranslations('common');
   const { user, logout, loading } = useAuth();
 
   const handleLogout = async () => {
@@ -19,7 +21,7 @@ export function AuthButton() {
   if (loading) {
     return (
       <Button variant="ghost" size="sm" disabled>
-        Cargando...
+        {t('loading')}
       </Button>
     );
   }
@@ -31,7 +33,7 @@ export function AuthButton() {
           {user.email}
         </span>
         <Button variant="outline" size="sm" onClick={handleLogout}>
-          Cerrar sesión
+          {t('signOut')}
         </Button>
       </div>
     );
@@ -39,7 +41,7 @@ export function AuthButton() {
 
   return (
     <Button variant="primary" size="sm" onClick={() => router.push('/login')}>
-      Iniciar sesión
+      {t('signIn')}
     </Button>
   );
 }

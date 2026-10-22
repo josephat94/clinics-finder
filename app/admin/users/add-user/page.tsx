@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { CreateUserForm } from '@/components/auth/CreateUserForm';
 import { useAuth } from '@/hooks/use-auth';
 import { useRole } from '@/hooks/use-role';
@@ -12,6 +13,8 @@ export default function AdminUsersPage() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
   const { isAdmin, loading: roleLoading } = useRole();
+  const t = useTranslations('admin');
+  const common = useTranslations('common');
 
   useEffect(() => {
     if (!authLoading && !roleLoading) {
@@ -26,7 +29,7 @@ export default function AdminUsersPage() {
   if (authLoading || roleLoading) {
     return (
       <Container className="min-h-screen flex items-center justify-center">
-        <p>Cargando...</p>
+        <p>{common('loading')}</p>
       </Container>
     );
   }
@@ -40,16 +43,16 @@ export default function AdminUsersPage() {
       <div className="max-w-2xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100 mb-2">
-            Gestión de Usuarios
+            {t('usersTitle')}
           </h1>
           <p className="text-zinc-600 dark:text-zinc-400">
-            Crea y gestiona usuarios del sistema
+            {t('usersCreateSubtitle')}
           </p>
         </div>
 
         <Card className="p-6">
           <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 mb-4">
-            Crear nuevo usuario
+            {t('createUserTitle')}
           </h2>
           <CreateUserForm />
         </Card>

@@ -3,6 +3,7 @@ import { getClinicsByState, getAllClinics, createClinic } from "@/lib/clinics";
 import { geocodeAddress, getTravelTimes } from "@/lib/google";
 import { haversineKm } from "@/lib/distance-algoritms";
 import { requireAuthenticatedUser } from "@/lib/auth-server";
+import { apiMessage } from "@/i18n/api";
 import type { ClinicInsert } from "@/lib/clinics";
 
 /**
@@ -107,7 +108,7 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     const errorMessage =
-      error instanceof Error ? error.message : "Error desconocido";
+      error instanceof Error ? error.message : await apiMessage("unknownError");
     return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
@@ -131,7 +132,7 @@ export async function POST(request: NextRequest) {
     // Validar que el nombre sea requerido
     if (!body.name || body.name.trim() === "") {
       return NextResponse.json(
-        { error: "El nombre de la clínica es requerido" },
+        { error: await apiMessage("clinicNameRequired") },
         { status: 400 }
       );
     }
@@ -167,7 +168,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ clinic }, { status: 201 });
   } catch (error) {
     const errorMessage =
-      error instanceof Error ? error.message : "Error desconocido";
+      error instanceof Error ? error.message : await apiMessage("unknownError");
     return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

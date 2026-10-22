@@ -133,15 +133,30 @@ export function formatOpenDays(
   return formatDayRanges(normalizeOpenDays(days), options);
 }
 
+export type ScheduleValidationError =
+  | { code: "missingDays"; block: number }
+  | { code: "missingHours"; block: number }
+  | { code: "bothTimes"; block: number; range: number }
+  | { code: "incompleteRange"; block: number; range: number }
+  | { code: "timeOrder"; block: number; range: number }
+  | { code: "overlap"; block: number }
+  | { code: "duplicateDay"; block: number; day: WeekdayValue };
+
+type DayFormatOptions = {
+  short?: boolean;
+  labels?: Partial<Record<WeekdayValue, string>>;
+};
+
 export function formatDayRanges(
   days: WeekdayValue[],
-  options?: { short?: boolean }
+  options?: DayFormatOptions
 ): string {
   const normalized = normalizeOpenDays(days);
   if (!normalized.length) return '';
 
   const labelFor = (day: WeekdayValue) =>
-    options?.short ? WEEKDAY_SHORT_BY_VALUE[day] : WEEKDAY_LABEL_BY_VALUE[day];
+    options?.labels?.[day] ??
+    (options?.short ? WEEKDAY_SHORT_BY_VALUE[day] : WEEKDAY_LABEL_BY_VALUE[day]);
 
   const groups: WeekdayValue[][] = [];
   let currentGroup: WeekdayValue[] = [];
@@ -183,7 +198,7 @@ function formatHoursRanges(hours: ClinicScheduleHours[]): string {
 
 export function formatScheduleBlock(
   block: ClinicScheduleBlock,
-  options?: { short?: boolean }
+  options?: DayFormatOptions
 ): string {
   const daysText = formatDayRanges(block.days, options);
   const timeText = formatHoursRanges(block.hours);
@@ -195,7 +210,7 @@ export function formatScheduleBlock(
 
 export function formatWeeklySchedule(
   schedule: ClinicScheduleBlock[] | null | undefined,
-  options?: { short?: boolean }
+  options?: DayFormatOptions
 ): string[] {
   return normalizeWeeklySchedule(schedule).map((block) =>
     formatScheduleBlock(block, options)
@@ -204,7 +219,7 @@ export function formatWeeklySchedule(
 
 export function formatWeeklyScheduleText(
   schedule: ClinicScheduleBlock[] | null | undefined,
-  options?: { short?: boolean }
+  options?: DayFormatOptions
 ): string | null {
   const lines = formatWeeklySchedule(schedule, options);
   return lines.length ? lines.join(' | ') : null;
@@ -249,15 +264,13 @@ function hasOverlappingHours(hours: ClinicScheduleHours[]): boolean {
 
 export function validateWeeklySchedule(
   schedule: ClinicScheduleBlock[]
-): string | null {
+): ScheduleValidationError | null {
   const normalized = normalizeWeeklySchedule(schedule);
   const usedDays = new Set<WeekdayValue>();
 
   for (const [blockIndex, block] of normalized.entries()) {
-    const blockLabel = `Horario ${blockIndex + 1}`;
-
     if (!block.days.length) {
-      return `${blockLabel}: selecciona al menos un día`;
+      return { code: "missingDays", block: blockIndex };
     }
 
     const filledHours = block.hours.filter(
@@ -265,37 +278,36 @@ export function validateWeeklySchedule(
     );
 
     if (!filledHours.length) {
-      return `${blockLabel}: agrega al menos un rango horario`;
+      return { code: "missingHours", block: blockIndex };
     }
 
     for (const [hourIndex, hour] of block.hours.entries()) {
-      const hourLabel = `${blockLabel}, rango ${hourIndex + 1}`;
       const hasOpening = !!hour.opening_time;
       const hasClosing = !!hour.closing_time;
 
       if (hasOpening !== hasClosing) {
-        return `${hourLabel}: indica hora de apertura y cierre`;
+        return { code: "bothTimes", block: blockIndex, range: hourIndex };
       }
 
       if (!hasOpening && !hasClosing) {
         if (block.hours.length > 1) {
-          return `${hourLabel}: completa el rango o elimínalo`;
+          return { code: "incompleteRange", block: blockIndex, range: hourIndex };
         }
         continue;
       }
 
       if (timeToMinutes(hour.opening_time) >= timeToMinutes(hour.closing_time)) {
-        return `${hourLabel}: la hora de apertura debe ser anterior a la de cierre`;
+        return { code: "timeOrder", block: blockIndex, range: hourIndex };
       }
     }
 
     if (hasOverlappingHours(block.hours)) {
-      return `${blockLabel}: los rangos horarios no pueden traslaparse`;
+      return { code: "overlap", block: blockIndex };
     }
 
     for (const day of block.days) {
       if (usedDays.has(day)) {
-        return `${blockLabel}: ${WEEKDAY_LABEL_BY_VALUE[day]} ya está asignado a otro horario`;
+        return { code: "duplicateDay", block: blockIndex, day };
       }
       usedDays.add(day);
     }

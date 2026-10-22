@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Modal } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
@@ -11,6 +12,7 @@ import {
   normalizeWeeklySchedule,
   serializeWeeklySchedule,
   validateWeeklySchedule,
+  type ScheduleValidationError,
 } from "@/utils/clinic-schedule";
 import type { ClinicInsert, Clinic } from "@/types/clinic";
 
@@ -47,11 +49,38 @@ export function ClinicModal({
   clinic,
 }: ClinicModalProps) {
   const isEditMode = !!clinic;
+  const t = useTranslations("clinics");
+  const common = useTranslations("common");
+
+  const formatScheduleError = (issue: ScheduleValidationError) => {
+    const block = issue.block + 1;
+    if (issue.code === "missingDays") return t("scheduleMissingDays", { block });
+    if (issue.code === "missingHours") return t("scheduleMissingHours", { block });
+    if (issue.code === "overlap") return t("scheduleOverlap", { block });
+    if (issue.code === "duplicateDay") {
+      const dayKey = {
+        monday: "dayMonday",
+        tuesday: "dayTuesday",
+        wednesday: "dayWednesday",
+        thursday: "dayThursday",
+        friday: "dayFriday",
+        saturday: "daySaturday",
+        sunday: "daySunday",
+      } as const;
+      return t("scheduleDuplicateDay", { block, day: t(dayKey[issue.day]) });
+    }
+    const range = issue.range + 1;
+    if (issue.code === "bothTimes") return t("scheduleBothTimes", { block, range });
+    if (issue.code === "incompleteRange") return t("scheduleIncomplete", { block, range });
+    return t("scheduleTimeOrder", { block, range });
+  };
 
   const [formData, setFormData] = useState<ClinicInsert>(EMPTY_CLINIC_FORM);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fieldError, setFieldError] = useState<"name" | "email" | "website" | null>(null);
+  const [scheduleError, setScheduleError] = useState<ScheduleValidationError | null>(null);
 
   // Cargar datos de la clínica cuando se abre en modo edición
   useEffect(() => {
@@ -79,6 +108,8 @@ export function ClinicModal({
       setFormData(EMPTY_CLINIC_FORM);
     }
     setError(null);
+    setFieldError(null);
+    setScheduleError(null);
   }, [open, clinic]);
 
   const handleChange = (
@@ -90,7 +121,11 @@ export function ClinicModal({
       [name]: value === "" ? null : value,
     }));
     // Limpiar error cuando el usuario empiece a escribir
-    if (error) setError(null);
+    if (error) {
+      setError(null);
+      setFieldError(null);
+      setScheduleError(null);
+    }
   };
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -104,12 +139,15 @@ export function ClinicModal({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
+    setFieldError(null);
+    setScheduleError(null);
     setIsSubmitting(true);
 
     try {
       // Validar que el nombre sea requerido
       if (!formData.name || formData.name.trim() === "") {
-        setError("El nombre de la clínica es requerido");
+        setFieldError("name");
+        setError(t("nameRequired"));
         setIsSubmitting(false);
         return;
       }
@@ -118,7 +156,8 @@ export function ClinicModal({
       if (formData.email && formData.email.trim() !== "") {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(formData.email)) {
-          setError("El email no es válido");
+          setFieldError("email");
+          setError(t("invalidEmail"));
           setIsSubmitting(false);
           return;
         }
@@ -129,15 +168,17 @@ export function ClinicModal({
         try {
           new URL(formData.website);
         } catch {
-          setError("La URL del sitio web no es válida");
+          setFieldError("website");
+          setError(t("invalidWebsite"));
           setIsSubmitting(false);
           return;
         }
       }
 
-      const scheduleError = validateWeeklySchedule(formData.weekly_schedule);
-      if (scheduleError) {
-        setError(scheduleError);
+      const nextScheduleError = validateWeeklySchedule(formData.weekly_schedule);
+      if (nextScheduleError) {
+        setScheduleError(nextScheduleError);
+        setError(formatScheduleError(nextScheduleError));
         setIsSubmitting(false);
         return;
       }
@@ -162,7 +203,7 @@ export function ClinicModal({
 
       if (!response.ok) {
         throw new Error(
-          data.error || `Error al ${isEditMode ? "actualizar" : "crear"} la clínica`
+          data.error || (isEditMode ? t("updateError") : t("createError"))
         );
       }
 
@@ -178,7 +219,9 @@ export function ClinicModal({
       const errorMessage =
         err instanceof Error
           ? err.message
-          : `Error desconocido al ${isEditMode ? "actualizar" : "crear"} la clínica`;
+          : isEditMode
+          ? t("unknownUpdate")
+          : t("unknownCreate");
       setError(errorMessage);
     } finally {
       setIsSubmitting(false);
@@ -197,12 +240,8 @@ export function ClinicModal({
     <Modal
       open={open}
       onClose={handleClose}
-      title={isEditMode ? "Editar Clínica" : "Agregar Nueva Clínica"}
-      description={
-        isEditMode
-          ? "Modifica la información de la clínica."
-          : "Completa el formulario para agregar una nueva clínica al sistema."
-      }
+      title={isEditMode ? t("editTitle") : t("addTitle")}
+      description={isEditMode ? t("editDescription") : t("addDescription")}
       size="lg"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -214,13 +253,13 @@ export function ClinicModal({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
-            label="Nombre de la Clínica *"
+            label={t("clinicName")}
             name="name"
             value={formData.name || ""}
             onChange={handleChange}
             required
-            placeholder="Ej: Clínica Central"
-            error={error?.includes("nombre")}
+            placeholder={t("clinicNamePlaceholder")}
+            error={fieldError === "name"}
           />
 
           <div className="flex flex-col gap-3 pt-6">
@@ -237,7 +276,7 @@ export function ClinicModal({
                 htmlFor="enabled"
                 className="text-sm font-medium text-zinc-900 dark:text-zinc-100"
               >
-                Clínica habilitada
+                {t("enabled")}
               </label>
             </div>
             <div className="flex items-center gap-2">
@@ -253,7 +292,7 @@ export function ClinicModal({
                 htmlFor="banned"
                 className="text-sm font-medium text-zinc-900 dark:text-zinc-100"
               >
-                Clínica en BlackList
+                {t("blacklistLabel")}
               </label>
             </div>
             <div className="flex items-center gap-2">
@@ -269,7 +308,7 @@ export function ClinicModal({
                 htmlFor="bilingual"
                 className="text-sm font-medium text-zinc-900 dark:text-zinc-100"
               >
-                Clínica bilingüe
+                {t("bilingualLabel")}
               </label>
             </div>
           </div>
@@ -277,7 +316,7 @@ export function ClinicModal({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
-            label="Teléfono"
+            label={t("phoneLabel")}
             name="phone"
             type="tel"
             value={formData.phone || ""}
@@ -286,7 +325,7 @@ export function ClinicModal({
           />
 
           <Input
-            label="Teléfono Secundario"
+            label={t("secondaryPhoneLabel")}
             name="secondary_phone"
             type="tel"
             value={formData.secondary_phone || ""}
@@ -308,33 +347,33 @@ export function ClinicModal({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Input
-          label="Email"
+          label={common("email")}
           name="email"
           type="email"
           value={formData.email || ""}
           onChange={handleChange}
-          placeholder="clinica@ejemplo.com"
-          error={error?.includes("email")}
+          placeholder={t("emailPlaceholder")}
+          error={fieldError === "email"}
         />
 
         <Input
-          label="Sitio Web"
+          label={t("website")}
           name="website"
           type="url"
           value={formData.website || ""}
           onChange={handleChange}
-          placeholder="https://www.ejemplo.com"
-          error={error?.includes("URL")}
+          placeholder={t("websitePlaceholder")}
+          error={fieldError === "website"}
         />
         </div>
 
 
         <Input
-          label="Dirección"
+          label={t("address")}
           name="address"
           value={formData.address || ""}
           onChange={handleChange}
-          placeholder="Calle Principal 123"
+          placeholder={t("addressPlaceholder")}
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -343,16 +382,16 @@ export function ClinicModal({
               value: state.code,
               label: state.name,
             }))}
-            label="Estado"
+            label={t("state")}
             name="state"
             value={formData.state || ""}
             onChange={(value) => setFormData({ ...formData, state: value })}
-            placeholder="Selecciona un estado"
+            placeholder={t("selectState")}
             popoverZIndex={250}
           />
 
           <Input
-            label="Código Postal"
+            label={t("zip")}
             name="zipcode"
             value={formData.zipcode || ""}
             onChange={handleChange}
@@ -367,9 +406,12 @@ export function ClinicModal({
               ...prev,
               weekly_schedule,
             }));
-            if (error) setError(null);
+            if (error || scheduleError) {
+              setError(null);
+              setScheduleError(null);
+            }
           }}
-          error={error}
+          error={scheduleError}
         />
 
         <div>
@@ -377,7 +419,7 @@ export function ClinicModal({
             htmlFor="notes"
             className="block text-sm font-medium mb-1.5 text-zinc-900 dark:text-zinc-100"
           >
-            Notas
+            {t("notesLabel")}
           </label>
           <textarea
             id="notes"
@@ -385,7 +427,7 @@ export function ClinicModal({
             value={formData.notes || ""}
             onChange={handleChange}
             rows={4}
-            placeholder="Notas adicionales sobre la clínica..."
+            placeholder={t("notesPlaceholder")}
             className="flex w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-base text-black dark:text-zinc-100 transition-colors placeholder:text-zinc-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black dark:focus-visible:ring-white focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           />
         </div>
@@ -399,11 +441,11 @@ export function ClinicModal({
           >
             {isSubmitting
               ? isEditMode
-                ? "Actualizando..."
-                : "Guardando..."
+                ? t("updating")
+                : t("saving")
               : isEditMode
-              ? "Actualizar Clínica"
-              : "Guardar Clínica"}
+              ? t("updateClinic")
+              : t("saveClinic")}
           </Button>
           <Button
             type="button"
@@ -412,7 +454,7 @@ export function ClinicModal({
             disabled={isSubmitting}
             className="flex-1"
           >
-            Cancelar
+            {common("cancel")}
           </Button>
         </div>
       </form>

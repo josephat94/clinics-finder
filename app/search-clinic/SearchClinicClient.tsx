@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { ClinicsMap } from '@/components/clinics/ClinicsMap';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -16,6 +17,9 @@ import { SearchClinicSkeleton } from './SearchClinicSkeleton';
 export default function SearchClinicClient() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const t = useTranslations('search');
+  const clinicsT = useTranslations('clinics');
+  const common = useTranslations('common');
   
   const state = searchParams.get('state') || '';
   const search = searchParams.get('search') || '';
@@ -32,7 +36,7 @@ export default function SearchClinicClient() {
   useEffect(() => {
     const performSearch = async () => {
       if (!state || !search) {
-        setError('Faltan parámetros de búsqueda requeridos');
+        setError(t('missingParams'));
         setIsLoading(false);
         return;
       }
@@ -46,7 +50,7 @@ export default function SearchClinicClient() {
         );
 
         if (!response.ok) {
-          throw new Error('Error al buscar clínicas');
+          throw new Error(t('searchError'));
         }
 
         const data = await response.json();
@@ -54,13 +58,13 @@ export default function SearchClinicClient() {
         const userCoords: LatLng | null = data.userCoords || null;
 
         if (!userCoords) {
-          setError('No se pudo obtener la ubicación de la dirección ingresada');
+          setError(t('geocodeError'));
           setIsLoading(false);
           return;
         }
 
         if (clinicsData.length === 0) {
-          setError('No se encontraron clínicas cerca de la dirección ingresada');
+          setError(t('noneNearby'));
           setIsLoading(false);
           return;
         }
@@ -85,7 +89,7 @@ export default function SearchClinicClient() {
         setUserLocation(userCoords);
       } catch (err) {
         console.error('Error al buscar clínicas:', err);
-        setError('Error al buscar clínicas. Por favor, intenta de nuevo.');
+        setError(t('retryError'));
       } finally {
         setIsLoading(false);
       }
@@ -113,12 +117,12 @@ export default function SearchClinicClient() {
       <div className="flex flex-col items-center justify-center min-h-[600px]">
         <div className="glass-card rounded-2xl p-6 max-w-md">
           <h2 className="text-lg font-semibold text-hub-danger mb-2">
-            Error en la búsqueda
+            {t('errorTitle')}
           </h2>
           <p className="text-hub-fg mb-4">{error}</p>
           <Button onClick={handleBack} variant="outline" className="w-full">
             <FaArrowLeft className="mr-2" />
-            Volver a búsqueda
+            {t('backToSearch')}
           </Button>
         </div>
       </div>
@@ -129,11 +133,11 @@ export default function SearchClinicClient() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[600px]">
         <p className="text-hub-fg mb-4">
-          No se encontraron resultados
+          {t('noResults')}
         </p>
         <Button onClick={handleBack} variant="outline">
           <FaArrowLeft className="mr-2" />
-          Volver a búsqueda
+          {t('backToSearch')}
         </Button>
       </div>
     );
@@ -145,10 +149,10 @@ export default function SearchClinicClient() {
       <div className="glass-bar shrink-0 flex items-center justify-between p-4">
         <div>
           <h1 className="text-xl font-bold text-hub-fg">
-            Clínicas cercanas ({clinics.length})
+            {t('nearbyTitle', { count: clinics.length })}
           </h1>
           <p className="text-sm text-hub-muted mt-0.5">
-            {clinics.length} clínica{clinics.length !== 1 ? 's' : ''} cerca de{' '}
+            {t('nearbySubtitle', { count: clinics.length })}{' '}
             <span className="font-medium">{search}</span>
           </p>
         </div>
@@ -160,11 +164,11 @@ export default function SearchClinicClient() {
             size="sm"
             className="md:hidden"
           >
-            {showMap ? 'Ver lista' : 'Ver mapa'}
+            {showMap ? t('viewList') : t('viewMap')}
           </Button>
           <Button onClick={handleBack} variant="outline" size="sm">
             <FaArrowLeft className="mr-2" />
-            Volver
+            {common('back')}
           </Button>
         </div>
       </div>
@@ -209,12 +213,12 @@ export default function SearchClinicClient() {
                     <>
                       {clinic.banned && (
                         <Badge variant="danger" size="sm">
-                          In BlackList
+                          {clinicsT('blacklist')}
                         </Badge>
                       )}
                       {!clinic.enabled && (
                         <Badge variant="warning" size="sm">
-                          Deshabilitada
+                          {clinicsT('disabled')}
                         </Badge>
                       )}
                     </>

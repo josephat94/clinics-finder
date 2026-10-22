@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select } from '@/components/ui/select';
@@ -20,6 +21,8 @@ interface EditUserFormProps {
 }
 
 export function EditUserForm({ user, onSuccess, onCancel }: EditUserFormProps) {
+  const t = useTranslations('auth');
+  const common = useTranslations('common');
   const [email, setEmail] = useState(user.email);
   const [name, setName] = useState(user.name);
   const [role, setRole] = useState<UserRole>(user.role);
@@ -49,17 +52,17 @@ export function EditUserForm({ user, onSuccess, onCancel }: EditUserFormProps) {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Error al actualizar usuario');
+        throw new Error(data.error || t('updateUserError'));
       }
 
-      setSuccess('Usuario actualizado exitosamente');
+      setSuccess(t('userUpdated'));
       
       // Llamar callback de éxito después de un breve delay
       setTimeout(() => {
         onSuccess?.();
       }, 1000);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al actualizar usuario');
+      setError(err instanceof Error ? err.message : t('updateUserError'));
     } finally {
       setLoading(false);
     }
@@ -70,8 +73,8 @@ export function EditUserForm({ user, onSuccess, onCancel }: EditUserFormProps) {
       <div>
         <Input
           type="text"
-          label="Nombre (opcional)"
-          placeholder="Nombre del usuario"
+          label={t('nameOptional')}
+          placeholder={t('userNamePlaceholder')}
           value={name}
           onChange={(e) => setName(e.target.value)}
           disabled={loading}
@@ -81,8 +84,8 @@ export function EditUserForm({ user, onSuccess, onCancel }: EditUserFormProps) {
       <div>
         <Input
           type="email"
-          label="Email"
-          placeholder="usuario@ejemplo.com"
+          label={common('email')}
+          placeholder={t('userEmailPlaceholder')}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -93,13 +96,13 @@ export function EditUserForm({ user, onSuccess, onCancel }: EditUserFormProps) {
       <div>
         <Select
           popoverZIndex={250}
-          label="Rol"
+          label={common('role')}
           value={role}
           onChange={(value) => setRole(value as UserRole)}
           disabled={loading}
           options={[
-            { value: 'user', label: 'Usuario' },
-            { value: 'admin', label: 'Administrador' },
+            { value: 'user', label: common('user') },
+            { value: 'admin', label: common('admin') },
           ]}
         />
       </div>
@@ -126,7 +129,7 @@ export function EditUserForm({ user, onSuccess, onCancel }: EditUserFormProps) {
             onClick={onCancel}
             disabled={loading}
           >
-            Cancelar
+            {common('cancel')}
           </Button>
         )}
         <Button
@@ -136,7 +139,7 @@ export function EditUserForm({ user, onSuccess, onCancel }: EditUserFormProps) {
           className="flex-1"
           disabled={loading}
         >
-          {loading ? 'Actualizando...' : 'Actualizar usuario'}
+          {loading ? t('updatingUser') : t('updateUser')}
         </Button>
       </div>
     </form>

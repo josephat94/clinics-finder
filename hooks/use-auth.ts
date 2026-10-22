@@ -2,9 +2,11 @@
 
 import { useAuthStore } from '@/stores/auth-store';
 import { createClient } from '@/utils/supabase/client';
+import { useTranslations } from 'next-intl';
 
 export function useAuth() {
   const { user, loading, initialized, setUser, setLoading } = useAuthStore();
+  const t = useTranslations('auth');
 
   const login = async (email: string, password: string) => {
     try {
@@ -18,7 +20,7 @@ export function useAuth() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Error al iniciar sesión');
+        throw new Error(data.error || t('loginError'));
       }
 
       // Actualizar el usuario desde la sesión
@@ -34,7 +36,7 @@ export function useAuth() {
       setLoading(false);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Error al iniciar sesión',
+        error: error instanceof Error ? error.message : t('loginError'),
       };
     }
   };
@@ -51,7 +53,7 @@ export function useAuth() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Error al registrarse');
+        throw new Error(data.error || t('registerError'));
       }
 
       // Actualizar el usuario desde la sesión
@@ -67,7 +69,7 @@ export function useAuth() {
       setLoading(false);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Error al registrarse',
+        error: error instanceof Error ? error.message : t('registerError'),
       };
     }
   };
@@ -80,7 +82,7 @@ export function useAuth() {
       });
 
       if (!response.ok) {
-        throw new Error('Error al cerrar sesión');
+        throw new Error(t('logoutError'));
       }
 
       useAuthStore.getState().logout();
@@ -90,7 +92,7 @@ export function useAuth() {
       setLoading(false);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Error al cerrar sesión',
+        error: error instanceof Error ? error.message : t('logoutError'),
       };
     }
   };

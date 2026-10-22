@@ -1,6 +1,9 @@
+'use client';
+
 import { FaAt, FaClock, FaGlobe, FaMapMarkerAlt, FaPhoneAlt, FaPrint } from 'react-icons/fa';
+import { useTranslations } from 'next-intl';
 import { Badge } from '@/components/ui/badge';
-import { formatWeeklySchedule } from '@/utils/clinic-schedule';
+import { formatWeeklySchedule, type WeekdayValue } from '@/utils/clinic-schedule';
 import type { ClinicWithTravelTime } from '@/stores';
 
 interface ClinicCardContentProps {
@@ -8,8 +11,19 @@ interface ClinicCardContentProps {
 }
 
 export function ClinicCardContent({ clinic }: ClinicCardContentProps) {
+  const t = useTranslations('clinics');
+  const dayLabels: Partial<Record<WeekdayValue, string>> = {
+    monday: t('dayShortMonday'),
+    tuesday: t('dayShortTuesday'),
+    wednesday: t('dayShortWednesday'),
+    thursday: t('dayShortThursday'),
+    friday: t('dayShortFriday'),
+    saturday: t('dayShortSaturday'),
+    sunday: t('dayShortSunday'),
+  };
   const scheduleLines = formatWeeklySchedule(clinic.weekly_schedule, {
     short: true,
+    labels: dayLabels,
   });
 
   return (
@@ -21,7 +35,7 @@ export function ClinicCardContent({ clinic }: ClinicCardContentProps) {
           </h2>
           {clinic.bilingual && (
             <Badge variant="secondary" size="sm">
-              Bilingüe
+              {t('bilingual')}
             </Badge>
           )}
         </div>
@@ -44,7 +58,7 @@ export function ClinicCardContent({ clinic }: ClinicCardContentProps) {
             <div className="flex items-start gap-1">
               <FaPhoneAlt />
               <p className={`text-sm ${clinic.banned ? "text-hub-muted" : "text-hub-muted"}`}>
-                Tel: {clinic.phone}
+                {t('phone')}: {clinic.phone}
               </p>
             </div>
           )}
@@ -63,7 +77,7 @@ export function ClinicCardContent({ clinic }: ClinicCardContentProps) {
           <div className="flex items-start gap-1">
             <FaPhoneAlt />
             <p className={`text-sm ${clinic.banned ? "text-hub-muted" : "text-hub-muted"}`}>
-              Tel Secundario: {clinic.secondary_phone}
+                {t('secondaryPhone')}: {clinic.secondary_phone}
             </p>
           </div>
         )}
@@ -81,7 +95,7 @@ export function ClinicCardContent({ clinic }: ClinicCardContentProps) {
           <div className="flex items-start gap-1">
             <FaGlobe /> 
             <p className={`text-sm ${clinic.banned ? "text-hub-muted" : "text-hub-muted"}`}>
-              Sitio Web:{" "}
+              {t('website')}:{" "}
               <a
                 href={clinic.website}
                 target="_blank"
@@ -98,7 +112,7 @@ export function ClinicCardContent({ clinic }: ClinicCardContentProps) {
           <div className="flex items-start gap-1">
             <FaClock className="mt-0.5 shrink-0" />
             <div className={`text-sm ${clinic.banned ? "text-hub-muted" : "text-hub-muted"}`}>
-              <p>Horario:</p>
+              <p>{t('schedule')}</p>
               <ul className="mt-1 space-y-0.5">
                 {scheduleLines.map((line) => (
                   <li key={line}>{line}</li>
@@ -112,7 +126,7 @@ export function ClinicCardContent({ clinic }: ClinicCardContentProps) {
       {clinic.notes && (
         <div className="flex items-start gap-1">
           <p className="text-xs mt-3 pt-3 border-t text-hub-muted border-[#fde68a]">
-            *NOTAS:    {clinic.notes}
+            {t('notes')}    {clinic.notes}
           </p>
         </div>
       )}
@@ -120,13 +134,13 @@ export function ClinicCardContent({ clinic }: ClinicCardContentProps) {
       {clinic.travelTime ? (
         <div className="flex items-center gap-3 mt-4">
           <Badge variant="secondary" size="sm">
-            Distancia:  {clinic.travelTime.distance.value} Millas
+            {t('distance', { value: clinic.travelTime.distance.value })}
           </Badge>
         </div>
       ) : clinic.distanceMi ? (
         <div className="flex items-center gap-3 mt-4">
           <Badge variant="secondary" size="sm">
-            Distancia:  {clinic.distanceMi.toFixed(2)} Millas
+            {t('distance', { value: clinic.distanceMi.toFixed(2) })}
           </Badge>
         </div>
       ) : undefined}

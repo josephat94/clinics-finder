@@ -1,35 +1,36 @@
 'use client';
 
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
 export default function LandingPage() {
+  const t = useTranslations('landing');
   return (
     <div className="hub-shell font-body min-h-screen">
       <section className="relative overflow-hidden px-4 py-20 sm:py-32">
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
             <h1 className="font-heading text-5xl font-bold tracking-tight text-hub-fg sm:text-6xl lg:text-7xl">
-              Encuentra la{' '}
-              <span className="text-hub-accent">
-                clínica perfecta
-              </span>{' '}
-              cerca de ti
+              {t.rich('heroTitle', {
+                accent: (chunks) => (
+                  <span className="text-hub-accent">{chunks}</span>
+                ),
+              })}
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-hub-muted sm:text-xl">
-              Busca clínicas por ubicación, calcula distancias y tiempos de viaje en tiempo real. 
-              La forma más rápida y sencilla de encontrar atención médica cerca de ti.
+              {t('heroSubtitle')}
             </p>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
               <Link href="/clinics">
                 <Button size="lg" variant="primary" className="text-lg px-8">
-                  Buscar Clínicas
+                  {t('searchClinics')}
                 </Button>
               </Link>
               <Link href="/login">
                 <Button size="lg" variant="outline" className="text-lg px-8">
-                  Iniciar Sesión
+                  {t('signIn')}
                 </Button>
               </Link>
             </div>
@@ -41,10 +42,10 @@ export default function LandingPage() {
         <div className="mx-auto max-w-7xl">
           <div className="text-center mb-16">
             <h2 className="font-heading text-3xl font-bold tracking-tight text-hub-fg sm:text-4xl">
-              Características principales
+              {t('featuresTitle')}
             </h2>
             <p className="mt-4 text-lg text-hub-muted">
-              Todo lo que necesitas para encontrar la clínica ideal
+              {t('featuresSubtitle')}
             </p>
           </div>
 
@@ -75,11 +76,10 @@ export default function LandingPage() {
                 </div>
               </div>
               <h3 className="text-xl font-semibold text-hub-fg mb-2">
-                Búsqueda por Ubicación
+                {t('locationTitle')}
               </h3>
               <p className="text-hub-muted">
-                Ingresa tu dirección o ciudad y encuentra las clínicas más cercanas. 
-                Utilizamos geocodificación avanzada para resultados precisos.
+                {t('locationBody')}
               </p>
             </Card>
 
@@ -103,11 +103,10 @@ export default function LandingPage() {
                 </div>
               </div>
               <h3 className="text-xl font-semibold text-hub-fg mb-2">
-                Tiempos de Viaje en Tiempo Real
+                {t('travelTitle')}
               </h3>
               <p className="text-hub-muted">
-                Calcula distancias y tiempos de viaje precisos usando Google Maps API. 
-                Obtén información actualizada sobre cuánto tardarás en llegar.
+                {t('travelBody')}
               </p>
             </Card>
 
@@ -131,11 +130,10 @@ export default function LandingPage() {
                 </div>
               </div>
               <h3 className="text-xl font-semibold text-hub-fg mb-2">
-                Filtros Avanzados
+                {t('filtersTitle')}
               </h3>
               <p className="text-hub-muted">
-                Filtra clínicas por estado, busca por nombre y ordena por distancia. 
-                Encuentra exactamente lo que necesitas con nuestros filtros inteligentes.
+                {t('filtersBody')}
               </p>
             </Card>
 
@@ -159,11 +157,10 @@ export default function LandingPage() {
                 </div>
               </div>
               <h3 className="text-xl font-semibold text-hub-fg mb-2">
-                Información Detallada
+                {t('detailsTitle')}
               </h3>
               <p className="text-hub-muted">
-                Accede a información completa de cada clínica: dirección, teléfono, 
-                email y ubicación exacta. Todo en un solo lugar.
+                {t('detailsBody')}
               </p>
             </Card>
 
@@ -187,11 +184,10 @@ export default function LandingPage() {
                 </div>
               </div>
               <h3 className="text-xl font-semibold text-hub-fg mb-2">
-                Gestión de Usuarios
+                {t('usersTitle')}
               </h3>
               <p className="text-hub-muted">
-                Sistema de autenticación seguro con roles de administrador. 
-                Los administradores pueden gestionar clínicas y usuarios fácilmente.
+                {t('usersBody')}
               </p>
             </Card>
 
@@ -215,11 +211,10 @@ export default function LandingPage() {
                 </div>
               </div>
               <h3 className="text-xl font-semibold text-hub-fg mb-2">
-                Resultados Rápidos
+                {t('fastTitle')}
               </h3>
               <p className="text-hub-muted">
-                Algoritmo Haversine para cálculos de distancia ultra rápidos. 
-                Obtén resultados instantáneos ordenados por proximidad.
+                {t('fastBody')}
               </p>
             </Card>
           </div>
@@ -230,10 +225,10 @@ export default function LandingPage() {
         <div className="mx-auto max-w-7xl">
           <div className="text-center mb-16">
             <h2 className="font-heading text-3xl font-bold tracking-tight text-hub-fg sm:text-4xl">
-              ¿Cómo funciona?
+              {t('howTitle')}
             </h2>
             <p className="mt-4 text-lg text-hub-muted">
-              Encuentra tu clínica en tres simples pasos
+              {t('howSubtitle')}
             </p>
           </div>
 
@@ -243,11 +238,10 @@ export default function LandingPage() {
                 1
               </div>
               <h3 className="text-xl font-semibold text-hub-fg mb-2">
-                Ingresa tu ubicación
+                {t('step1Title')}
               </h3>
               <p className="text-hub-muted">
-                Escribe tu dirección o ciudad en el buscador. 
-                Nuestro sistema geocodificará tu ubicación automáticamente.
+                {t('step1Body')}
               </p>
             </div>
 
@@ -256,11 +250,10 @@ export default function LandingPage() {
                 2
               </div>
               <h3 className="text-xl font-semibold text-hub-fg mb-2">
-                Filtra y busca
+                {t('step2Title')}
               </h3>
               <p className="text-hub-muted">
-                Usa los filtros por estado o busca por nombre de clínica. 
-                Las opciones se actualizan en tiempo real.
+                {t('step2Body')}
               </p>
             </div>
 
@@ -269,11 +262,10 @@ export default function LandingPage() {
                 3
               </div>
               <h3 className="text-xl font-semibold text-hub-fg mb-2">
-                Encuentra y contacta
+                {t('step3Title')}
               </h3>
               <p className="text-hub-muted">
-                Revisa las clínicas ordenadas por distancia, ve tiempos de viaje 
-                y contacta directamente con la información proporcionada.
+                {t('step3Body')}
               </p>
             </div>
           </div>
@@ -284,14 +276,14 @@ export default function LandingPage() {
         <div className="mx-auto max-w-4xl">
           <Card className="p-12 text-center">
             <h2 className="font-heading text-3xl font-bold tracking-tight text-hub-fg sm:text-4xl mb-4">
-              ¿Listo para encontrar tu clínica?
+              {t('ctaTitle')}
             </h2>
             <p className="text-lg text-hub-muted mb-8">
-              Comienza a buscar ahora y encuentra la atención médica que necesitas
+              {t('ctaBody')}
             </p>
             <Link href="/clinics">
               <Button size="lg" variant="primary" className="text-lg px-8">
-                Buscar Clínicas Ahora
+                {t('ctaButton')}
               </Button>
             </Link>
           </Card>

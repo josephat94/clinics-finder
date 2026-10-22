@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
+import { apiMessage } from '@/i18n/api';
 
 export async function POST(request: NextRequest) {
   try {
@@ -7,14 +8,14 @@ export async function POST(request: NextRequest) {
 
     if (!email || !password) {
       return NextResponse.json(
-        { error: 'Email y contraseña son requeridos' },
+        { error: await apiMessage('emailPasswordRequired') },
         { status: 400 }
       );
     }
 
     if (password.length < 6) {
       return NextResponse.json(
-        { error: 'La contraseña debe tener al menos 6 caracteres' },
+        { error: await apiMessage('passwordMin') },
         { status: 400 }
       );
     }
@@ -30,7 +31,7 @@ export async function POST(request: NextRequest) {
 
     if (userError || !currentUser) {
       return NextResponse.json(
-        { error: 'No autorizado' },
+        { error: await apiMessage('unauthorized') },
         { status: 401 }
       );
     }
@@ -39,7 +40,7 @@ export async function POST(request: NextRequest) {
     const currentRole = currentUser.user_metadata?.role;
     if (currentRole !== 'admin') {
       return NextResponse.json(
-        { error: 'Solo los administradores pueden crear usuarios' },
+        { error: await apiMessage('adminsOnlyCreate') },
         { status: 403 }
       );
     }
@@ -68,12 +69,12 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       user: data.user,
-      message: 'Usuario creado exitosamente',
+      message: await apiMessage('userCreated'),
     });
   } catch (error) {
     console.error('Error al crear usuario:', error);
     return NextResponse.json(
-      { error: 'Error interno del servidor' },
+      { error: await apiMessage('internalError') },
       { status: 500 }
     );
   }

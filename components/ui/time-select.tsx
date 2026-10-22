@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { Select, type SelectProps, type SelectOption } from './select';
 
 /** Horarios de 00:00 a 24:00 en saltos de 1 hora */
@@ -31,11 +32,13 @@ export type TimeSelectProps = Omit<SelectProps, 'options'> & {
 };
 
 export function TimeSelect({
-  placeholder = 'Selecciona una hora',
+  placeholder,
   minExclusive,
   maxExclusive,
   ...props
 }: TimeSelectProps) {
+  const t = useTranslations('clinics');
+  const resolvedPlaceholder = placeholder ?? t('selectTime');
   const options = HOUR_OPTIONS.map((option) => {
     const minutes = timeToMinutes(option.value);
     const disabledByMin =
@@ -52,7 +55,7 @@ export function TimeSelect({
   return (
     <Select
       options={options}
-      placeholder={placeholder}
+      placeholder={resolvedPlaceholder}
       {...props}
     />
   );

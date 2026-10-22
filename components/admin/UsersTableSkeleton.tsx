@@ -1,36 +1,35 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export function UsersTableSkeleton() {
+  const t = useTranslations('admin');
+  const common = useTranslations('common');
+  const headers = [
+    common('name'),
+    common('email'),
+    common('role'),
+    t('status'),
+    t('created'),
+    t('lastAccess'),
+    common('actions'),
+  ];
   return (
     <Card className="p-6">
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
             <tr className="border-b border-zinc-200 dark:border-zinc-800">
-              <th className="text-left py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                Nombre
-              </th>
-              <th className="text-left py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                Email
-              </th>
-              <th className="text-left py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                Rol
-              </th>
-              <th className="text-left py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                Estado
-              </th>
-              <th className="text-left py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                Creado
-              </th>
-              <th className="text-left py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                Último acceso
-              </th>
-              <th className="text-right py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                Acciones
-              </th>
+              {headers.map((header) => (
+                <th
+                  key={header}
+                  className="text-left py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100"
+                >
+                  {header}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { deleteClinic, getClinicById, updateClinic } from "@/lib/clinics";
 import { requireAuthenticatedUser } from "@/lib/auth-server";
+import { apiMessage } from "@/i18n/api";
 import type { ClinicUpdate } from "@/types/clinic";
 
 /**
@@ -21,7 +22,7 @@ export async function DELETE(
 
     if (!id) {
       return NextResponse.json(
-        { error: "ID de clínica es requerido" },
+        { error: await apiMessage("clinicIdRequired") },
         { status: 400 }
       );
     }
@@ -30,7 +31,7 @@ export async function DELETE(
     const clinic = await getClinicById(id);
     if (!clinic) {
       return NextResponse.json(
-        { error: "Clínica no encontrada" },
+        { error: await apiMessage("clinicNotFound") },
         { status: 404 }
       );
     }
@@ -39,12 +40,12 @@ export async function DELETE(
     await deleteClinic(id, auth.actor);
 
     return NextResponse.json(
-      { message: "Clínica eliminada exitosamente" },
+      { message: await apiMessage("clinicDeleted") },
       { status: 200 }
     );
   } catch (error) {
     const errorMessage =
-      error instanceof Error ? error.message : "Error desconocido";
+      error instanceof Error ? error.message : await apiMessage("unknownError");
     return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
@@ -67,7 +68,7 @@ export async function PUT(
 
     if (!id) {
       return NextResponse.json(
-        { error: "ID de clínica es requerido" },
+        { error: await apiMessage("clinicIdRequired") },
         { status: 400 }
       );
     }
@@ -76,7 +77,7 @@ export async function PUT(
     const clinic = await getClinicById(id);
     if (!clinic) {
       return NextResponse.json(
-        { error: "Clínica no encontrada" },
+        { error: await apiMessage("clinicNotFound") },
         { status: 404 }
       );
     }
@@ -86,7 +87,7 @@ export async function PUT(
     // Validar que el nombre sea requerido si se proporciona
     if (body.name !== undefined && (!body.name || body.name.trim() === "")) {
       return NextResponse.json(
-        { error: "El nombre de la clínica es requerido" },
+        { error: await apiMessage("clinicNameRequired") },
         { status: 400 }
       );
     }
@@ -96,7 +97,7 @@ export async function PUT(
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(body.email)) {
         return NextResponse.json(
-          { error: "El email no es válido" },
+          { error: await apiMessage("invalidEmail") },
           { status: 400 }
         );
       }
@@ -108,7 +109,7 @@ export async function PUT(
         new URL(body.website);
       } catch {
         return NextResponse.json(
-          { error: "La URL del sitio web no es válida" },
+          { error: await apiMessage("invalidWebsite") },
           { status: 400 }
         );
       }
@@ -120,7 +121,7 @@ export async function PUT(
     return NextResponse.json({ clinic: updatedClinic }, { status: 200 });
   } catch (error) {
     const errorMessage =
-      error instanceof Error ? error.message : "Error desconocido";
+      error instanceof Error ? error.message : await apiMessage("unknownError");
     return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

@@ -13,6 +13,7 @@ import {
   serializeWeeklySchedule,
 } from "@/utils/clinic-schedule";
 import type { Clinic, ClinicInsert, ClinicUpdate } from "@/types/clinic";
+import { apiMessage } from "@/i18n/api";
 
 type ClinicRow = Database["public"]["Tables"]["clinics"]["Row"];
 type ClinicDbInsert = Database["public"]["Tables"]["clinics"]["Insert"];
@@ -59,7 +60,7 @@ export async function getAllClinics(): Promise<Clinic[]> {
     .order("created_at", { ascending: false });
 
   if (error) {
-    throw new Error(`Error al obtener las clínicas: ${error.message}`);
+    throw new Error(await apiMessage("clinicsFetch", { detail: error.message }));
   }
 
   return (data || []).map(mapClinicRow);
@@ -82,7 +83,7 @@ export async function getClinicById(id: string): Promise<Clinic | null> {
     if (error.code === "PGRST116") {
       return null; // No se encontró la clínica
     }
-    throw new Error(`Error al obtener la clínica: ${error.message}`);
+    throw new Error(await apiMessage("clinicFetch", { detail: error.message }));
   }
 
   return mapClinicRow(data);
@@ -105,7 +106,7 @@ export async function createClinic(
     .single();
 
   if (error) {
-    throw new Error(`Error al crear la clínica: ${error.message}`);
+    throw new Error(await apiMessage("clinicCreate", { detail: error.message }));
   }
 
   const created = mapClinicRow(data as ClinicRow);
@@ -146,7 +147,7 @@ export async function updateClinic(
     .single();
 
   if (error) {
-    throw new Error(`Error al actualizar la clínica: ${error.message}`);
+    throw new Error(await apiMessage("clinicUpdate", { detail: error.message }));
   }
 
   const updated = mapClinicRow(data as ClinicRow);
@@ -191,7 +192,7 @@ export async function deleteClinic(
   const { error } = await supabase.from("clinics").delete().eq("id", id);
 
   if (error) {
-    throw new Error(`Error al eliminar la clínica: ${error.message}`);
+    throw new Error(await apiMessage("clinicDelete", { detail: error.message }));
   }
 }
 
@@ -212,7 +213,7 @@ export async function getClinicsByState(stateCode: string): Promise<Clinic[]> {
 
   if (error) {
     throw new Error(
-      `Error al obtener las clínicas por estado: ${error.message}`
+      await apiMessage("clinicsByState", { detail: error.message })
     );
   }
 

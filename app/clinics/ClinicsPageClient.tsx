@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { SearchIntoInvetory } from "@/components/search-into-inventory/SearchIntoInvetory";
 import { Container } from "@/components/ui/container/Container";
@@ -26,6 +27,8 @@ export function ClinicsPageClient({
   initialClinics,
   availableStates,
 }: ClinicsPageClientProps) {
+  const t = useTranslations("clinics");
+  const common = useTranslations("common");
   // Stores
   const { filteredClinics, setInitialClinics, setFilteredClinics } = useClinicsStore();
   const { viewMode, setViewMode, isCreateModalOpen, openCreateModal, closeCreateModal } = useUIStore();
@@ -64,7 +67,7 @@ export function ClinicsPageClient({
       });
 
       if (!response.ok) {
-        throw new Error('Error al eliminar la clínica');
+        throw new Error(t("deleteError"));
       }
 
       // Actualizar las clínicas filtradas removiendo la eliminada
@@ -76,7 +79,7 @@ export function ClinicsPageClient({
       setClinicToDelete(null);
     } catch (error) {
       console.error('Error al eliminar la clínica:', error);
-      alert('Error al eliminar la clínica. Por favor, intenta de nuevo.');
+      alert(t("deleteError"));
     } finally {
       setIsDeleting(false);
     }
@@ -150,7 +153,7 @@ export function ClinicsPageClient({
             <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-hub-fg" />
             <Input
               type="text"
-              placeholder="Buscar por nombre..."
+              placeholder={t("searchByName")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 w-full"
@@ -159,7 +162,7 @@ export function ClinicsPageClient({
         </div>
         <div className="flex items-center gap-2">
           <span className="text-sm text-hub-muted">
-            Ordenar:
+            {t("sort")}
           </span>
           <Button
             variant={sortOrder === "asc" ? "primary" : "outline"}
@@ -186,7 +189,7 @@ export function ClinicsPageClient({
             className="flex items-center gap-2"
           >
             <FaClock />
-            Más nuevo
+            {t("newest")}
           </Button>
         </div>
       </div>
@@ -213,28 +216,28 @@ export function ClinicsPageClient({
             variant="outline"
             size="md"
             onClick={() => setIsMapModalOpen(true)}
-            aria-label="Ver clínicas en el mapa"
-            title="Ver clínicas en el mapa"
+            aria-label={t("viewMap")}
+            title={t("viewMap")}
           >
             <FaMapMarkedAlt />
           </Button>
         </div>
         <Button variant="outline" size="md" onClick={openCreateModal}>
           <FaPlus />
-          Agregar Clínica
+          {t("addClinic")}
         </Button>
       </div>
       <div className={viewMode === "list" ? "w-full" : "w-full"}>
         <h1 className="text-3xl font-bold text-hub-fg mb-8">
-          Clínicas ({filteredAndSortedClinics.length})
+          {t("listTitle", { count: filteredAndSortedClinics.length })}
         </h1>
 
         {filteredAndSortedClinics.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-hub-muted">
               {searchQuery.trim()
-                ? `No se encontraron clínicas que coincidan con "${searchQuery}"`
-                : "No hay clínicas registradas aún."}
+                ? t("noMatch", { query: searchQuery })
+                : t("empty")}
             </p>
           </div>
         ) : (
@@ -423,12 +426,12 @@ export function ClinicsPageClient({
                         <div className="flex gap-2">
                           {clinic.banned && (
                             <Badge variant="danger" size="sm">
-                              In BlackList
+                              {t("blacklist")}
                             </Badge>
                           )}
                           {!clinic.enabled && (
                             <Badge variant="warning" size="sm">
-                              Deshabilitada
+                              {t("disabled")}
                             </Badge>
                           )}
                         </div>
@@ -461,10 +464,10 @@ export function ClinicsPageClient({
         open={!!clinicToDelete}
         onClose={() => setClinicToDelete(null)}
         onConfirm={handleConfirmDelete}
-        title="Eliminar Clínica"
-        message={`¿Estás seguro de que deseas eliminar la clínica "${clinicToDelete?.name}"? Esta acción no se puede deshacer.`}
-        confirmText="Eliminar"
-        cancelText="Cancelar"
+        title={t("deleteTitle")}
+        message={t("deleteMessage", { name: clinicToDelete?.name ?? "" })}
+        confirmText={common("delete")}
+        cancelText={common("cancel")}
         variant="danger"
         isLoading={isDeleting}
       />
@@ -473,7 +476,7 @@ export function ClinicsPageClient({
         open={isMapModalOpen}
         onClose={() => setIsMapModalOpen(false)}
         clinics={filteredAndSortedClinics}
-        title="Mapa de clínicas"
+        title={t("mapTitle")}
         showRanking={false}
       />
     </Container>

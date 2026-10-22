@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { Modal } from '@/components/ui/modal';
 import { ClinicsMap } from './ClinicsMap';
 import type { ClinicWithTravelTime } from '@/stores';
@@ -22,10 +23,11 @@ export function ClinicsMapModal({
   clinics,
   userLocation,
   userAddress,
-  title = 'Mapa de clínicas',
+  title,
   description,
   showRanking = false,
 }: ClinicsMapModalProps) {
+  const t = useTranslations('clinics');
   const clinicsWithCoords = clinics.filter(
     (clinic) => typeof clinic.lat === 'number' && typeof clinic.lng === 'number'
   );
@@ -33,14 +35,14 @@ export function ClinicsMapModal({
   const resolvedDescription =
     description ??
     (clinicsWithCoords.length > 0
-      ? `Mostrando ${clinicsWithCoords.length} clínica${clinicsWithCoords.length !== 1 ? 's' : ''} con ubicación`
-      : 'No hay clínicas con coordenadas para mostrar en el mapa');
+      ? t('showingOnMap', { count: clinicsWithCoords.length })
+      : t('noneOnMap'));
 
   return (
     <Modal
       open={open}
       onClose={onClose}
-      title={title}
+      title={title ?? t('mapTitle')}
       description={resolvedDescription}
       size="full"
     >
@@ -49,7 +51,7 @@ export function ClinicsMapModal({
           {clinicsWithCoords.length === 0 ? (
             <div className="flex items-center justify-center h-full bg-zinc-100 dark:bg-zinc-900 rounded-lg">
               <p className="text-zinc-600 dark:text-zinc-400 text-center px-4">
-                No hay clínicas con coordenadas registradas.
+                {t('noneWithCoords')}
               </p>
             </div>
           ) : (
@@ -65,12 +67,12 @@ export function ClinicsMapModal({
           {userLocation && (
             <div className="flex items-center gap-2">
               <div className="w-4 h-4 bg-blue-500 rounded-full"></div>
-              <span>Tu ubicación</span>
+              <span>{t('yourLocation')}</span>
             </div>
           )}
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 bg-red-500 rounded-full"></div>
-            <span>Clínicas</span>
+            <span>{t('clinicsLegend')}</span>
           </div>
         </div>
       </div>

@@ -2,6 +2,7 @@ import { createClient } from '@/utils/supabase/server';
 import { cookies } from 'next/headers';
 import type { User } from '@supabase/supabase-js';
 import type { AuditActor } from '@/lib/clinic-audit';
+import { apiMessage } from '@/i18n/api';
 
 export async function getAuthenticatedUser(): Promise<User | null> {
   const cookieStore = await cookies();
@@ -24,7 +25,7 @@ export async function requireAuthenticatedUser(): Promise<
 > {
   const user = await getAuthenticatedUser();
   if (!user) {
-    return { error: 'No autorizado', status: 401 };
+    return { error: await apiMessage('unauthorized'), status: 401 };
   }
   return { user, actor: toAuditActor(user) };
 }
@@ -39,7 +40,7 @@ export async function requireAdminUser(): Promise<
 
   if (result.user.user_metadata?.role !== 'admin') {
     return {
-      error: 'Solo los administradores pueden realizar esta acción',
+      error: await apiMessage('adminsOnly'),
       status: 403,
     };
   }

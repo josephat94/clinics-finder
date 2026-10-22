@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 import { createClient as createAdminClient } from '@supabase/supabase-js';
+import { apiMessage } from '@/i18n/api';
 
 // Actualizar usuario
 export async function PATCH(
@@ -12,7 +13,7 @@ export async function PATCH(
     const { id: userId } = await params;
     if (!userId) {
       return NextResponse.json(
-        { error: 'ID de usuario requerido' },
+        { error: await apiMessage('userIdRequired') },
         { status: 400 }
       );
     }
@@ -28,7 +29,7 @@ export async function PATCH(
 
     if (userError || !currentUser) {
       return NextResponse.json(
-        { error: 'No autorizado' },
+        { error: await apiMessage('unauthorized') },
         { status: 401 }
       );
     }
@@ -36,7 +37,7 @@ export async function PATCH(
     const currentRole = currentUser.user_metadata?.role;
     if (currentRole !== 'admin') {
       return NextResponse.json(
-        { error: 'Solo los administradores pueden editar usuarios' },
+        { error: await apiMessage('adminsOnlyEdit') },
         { status: 403 }
       );
     }
@@ -47,7 +48,7 @@ export async function PATCH(
 
     if (!supabaseServiceKey) {
       return NextResponse.json(
-        { error: 'Service role key no configurada' },
+        { error: await apiMessage('serviceRoleMissing') },
         { status: 500 }
       );
     }
@@ -86,12 +87,12 @@ export async function PATCH(
 
     return NextResponse.json({
       user: data.user,
-      message: 'Usuario actualizado exitosamente',
+      message: await apiMessage('userUpdated'),
     });
   } catch (error) {
     console.error('Error al actualizar usuario:', error);
     return NextResponse.json(
-      { error: 'Error interno del servidor' },
+      { error: await apiMessage('internalError') },
       { status: 500 }
     );
   }
@@ -107,7 +108,7 @@ export async function DELETE(
 
     if (!id) {
       return NextResponse.json(
-        { error: 'ID de usuario requerido' },
+        { error: await apiMessage('userIdRequired') },
         { status: 400 }
       );
     }
@@ -123,7 +124,7 @@ export async function DELETE(
 
     if (userError || !currentUser) {
       return NextResponse.json(
-        { error: 'No autorizado' },
+        { error: await apiMessage('unauthorized') },
         { status: 401 }
       );
     }
@@ -131,7 +132,7 @@ export async function DELETE(
     const currentRole = currentUser.user_metadata?.role;
     if (currentRole !== 'admin') {
       return NextResponse.json(
-        { error: 'Solo los administradores pueden eliminar usuarios' },
+        { error: await apiMessage('adminsOnlyDelete') },
         { status: 403 }
       );
     }
@@ -139,7 +140,7 @@ export async function DELETE(
     // No permitir que un admin se elimine a sí mismo
     if (currentUser.id === id) {
       return NextResponse.json(
-        { error: 'No puedes eliminar tu propia cuenta' },
+        { error: await apiMessage('cannotDeleteSelf') },
         { status: 400 }
       );
     }
@@ -150,7 +151,7 @@ export async function DELETE(
 
     if (!supabaseServiceKey) {
       return NextResponse.json(
-        { error: 'Service role key no configurada' },
+        { error: await apiMessage('serviceRoleMissing') },
         { status: 500 }
       );
     }
@@ -172,12 +173,12 @@ export async function DELETE(
     }
 
     return NextResponse.json({
-      message: 'Usuario eliminado exitosamente',
+      message: await apiMessage('userDeleted'),
     });
   } catch (error) {
     console.error('Error al eliminar usuario:', error);
     return NextResponse.json(
-      { error: 'Error interno del servidor' },
+      { error: await apiMessage('internalError') },
       { status: 500 }
     );
   }

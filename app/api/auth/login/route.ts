@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
+import { apiMessage } from '@/i18n/api';
 
 export async function POST(request: NextRequest) {
   try {
@@ -7,7 +8,7 @@ export async function POST(request: NextRequest) {
 
     if (!email || !password) {
       return NextResponse.json(
-        { error: 'Email y contraseña son requeridos' },
+        { error: await apiMessage('emailPasswordRequired') },
         { status: 400 }
       );
     }
@@ -34,7 +35,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error en login:', error);
     return NextResponse.json(
-      { error: 'Error interno del servidor' },
+      { error: await apiMessage('internalError') },
       { status: 500 }
     );
   }

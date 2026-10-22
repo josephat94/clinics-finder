@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useTranslations } from 'next-intl';
 import { Modal } from './modal';
 import { Button } from './button';
 
@@ -20,13 +21,14 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   open,
   onClose,
   onConfirm,
-  title = 'Confirmar acción',
+  title,
   message,
-  confirmText = 'Confirmar',
-  cancelText = 'Cancelar',
+  confirmText,
+  cancelText,
   variant = 'default',
   isLoading = false,
 }) => {
+  const t = useTranslations('common');
   const handleConfirm = () => {
     onConfirm();
   };
@@ -37,7 +39,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
     <Modal
       open={open}
       onClose={onClose}
-      title={title}
+      title={title ?? t('confirmAction')}
       size="sm"
       closeOnOverlayClick={!isLoading}
     >
@@ -54,7 +56,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             disabled={isLoading}
             className="flex-1"
           >
-            {cancelText}
+            {cancelText ?? t('cancel')}
           </Button>
           <Button
             type="button"
@@ -63,7 +65,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             disabled={isLoading}
             className="flex-1"
           >
-            {isLoading ? 'Procesando...' : confirmText}
+            {isLoading ? t('loading') : (confirmText ?? t('confirm'))}
           </Button>
         </div>
       </div>

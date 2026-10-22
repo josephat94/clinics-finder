@@ -1,6 +1,7 @@
 import {
   formatWeeklyScheduleText,
   normalizeWeeklySchedule,
+  type WeekdayValue,
 } from '@/utils/clinic-schedule';
 
 export type ClinicAuditAction = 'create' | 'update' | 'delete';
@@ -48,13 +49,22 @@ export const AUDIT_ACTION_LABELS: Record<ClinicAuditAction, string> = {
   delete: 'Eliminación',
 };
 
-export function formatAuditValue(value: unknown, field?: string): string {
+export function formatAuditValue(
+  value: unknown,
+  field?: string,
+  labels?: {
+    yes?: string;
+    no?: string;
+    dayLabels?: Partial<Record<WeekdayValue, string>>;
+  }
+): string {
   if (value === null || value === undefined || value === '') return '—';
-  if (typeof value === 'boolean') return value ? 'Sí' : 'No';
+  if (typeof value === 'boolean') return value ? (labels?.yes ?? 'Sí') : (labels?.no ?? 'No');
   if (field === 'weekly_schedule') {
     return (
       formatWeeklyScheduleText(normalizeWeeklySchedule(value), {
         short: true,
+        labels: labels?.dayLabels,
       }) || '—'
     );
   }

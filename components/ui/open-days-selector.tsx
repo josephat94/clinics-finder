@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import {
   WEEKDAYS,
@@ -17,8 +18,28 @@ export interface OpenDaysSelectorProps {
   disabled?: boolean;
 }
 
+const SHORT_DAY_KEY = {
+  monday: 'dayShortMonday',
+  tuesday: 'dayShortTuesday',
+  wednesday: 'dayShortWednesday',
+  thursday: 'dayShortThursday',
+  friday: 'dayShortFriday',
+  saturday: 'dayShortSaturday',
+  sunday: 'dayShortSunday',
+} as const;
+
+const DAY_KEY = {
+  monday: 'dayMonday',
+  tuesday: 'dayTuesday',
+  wednesday: 'dayWednesday',
+  thursday: 'dayThursday',
+  friday: 'dayFriday',
+  saturday: 'daySaturday',
+  sunday: 'daySunday',
+} as const;
+
 export function OpenDaysSelector({
-  label = 'Días de apertura',
+  label,
   value,
   onChange,
   disabledDays = [],
@@ -26,6 +47,7 @@ export function OpenDaysSelector({
   errorText,
   disabled = false,
 }: OpenDaysSelectorProps) {
+  const t = useTranslations('clinics');
   const selectedDays = new Set(normalizeOpenDays(value));
   const lockedDays = new Set(disabledDays);
 
@@ -46,10 +68,10 @@ export function OpenDaysSelector({
     <div className="space-y-2">
       <div className="flex items-center justify-between gap-3">
         <label className="block text-sm font-medium text-zinc-900 dark:text-zinc-100">
-          {label}
+          {label ?? t('openDays')}
         </label>
         <span className="text-xs text-zinc-500 dark:text-zinc-400">
-          {selectedDays.size} seleccionado{selectedDays.size === 1 ? '' : 's'}
+          {t('selectedDays', { count: selectedDays.size })}
         </span>
       </div>
 
@@ -77,9 +99,9 @@ export function OpenDaysSelector({
                 error && !isSelected && !isLocked && 'border-red-300 dark:border-red-800'
               )}
             >
-              <span className="text-sm font-semibold">{day.shortLabel}</span>
+              <span className="text-sm font-semibold">{t(SHORT_DAY_KEY[day.value])}</span>
               <span className="mt-1 text-[11px] leading-tight opacity-80">
-                {day.label}
+                {t(DAY_KEY[day.value])}
               </span>
             </button>
           );

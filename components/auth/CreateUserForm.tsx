@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select } from '@/components/ui/select';
@@ -13,6 +14,8 @@ interface CreateUserFormProps {
 
 export function CreateUserForm({ onSuccess }: CreateUserFormProps) {
   const { user } = useAuth();
+  const t = useTranslations('auth');
+  const common = useTranslations('common');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -37,10 +40,10 @@ export function CreateUserForm({ onSuccess }: CreateUserFormProps) {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Error al crear usuario');
+        throw new Error(data.error || t('createUserError'));
       }
 
-      setSuccess('Usuario creado exitosamente');
+      setSuccess(t('userCreated'));
       setEmail('');
       setPassword('');
       setName('');
@@ -51,7 +54,7 @@ export function CreateUserForm({ onSuccess }: CreateUserFormProps) {
         onSuccess?.();
       }, 1000);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al crear usuario');
+      setError(err instanceof Error ? err.message : t('createUserError'));
     } finally {
       setLoading(false);
     }
@@ -62,8 +65,8 @@ export function CreateUserForm({ onSuccess }: CreateUserFormProps) {
       <div>
         <Input
           type="text"
-          label="Nombre (opcional)"
-          placeholder="Nombre del usuario"
+          label={t('nameOptional')}
+          placeholder={t('userNamePlaceholder')}
           value={name}
           onChange={(e) => setName(e.target.value)}
           disabled={loading}
@@ -73,8 +76,8 @@ export function CreateUserForm({ onSuccess }: CreateUserFormProps) {
       <div>
         <Input
           type="email"
-          label="Email"
-          placeholder="usuario@ejemplo.com"
+          label={common('email')}
+          placeholder={t('userEmailPlaceholder')}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -85,26 +88,26 @@ export function CreateUserForm({ onSuccess }: CreateUserFormProps) {
       <div>
         <Input
           type="password"
-          label="Contraseña"
+          label={common('password')}
           placeholder="••••••••"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
           disabled={loading}
-          helperText="Mínimo 6 caracteres"
+          helperText={t('passwordHint')}
         />
       </div>
 
       <div>
         <Select
           popoverZIndex={250}
-          label="Rol"
+          label={common('role')}
           value={role}
           onChange={(value) => setRole(value as UserRole)}
           disabled={loading}
           options={[
-            { value: 'user', label: 'Usuario' },
-            { value: 'admin', label: 'Administrador' },
+            { value: 'user', label: common('user') },
+            { value: 'admin', label: common('admin') },
           ]}
         />
       </div>
@@ -128,7 +131,7 @@ export function CreateUserForm({ onSuccess }: CreateUserFormProps) {
         className="w-full"
         disabled={loading}
       >
-        {loading ? 'Creando usuario...' : 'Crear usuario'}
+        {loading ? t('creatingUser') : t('createUser')}
       </Button>
     </form>
   );

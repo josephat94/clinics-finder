@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAdminUser } from '@/lib/auth-server';
+import { apiMessage } from '@/i18n/api';
 import { getClinicAuditLogs } from '@/lib/clinic-audit';
 import type { ClinicAuditAction } from '@/types/clinic-audit';
 
@@ -24,7 +25,7 @@ export async function GET(request: NextRequest) {
     if (actionParam && actionParam !== 'all') {
       if (!VALID_ACTIONS.has(actionParam as ClinicAuditAction)) {
         return NextResponse.json(
-          { error: 'Acción de filtro no válida' },
+          { error: await apiMessage('invalidFilter') },
           { status: 400 }
         );
       }
@@ -40,6 +41,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(response);
   } catch (error) {
     console.error('Error al obtener historial de clínicas:', error);
-    return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 });
+    return NextResponse.json({ error: await apiMessage('internalError') }, { status: 500 });
   }
 }

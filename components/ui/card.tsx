@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { Popover } from './popover';
 import { Button } from './button';
@@ -23,6 +24,7 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 
 
 const MenuOptions = ({ onEdit, onDelete }: { onEdit?: () => void; onDelete?: () => void }) => {
+  const t = useTranslations('common');
   return (
     <div className="flex flex-col gap-1 min-w-[120px]">
       {onEdit && (
@@ -30,7 +32,7 @@ const MenuOptions = ({ onEdit, onDelete }: { onEdit?: () => void; onDelete?: () 
           onClick={onEdit}
           icon={<FaEdit className="w-4 h-4" />}
         >
-          Editar
+          {t('edit')}
         </ListItem>
       )}
       {onDelete && (
@@ -39,7 +41,7 @@ const MenuOptions = ({ onEdit, onDelete }: { onEdit?: () => void; onDelete?: () 
           icon={<FaTrash className="w-4 h-4" />}
           variant="danger"
         >
-          Eliminar
+          {t('delete')}
         </ListItem>
       )}
     </div>
@@ -77,6 +79,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
         'border-amber-600 dark:border-amber-500 border-2 shadow-lg ring-2 ring-amber-600/30 dark:ring-amber-500/30 bg-amber-50/10 dark:bg-amber-950/10',
     };
 
+    const t = useTranslations('common');
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
     const handleEdit = () => {
@@ -120,7 +123,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
                 variant="ghost"
                 size="sm"
                 className="h-8 w-8 p-0"
-                aria-label="Opciones"
+                aria-label={t('options')}
               >
                 <FaEllipsisV className="w-4 h-4" />
               </Button>

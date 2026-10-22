@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Modal } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
@@ -19,6 +20,8 @@ export function CreateClinicModal({
   onClose,
   onSuccess,
 }: CreateClinicModalProps) {
+  const t = useTranslations("clinics");
+  const common = useTranslations("common");
   const [formData, setFormData] = useState<ClinicInsert>({
     name: "",
     phone: null,
@@ -69,7 +72,7 @@ export function CreateClinicModal({
     try {
       // Validar que el nombre sea requerido
       if (!formData.name || formData.name.trim() === "") {
-        setError("El nombre de la clínica es requerido");
+        setError(t("nameRequired"));
         setIsSubmitting(false);
         return;
       }
@@ -78,7 +81,7 @@ export function CreateClinicModal({
       if (formData.email && formData.email.trim() !== "") {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(formData.email)) {
-          setError("El email no es válido");
+          setError(t("invalidEmail"));
           setIsSubmitting(false);
           return;
         }
@@ -89,7 +92,7 @@ export function CreateClinicModal({
         try {
           new URL(formData.website);
         } catch {
-          setError("La URL del sitio web no es válida");
+          setError(t("invalidWebsite"));
           setIsSubmitting(false);
           return;
         }
@@ -106,7 +109,7 @@ export function CreateClinicModal({
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Error al crear la clínica");
+        throw new Error(data.error || t("createError"));
       }
 
       // Limpiar el formulario
@@ -136,7 +139,7 @@ export function CreateClinicModal({
       }
     } catch (err) {
       const errorMessage =
-        err instanceof Error ? err.message : "Error desconocido al crear la clínica";
+        err instanceof Error ? err.message : t("unknownCreate");
       setError(errorMessage);
     } finally {
       setIsSubmitting(false);
@@ -172,8 +175,8 @@ export function CreateClinicModal({
     <Modal
       open={open}
       onClose={handleClose}
-      title="Agregar Nueva Clínica"
-      description="Completa el formulario para agregar una nueva clínica al sistema."
+      title={t("addTitle")}
+      description={t("addDescription")}
       size="lg"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -185,13 +188,13 @@ export function CreateClinicModal({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
-            label="Nombre de la Clínica *"
+            label={t("clinicName")}
             name="name"
             value={formData.name || ""}
             onChange={handleChange}
             required
-            placeholder="Ej: Clínica Central"
-            error={error?.includes("nombre")}
+            placeholder={t("clinicNamePlaceholder")}
+            error={error === t("nameRequired")}
           />
 
           <div className="flex flex-col gap-3 pt-6">
@@ -208,7 +211,7 @@ export function CreateClinicModal({
                 htmlFor="enabled"
                 className="text-sm font-medium text-zinc-900 dark:text-zinc-100"
               >
-                Clínica habilitada
+                {t("enabled")}
               </label>
             </div>
             <div className="flex items-center gap-2">
@@ -224,7 +227,7 @@ export function CreateClinicModal({
                 htmlFor="banned"
                 className="text-sm font-medium text-zinc-900 dark:text-zinc-100"
               >
-                Clínica en BlackList
+                {t("blacklistLabel")}
               </label>
             </div>
             <div className="flex items-center gap-2">
@@ -240,7 +243,7 @@ export function CreateClinicModal({
                 htmlFor="bilingual"
                 className="text-sm font-medium text-zinc-900 dark:text-zinc-100"
               >
-                Clínica bilingüe
+                {t("bilingualLabel")}
               </label>
             </div>
           </div>
@@ -248,7 +251,7 @@ export function CreateClinicModal({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
-            label="Teléfono"
+            label={t("phoneLabel")}
             name="phone"
             type="tel"
             value={formData.phone || ""}
@@ -257,7 +260,7 @@ export function CreateClinicModal({
           />
 
           <Input
-            label="Teléfono Secundario"
+            label={t("secondaryPhoneLabel")}
             name="secondary_phone"
             type="tel"
             value={formData.secondary_phone || ""}
@@ -278,31 +281,31 @@ export function CreateClinicModal({
         </div>
 
         <Input
-          label="Email"
+          label={common("email")}
           name="email"
           type="email"
           value={formData.email || ""}
           onChange={handleChange}
-          placeholder="clinica@ejemplo.com"
-          error={error?.includes("email")}
+          placeholder={t("emailPlaceholder")}
+          error={error === t("invalidEmail")}
         />
 
         <Input
-          label="Sitio Web"
+          label={t("website")}
           name="website"
           type="url"
           value={formData.website || ""}
           onChange={handleChange}
-          placeholder="https://www.ejemplo.com"
-          error={error?.includes("URL")}
+          placeholder={t("websitePlaceholder")}
+          error={error === t("invalidWebsite")}
         />
 
         <Input
-          label="Dirección"
+          label={t("address")}
           name="address"
           value={formData.address || ""}
           onChange={handleChange}
-          placeholder="Calle Principal 123"
+          placeholder={t("addressPlaceholder")}
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -311,17 +314,17 @@ export function CreateClinicModal({
               value: state.code,
               label: state.name,
             }))}
-            label="Estado"
+            label={t("state")}
             name="state"
             value={formData.state || ""}
             onChange={(value) => setFormData({ ...formData, state: value })}
-            placeholder="Selecciona un estado"
+            placeholder={t("selectState")}
             popoverZIndex={250}
           >
           </Select>
 
           <Input
-            label="Código Postal"
+            label={t("zip")}
             name="zipcode"
             value={formData.zipcode || ""}
             onChange={handleChange}
@@ -334,7 +337,7 @@ export function CreateClinicModal({
             htmlFor="notes"
             className="block text-sm font-medium mb-1.5 text-zinc-900 dark:text-zinc-100"
           >
-            Notas
+            {t("notesLabel")}
           </label>
           <textarea
             id="notes"
@@ -342,7 +345,7 @@ export function CreateClinicModal({
             value={formData.notes || ""}
             onChange={handleChange}
             rows={4}
-            placeholder="Notas adicionales sobre la clínica..."
+            placeholder={t("notesPlaceholder")}
             className="flex w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-base text-black dark:text-zinc-100 transition-colors placeholder:text-zinc-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black dark:focus-visible:ring-white focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           />
         </div>
@@ -354,7 +357,7 @@ export function CreateClinicModal({
             disabled={isSubmitting}
             className="flex-1"
           >
-            {isSubmitting ? "Guardando..." : "Guardar Clínica"}
+            {isSubmitting ? t("saving") : t("saveClinic")}
           </Button>
           <Button
             type="button"
@@ -363,7 +366,7 @@ export function CreateClinicModal({
             disabled={isSubmitting}
             className="flex-1"
           >
-            Cancelar
+            {common("cancel")}
           </Button>
         </div>
       </form>
