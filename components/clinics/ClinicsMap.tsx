@@ -171,9 +171,17 @@ const clinicRankLayer: LayerProps = {
 type MapPointerEvent = {
   features?: Array<{
     properties?: Record<string, unknown> | null;
-    geometry?: { coordinates?: number[] };
+    geometry?: { type?: string; coordinates?: unknown };
   }>;
 };
+
+function readLngLat(coordinates: unknown): [number, number] | null {
+  if (!Array.isArray(coordinates) || coordinates.length < 2) return null;
+  const lng = coordinates[0];
+  const lat = coordinates[1];
+  if (typeof lng !== 'number' || typeof lat !== 'number') return null;
+  return [lng, lat];
+}
 
 export function ClinicsMap({
   userLocation,
@@ -305,15 +313,10 @@ export function ClinicsMap({
       const feature = event.features?.[0];
       const id = feature?.properties?.id;
       const name = feature?.properties?.name;
-      const coordinates = feature?.geometry?.coordinates;
+      const point = readLngLat(feature?.geometry?.coordinates);
       const map = mapRef.current?.getMap?.();
 
-      if (
-        typeof id === 'string' &&
-        typeof name === 'string' &&
-        Array.isArray(coordinates) &&
-        coordinates.length >= 2
-      ) {
+      if (typeof id === 'string' && typeof name === 'string' && point) {
         if (pointerRef.current?.id === id) {
           if (map) map.getCanvas().style.cursor = 'pointer';
           return;
@@ -321,8 +324,8 @@ export function ClinicsMap({
         pointerRef.current = {
           id,
           name,
-          lng: Number(coordinates[0]),
-          lat: Number(coordinates[1]),
+          lng: point[0],
+          lat: point[1],
         };
         if (map) map.getCanvas().style.cursor = 'pointer';
       } else {
