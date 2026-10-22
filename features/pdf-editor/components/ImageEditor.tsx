@@ -1,6 +1,6 @@
 "use client";
 
-import { Lock, LockOpen, Copy } from "@phosphor-icons/react";
+import { Lock, LockOpen, Copy, Trash } from "@phosphor-icons/react";
 import { motion } from "motion/react";
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
@@ -12,13 +12,14 @@ type Props = {
   annotation: ImageAnnotation;
   onChange: (patch: Partial<ImageAnnotation>) => void;
   onClone?: () => void;
+  onDelete?: () => void;
 };
 
 const EditorLabel = ({ children }: { children: React.ReactNode }) => (
   <Label className="text-sm font-semibold text-hub-fg">{children}</Label>
 );
 
-export function ImageEditor({ annotation, onChange, onClone }: Props) {
+export function ImageEditor({ annotation, onChange, onClone, onDelete }: Props) {
   const t = useTranslations("pdfEditor");
   const [aspectRatio, setAspectRatio] = useState(
     annotation.width / annotation.height
@@ -113,21 +114,37 @@ export function ImageEditor({ annotation, onChange, onClone }: Props) {
             )}
           </Button>
         </div>
-        {onClone && (
-          <div className="flex flex-col gap-1">
+        {(onClone || onDelete) && (
+          <div className="flex flex-col gap-2">
             <div className="h-4"></div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={(e) => {
-                e.stopPropagation();
-                onClone();
-              }}
-              className="whitespace-nowrap"
-              title="Clonar esta firma"
-            >
-              <Copy size={18} aria-hidden="true" /> Duplicar
-            </Button>
+            {onClone && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onClone();
+                }}
+                className="whitespace-nowrap"
+                title="Clonar esta firma"
+              >
+                <Copy size={18} aria-hidden="true" /> Duplicar
+              </Button>
+            )}
+            {onDelete && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete();
+                }}
+                className="whitespace-nowrap border-hub-danger text-hub-danger hover:bg-red-50"
+                title={t("deleteElement")}
+              >
+                <Trash size={18} aria-hidden="true" /> {t("deleteElement")}
+              </Button>
+            )}
           </div>
         )}
       </div>

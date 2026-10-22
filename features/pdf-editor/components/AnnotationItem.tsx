@@ -1,4 +1,5 @@
 import { useTranslations } from "next-intl";
+import { placeFloatingEditor } from "@/features/pdf-editor/lib/placeFloatingEditor";
 import { AnnotationEditor } from "./AnnotationEditor";
 import type { TextAnnotation } from "@/features/pdf-editor/stores/annotationsStore";
 import { AnimatePresence } from "motion/react";
@@ -24,6 +25,7 @@ type Props = {
   onSelect: (id: string) => void;
   onChange: (id: string, patch: Partial<TextAnnotation>) => void;
   onClone?: (id: string) => void;
+  onDelete?: (id: string) => void;
   onMeasure?: (id: string, box: { width: number; height: number }) => void;
 };
 
@@ -36,6 +38,7 @@ export function AnnotationItem({
   onSelect,
   onChange,
   onClone,
+  onDelete,
   onMeasure,
 }: Props) {
   const t = useTranslations("pdfEditor");
@@ -97,26 +100,8 @@ export function AnnotationItem({
       event.preventDefault();
 
       // Encontrar el contenedor principal para calcular el incremento relativo
-      const findMainContainer = (
-        el: HTMLElement | null
-      ): HTMLElement | null => {
-        if (!el) return null;
-        let current: HTMLElement | null = el.parentElement;
-        while (current) {
-          if (
-            current.classList.contains("relative") &&
-            current.classList.contains("overflow-hidden") &&
-            current.classList.contains("shadow-inner")
-          ) {
-            return current;
-          }
-          current = current.parentElement;
-        }
-        return null;
-      };
-
-      const container = findMainContainer(divRef.current);
-      if (!container) return;
+      const container = divRef.current?.closest("[data-pdf-stage]");
+      if (!(container instanceof HTMLElement)) return;
 
       const containerRect = container.getBoundingClientRect();
 
@@ -161,97 +146,18 @@ export function AnnotationItem({
       return;
     }
 
-    // Buscar el contenedor principal (CardContent con overflow-hidden)
-    // Este es el contenedor del cual no queremos que se desborde el editor
-    const findMainContainer = (el: HTMLElement | null): HTMLElement | null => {
-      if (!el) return null;
-      let current: HTMLElement | null = el.parentElement;
-      while (current) {
-        // Buscar el CardContent que tiene overflow-hidden y shadow-inner
-        if (
-          current.classList.contains("relative") &&
-          current.classList.contains("overflow-hidden") &&
-          current.classList.contains("shadow-inner")
-        ) {
-          return current;
-        }
-        current = current.parentElement;
-      }
-      return null;
-    };
+    const stageEl = divRef.current.closest("[data-pdf-stage]");
+    const stage = stageEl instanceof HTMLElement ? stageEl : null;
 
-    const mainContainer = findMainContainer(divRef.current);
-    if (!mainContainer) return;
-
-    // Función para calcular y actualizar la posición usando position: fixed
     const calculatePosition = () => {
       if (!divRef.current || !editorRef.current) return;
-
-      const textRect = divRef.current.getBoundingClientRect();
-      const editorRect = editorRef.current.getBoundingClientRect();
-      const containerRect = mainContainer.getBoundingClientRect();
-
-      const editorHeight = editorRect.height || 200;
-      const editorWidth = editorRect.width || 400;
-      const padding = 16; // Padding del contenedor
-      const margin = 8; // Margen entre texto y editor
-
-      // Límites del contenedor (CardContent)
-      const containerTop = containerRect.top + padding;
-      const containerBottom = containerRect.bottom - padding;
-      const containerLeft = containerRect.left + padding;
-      const containerRight = containerRect.right - padding;
-
-      // Calcular espacio disponible
-      const spaceAbove = textRect.top - containerTop;
-      const spaceBelow = containerBottom - textRect.bottom;
-
-      // Decidir si poner arriba o abajo
-      const shouldPlaceAbove =
-        spaceAbove >= editorHeight + margin &&
-        (spaceAbove >= spaceBelow || spaceBelow < editorHeight + margin);
-
-      // Calcular posición vertical (en píxeles desde el top del viewport)
-      let top: number;
-      if (shouldPlaceAbove) {
-        // Colocar arriba del texto
-        top = textRect.top - editorHeight - margin;
-        // Asegurar que no se salga por arriba
-        top = Math.max(containerTop, top);
-      } else {
-        // Colocar abajo del texto
-        top = textRect.bottom + margin;
-        // Asegurar que no se salga por abajo
-        const maxTop = containerBottom - editorHeight;
-        top = Math.min(maxTop, top);
-      }
-
-      // Calcular posición horizontal (centrado en el texto)
-      let left = textRect.left + textRect.width / 2 - editorWidth / 2;
-
-      // Ajustar si se sale por la izquierda
-      if (left < containerLeft) {
-        left = containerLeft;
-      }
-
-      // Ajustar si se sale por la derecha
-      if (left + editorWidth > containerRight) {
-        left = containerRight - editorWidth;
-      }
-
-      // Si el editor es más ancho que el contenedor, centrarlo
-      if (editorWidth > containerRight - containerLeft) {
-        left =
-          containerLeft +
-          (containerRight - containerLeft) / 2 -
-          editorWidth / 2;
-      }
-
-      setEditorPosition({
-        top,
-        left,
-        placement: shouldPlaceAbove ? "above" : "below",
-      });
+      setEditorPosition(
+        placeFloatingEditor(
+          divRef.current,
+          editorRef.current,
+          stage
+        )
+      );
     };
 
     // Ejecutar inmediatamente
@@ -270,15 +176,15 @@ export function AnnotationItem({
     }
 
     // Observar cambios en el contenedor principal (CardContent)
-    if (mainContainer) {
+    if (stage) {
       containerResizeObserver = new ResizeObserver(calculatePosition);
-      containerResizeObserver.observe(mainContainer);
+      containerResizeObserver.observe(stage);
     }
 
     // Observar scroll del contenedor principal y de la ventana
     const handleScroll = () => calculatePosition();
-    if (mainContainer) {
-      mainContainer.addEventListener("scroll", handleScroll, {
+    if (stage) {
+      stage.addEventListener("scroll", handleScroll, {
         passive: true,
       });
     }
@@ -289,8 +195,8 @@ export function AnnotationItem({
       clearTimeout(timeoutId);
       resizeObserver?.disconnect();
       containerResizeObserver?.disconnect();
-      if (mainContainer) {
-        mainContainer.removeEventListener("scroll", handleScroll);
+      if (stage) {
+        stage.removeEventListener("scroll", handleScroll);
       }
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleScroll);
@@ -344,6 +250,7 @@ export function AnnotationItem({
               annotation={annotation}
               onChange={(patch) => onChange(annotation.id, patch)}
               onClone={onClone ? () => onClone(annotation.id) : undefined}
+              onDelete={onDelete ? () => onDelete(annotation.id) : undefined}
             />
           </div>
         )}

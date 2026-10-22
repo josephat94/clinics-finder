@@ -8,6 +8,7 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { useTranslations } from "next-intl";
+import { placeFloatingEditor } from "@/features/pdf-editor/lib/placeFloatingEditor";
 import { AnimatePresence } from "motion/react";
 import type { ImageAnnotation } from "@/features/pdf-editor/stores/annotationsStore";
 import { ImageEditor } from "./ImageEditor";
@@ -22,6 +23,7 @@ type Props = {
   onSelect: (id: string) => void;
   onChange: (id: string, patch: Partial<ImageAnnotation>) => void;
   onClone?: (id: string) => void;
+  onDelete?: (id: string) => void;
 };
 
 export function ImageAnnotationItem({
@@ -32,6 +34,7 @@ export function ImageAnnotationItem({
   onSelect,
   onChange,
   onClone,
+  onDelete,
 }: Props) {
   const t = useTranslations("pdfEditor");
   const imgRef = useRef<HTMLDivElement>(null);
@@ -55,26 +58,8 @@ export function ImageAnnotationItem({
 
       event.preventDefault();
 
-      const findMainContainer = (
-        el: HTMLElement | null
-      ): HTMLElement | null => {
-        if (!el) return null;
-        let current: HTMLElement | null = el.parentElement;
-        while (current) {
-          if (
-            current.classList.contains("relative") &&
-            current.classList.contains("overflow-hidden") &&
-            current.classList.contains("shadow-inner")
-          ) {
-            return current;
-          }
-          current = current.parentElement;
-        }
-        return null;
-      };
-
-      const container = findMainContainer(imgRef.current);
-      if (!container) return;
+      const container = imgRef.current?.closest("[data-pdf-stage]");
+      if (!(container instanceof HTMLElement)) return;
 
       const containerRect = container.getBoundingClientRect();
       const pixelIncrement = event.shiftKey ? 10 : 1;
@@ -115,81 +100,14 @@ export function ImageAnnotationItem({
       return;
     }
 
-    const findMainContainer = (el: HTMLElement | null): HTMLElement | null => {
-      if (!el) return null;
-      let current: HTMLElement | null = el.parentElement;
-      while (current) {
-        if (
-          current.classList.contains("relative") &&
-          current.classList.contains("overflow-hidden") &&
-          current.classList.contains("shadow-inner")
-        ) {
-          return current;
-        }
-        current = current.parentElement;
-      }
-      return null;
-    };
-
-    const mainContainer = findMainContainer(imgRef.current);
-    if (!mainContainer) return;
+    const stageEl = imgRef.current.closest("[data-pdf-stage]");
+    const stage = stageEl instanceof HTMLElement ? stageEl : null;
 
     const calculatePosition = () => {
       if (!imgRef.current || !editorRef.current) return;
-
-      const imageRect = imgRef.current.getBoundingClientRect();
-      const editorRect = editorRef.current.getBoundingClientRect();
-      const containerRect = mainContainer.getBoundingClientRect();
-
-      const editorHeight = editorRect.height || 200;
-      const editorWidth = editorRect.width || 400;
-      const padding = 16;
-      const margin = 8;
-
-      const containerTop = containerRect.top + padding;
-      const containerBottom = containerRect.bottom - padding;
-      const containerLeft = containerRect.left + padding;
-      const containerRight = containerRect.right - padding;
-
-      const spaceAbove = imageRect.top - containerTop;
-      const spaceBelow = containerBottom - imageRect.bottom;
-
-      const shouldPlaceAbove =
-        spaceAbove >= editorHeight + margin &&
-        (spaceAbove >= spaceBelow || spaceBelow < editorHeight + margin);
-
-      let top: number;
-      if (shouldPlaceAbove) {
-        top = imageRect.top - editorHeight - margin;
-        top = Math.max(containerTop, top);
-      } else {
-        top = imageRect.bottom + margin;
-        const maxTop = containerBottom - editorHeight;
-        top = Math.min(maxTop, top);
-      }
-
-      let left = imageRect.left + imageRect.width / 2 - editorWidth / 2;
-
-      if (left < containerLeft) {
-        left = containerLeft;
-      }
-
-      if (left + editorWidth > containerRight) {
-        left = containerRight - editorWidth;
-      }
-
-      if (editorWidth > containerRight - containerLeft) {
-        left =
-          containerLeft +
-          (containerRight - containerLeft) / 2 -
-          editorWidth / 2;
-      }
-
-      setEditorPosition({
-        top,
-        left,
-        placement: shouldPlaceAbove ? "above" : "below",
-      });
+      setEditorPosition(
+        placeFloatingEditor(imgRef.current, editorRef.current, stage)
+      );
     };
 
     calculatePosition();
@@ -203,14 +121,14 @@ export function ImageAnnotationItem({
       resizeObserver.observe(editorRef.current);
     }
 
-    if (mainContainer) {
+    if (stage) {
       containerResizeObserver = new ResizeObserver(calculatePosition);
-      containerResizeObserver.observe(mainContainer);
+      containerResizeObserver.observe(stage);
     }
 
     const handleScroll = () => calculatePosition();
-    if (mainContainer) {
-      mainContainer.addEventListener("scroll", handleScroll, {
+    if (stage) {
+      stage.addEventListener("scroll", handleScroll, {
         passive: true,
       });
     }
@@ -221,8 +139,8 @@ export function ImageAnnotationItem({
       clearTimeout(timeoutId);
       resizeObserver?.disconnect();
       containerResizeObserver?.disconnect();
-      if (mainContainer) {
-        mainContainer.removeEventListener("scroll", handleScroll);
+      if (stage) {
+        stage.removeEventListener("scroll", handleScroll);
       }
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleScroll);
@@ -246,7 +164,7 @@ export function ImageAnnotationItem({
           onSelect(annotation.id);
         }}
         className={`cursor-move ${
-          isSelected ? "ring-2 ring-blue-500 ring-offset-2" : ""
+          isSelected ? "ring-2 ring-hub-primary ring-offset-2" : ""
         }`}
         style={{
           width: `${annotation.width}px`,
@@ -277,6 +195,7 @@ export function ImageAnnotationItem({
               annotation={annotation}
               onChange={(patch) => onChange(annotation.id, patch)}
               onClone={onClone ? () => onClone(annotation.id) : undefined}
+              onDelete={onDelete ? () => onDelete(annotation.id) : undefined}
             />
           </div>
         )}

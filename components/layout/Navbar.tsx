@@ -58,7 +58,7 @@ export function Navbar() {
                 )}
               </>
             )}
-            <LocaleSwitcher />
+            {!isAuthenticated && <LocaleSwitcher />}
             <AuthButton />
           </div>
         </div>

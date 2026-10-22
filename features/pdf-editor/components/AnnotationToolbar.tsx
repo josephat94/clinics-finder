@@ -61,7 +61,7 @@ export function AnnotationToolbar({
         <Rectangle size={22} aria-hidden="true" />
       </ToolButton>
 
-      <div className="mx-1 h-6 w-px bg-[#fde68a] lg:my-1 lg:h-px lg:w-6" />
+      <div className="mx-1 h-6 w-px bg-hub-border lg:my-1 lg:h-px lg:w-6" />
 
       <ToolButton label={t("clear")} onClick={onClear}>
         <Eraser size={22} aria-hidden="true" />

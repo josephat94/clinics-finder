@@ -149,10 +149,10 @@ export default function SearchClinicClient() {
       <div className="glass-bar shrink-0 flex items-center justify-between p-4">
         <div>
           <h1 className="text-xl font-bold text-hub-fg">
-            {t('nearbyTitle', { count: clinics.length })}
+            {t("nearbyTitle", { count: clinics.length })}
           </h1>
           <p className="text-sm text-hub-muted mt-0.5">
-            {t('nearbySubtitle', { count: clinics.length })}{' '}
+            {t("nearbySubtitle", { count: clinics.length })}{" "}
             <span className="font-medium">{search}</span>
           </p>
         </div>
@@ -164,11 +164,11 @@ export default function SearchClinicClient() {
             size="sm"
             className="md:hidden"
           >
-            {showMap ? t('viewList') : t('viewMap')}
+            {showMap ? t("viewList") : t("viewMap")}
           </Button>
           <Button onClick={handleBack} variant="outline" size="sm">
             <FaArrowLeft className="mr-2" />
-            {common('back')}
+            {common("back")}
           </Button>
         </div>
       </div>
@@ -176,10 +176,14 @@ export default function SearchClinicClient() {
       {/* Layout de dos columnas */}
       <div className="flex-1 flex overflow-y-auto max-h-[calc(100vh-10rem)]">
         {/* Columna izquierda: Lista de cards */}
-        <div className={`${showMap ? 'hidden' : 'flex'} md:flex glass-card w-full sm:w-1/2 lg:w-2/5 xl:w-1/3 flex-col border-r border-white/60 min-h-0`}>
+        <div
+          className={`${showMap ? "hidden" : "flex"} md:flex glass-card w-full sm:w-1/2 lg:w-2/5 xl:w-1/3 flex-col border-r border-white/60 min-h-0`}
+        >
           <div className="flex-1 p-4 space-y-8 min-h-0">
             {clinics.map((clinic, index) => {
-              const hasTravelTime = clinic.travelTime?.duration.value !== undefined && clinic.travelTime?.duration.value !== null;
+              const hasTravelTime =
+                clinic.travelTime?.duration.value !== undefined &&
+                clinic.travelTime?.duration.value !== null;
               const isSelected = selectedClinicId === clinic.id;
               const isHovered = hoveredClinicId === clinic.id;
               const lat = (clinic as any).lat;
@@ -187,25 +191,41 @@ export default function SearchClinicClient() {
 
               return (
                 <Card
-                variant={index === 0 ? 'first' : index === 1 ? 'second' : index === 2 ? 'third' : 'normal'}
+                  variant={
+                    index === 0
+                      ? "first"
+                      : index === 1
+                        ? "second"
+                        : index === 2
+                          ? "third"
+                          : "normal"
+                  }
                   key={clinic.id}
-                  
                   onClick={() => handleClinicClick(clinic.id)}
                   onMouseEnter={() => setHoveredClinicId(clinic.id)}
                   onMouseLeave={() => setHoveredClinicId(null)}
                   className={`
                     cursor-pointer transition-all duration-200
-                    ${isSelected ? 'ring-2 ring-blue-500 shadow-lg' : ''}
-                    ${isHovered ? 'shadow-md scale-[1.02]' : ''}
-                    ${clinic.banned ? 'opacity-80 border-red-500 dark:border-red-600 bg-red-50/30 dark:bg-red-950/20' : ''}
+                    ${isSelected ? "ring-2 ring-hub-primary shadow-lg" : ""}
+                    ${isHovered ? "shadow-md scale-[1.02]" : ""}
+                    ${clinic.banned ? "opacity-80 border-red-500 dark:border-red-600 bg-red-50/30 dark:bg-red-950/20" : ""}
                   `}
                   travelTime={clinic.travelTime}
-                  
                   floatingBadge={
                     hasTravelTime ? (
-                      <Badge variant={index === 0 ? 'primary' : index === 1 ? 'secondary' : index === 2 ? 'warning' : 'default'} size="lg">
+                      <Badge
+                        variant={
+                          index === 0
+                            ? "primary"
+                            : index === 1
+                              ? "secondary"
+                              : index === 2
+                                ? "warning"
+                                : "default"
+                        }
+                        size="lg"
+                      >
                         {clinic.travelTime?.duration.text}
-                        
                       </Badge>
                     ) : undefined
                   }
@@ -213,12 +233,12 @@ export default function SearchClinicClient() {
                     <>
                       {clinic.banned && (
                         <Badge variant="danger" size="sm">
-                          {clinicsT('blacklist')}
+                          {clinicsT("blacklist")}
                         </Badge>
                       )}
                       {!clinic.enabled && (
                         <Badge variant="warning" size="sm">
-                          {clinicsT('disabled')}
+                          {clinicsT("disabled")}
                         </Badge>
                       )}
                     </>
@@ -232,7 +252,9 @@ export default function SearchClinicClient() {
         </div>
 
         {/* Columna derecha: Mapa */}
-        <div className={`${showMap ? 'flex' : 'hidden'} sm:flex flex-1 bg-[#dbeafe]/70 min-h-0 overflow-hidden sticky top-0 px-6 rounded-3xl`}>
+        <div
+          className={`${showMap ? "flex" : "hidden"} sm:flex flex-1 bg-transparent  sticky top-0 px-6 rounded-3xl`}
+        >
           <ClinicsMap
             userLocation={userLocation}
             clinics={clinics}

@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { cn } from '@/lib/utils';
 
@@ -23,10 +25,10 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     },
     ref
   ) => {
-    const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
+    const inputId = id || React.useId();
 
     const baseStyles =
-      'glass-field flex w-full min-h-11 rounded-2xl border border-transparent px-3 py-2 text-base text-hub-fg transition-shadow duration-200 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-hub-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0f172a] focus-visible:ring-offset-2 focus-visible:ring-offset-hub-bg disabled:cursor-not-allowed disabled:opacity-50';
+      'glass-field flex w-full min-h-11 rounded-xl border border-transparent px-3 py-2 text-base text-hub-fg transition-shadow duration-200 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-hub-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hub-primary focus-visible:ring-offset-2 focus-visible:ring-offset-hub-bg disabled:cursor-not-allowed disabled:opacity-50';
 
     const stateStyles = error
       ? 'ring-2 ring-hub-danger'

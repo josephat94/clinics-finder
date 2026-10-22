@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter } from "next/font/google";
+import { Atkinson_Hyperlegible, Geist, Geist_Mono } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import "./globals.css";
@@ -16,9 +16,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const inter = Inter({
-  variable: "--font-inter",
+const atkinson = Atkinson_Hyperlegible({
+  variable: "--font-atkinson",
   subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -40,7 +41,7 @@ export default async function RootLayout({
   return (
     <html lang={locale}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${atkinson.variable} antialiased`}
       >
         <NextIntlClientProvider messages={messages}>
           <AuthProvider>

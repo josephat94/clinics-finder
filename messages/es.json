@@ -32,7 +32,8 @@
     "unnamed": "Sin nombre",
     "user": "Usuario",
     "admin": "Administrador",
-    "selectOption": "Selecciona una opción"
+    "selectOption": "Selecciona una opción",
+    "userMenu": "Menú de usuario"
   },
   "auth": {
     "loginTitle": "Iniciar sesión",
@@ -116,6 +117,11 @@
     "mapboxMissing": "Error: La API key de Mapbox no está configurada. Agrega NEXT_PUBLIC_MAPBOX_API_TOKEN a tus variables de entorno.",
     "centerOnMe": "Centrar en mi ubicación",
     "closeDetail": "Cerrar detalle",
+    "streetView": "Vista de la calle de la clínica",
+    "loadingStreetView": "Cargando Street View...",
+    "streetViewUnavailable": "No hay foto de Street View en este punto.",
+    "streetViewError": "No se pudo cargar Street View.",
+    "openStreetView": "Abrir Street View",
     "bilingual": "Bilingüe",
     "phone": "Tel",
     "secondaryPhone": "Tel Secundario",
@@ -333,7 +339,8 @@
     "ratioFree": "Proporción libre",
     "fill": "Fondo",
     "stroke": "Borde",
-    "resize": "Cambiar tamaño {dir}"
+    "resize": "Cambiar tamaño {dir}",
+    "deleteElement": "Eliminar"
   },
   "api": {
     "clinicIdRequired": "ID de clínica es requerido",

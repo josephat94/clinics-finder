@@ -66,6 +66,10 @@ export function PdfUploader() {
     page: number;
   } | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const handleDelete = (id: string) => {
+    removeAnnotation(id);
+    setSelectedId((current) => (current === id ? null : current));
+  };
   const previousSelectedId = useRef<string | null>(null);
 
   useEffect(() => {
@@ -339,7 +343,7 @@ export function PdfUploader() {
             </CardHeader>
             {isDragging && (
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
-                <div className="flex flex-col items-center gap-4 text-hub-accent">
+                <div className="flex flex-col items-center gap-4 text-[#15803d]">
                   <div className="relative">
                     <div className="absolute inset-0 rounded-full bg-hub-primary/30 blur-xl motion-safe:animate-pulse"></div>
                     <svg
@@ -417,6 +421,7 @@ export function PdfUploader() {
         </CardHeader>
         <CardContent
           ref={containerRef}
+          data-pdf-stage
           className="relative min-h-[400px] w-full overflow-hidden rounded-2xl border border-white/80 bg-white/80 p-4"
           onClick={() => setSelectedId(null)}
         >
@@ -477,6 +482,7 @@ export function PdfUploader() {
                                     setSelectedId(newId);
                                   }
                                 }}
+                                onDelete={handleDelete}
                                 onMeasure={(id, box) =>
                                   updateAnnotation(id, {
                                     boxWidth: box.width,
@@ -503,6 +509,7 @@ export function PdfUploader() {
                                     setSelectedId(newId);
                                   }
                                 }}
+                                onDelete={handleDelete}
                               />
                             );
                           } else if (ann.type === "shape") {
@@ -523,6 +530,7 @@ export function PdfUploader() {
                                     setSelectedId(newId);
                                   }
                                 }}
+                                onDelete={handleDelete}
                               />
                             );
                           }

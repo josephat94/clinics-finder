@@ -45,8 +45,8 @@ export const SearchIntoInvetory = ({
   };
 
   return (
-    <div className="flex items-center gap-4">
-      <div className="flex items-center h-full min-w-[300px]">
+    <div className="flex items-center gap-4 flex-col md:flex-row">
+      <div className="flex items-center h-full min-w-[300px] w-full md:w-auto">
         <Select
           options={options.map((option) => ({
             value: option.code,
@@ -57,9 +57,7 @@ export const SearchIntoInvetory = ({
           placeholder={t("selectState")}
           value={state}
           onChange={setState}
-        >
-          
-        </Select>
+        ></Select>
       </div>
       <Input
         label={t("searchByAddress")}
@@ -67,7 +65,7 @@ export const SearchIntoInvetory = ({
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         onKeyDown={(e) => {
-          if (e.key === 'Enter' && state && search) {
+          if (e.key === "Enter" && state && search) {
             handleSearch();
           }
         }}
@@ -76,7 +74,7 @@ export const SearchIntoInvetory = ({
         <label className="block text-sm font-medium mb-1.5 text-zinc-900 dark:text-zinc-100 invisible">
           acciones
         </label>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 justify-end md:justify-start">
           <Button
             onClick={handleSearch}
             disabled={!state || !search}
@@ -84,6 +82,7 @@ export const SearchIntoInvetory = ({
             title={t("search")}
           >
             <FaSearch />
+            <span className="block md:hidden">{t("search")}</span>
           </Button>
           <Button
             variant="outline"
@@ -92,6 +91,7 @@ export const SearchIntoInvetory = ({
             size="md"
             title={t("clearFilters")}
           >
+            <span className="block md:hidden">{t("clearFilters")}</span>
             <FaTrash />
           </Button>
         </div>

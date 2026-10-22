@@ -12,10 +12,10 @@ export default function LandingPage() {
       <section className="relative overflow-hidden px-4 py-20 sm:py-32">
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
-            <h1 className="font-heading text-5xl font-bold tracking-tight text-hub-fg sm:text-6xl lg:text-7xl">
+            <h1 className="font-heading text-balance text-5xl font-bold tracking-tight text-hub-fg sm:text-6xl lg:text-7xl">
               {t.rich('heroTitle', {
                 accent: (chunks) => (
-                  <span className="text-hub-accent">{chunks}</span>
+                  <span className="text-[#15803d]">{chunks}</span>
                 ),
               })}
             </h1>
@@ -52,7 +52,7 @@ export default function LandingPage() {
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             <Card className="glass-card glass-card-hover p-8">
               <div className="mb-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fef3c7]">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-hub-border">
                   <svg
                     className="h-6 w-6 text-hub-fg"
                     fill="none"
@@ -112,7 +112,7 @@ export default function LandingPage() {
 
             <Card className="glass-card glass-card-hover p-8">
               <div className="mb-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fef3c7]">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-hub-border">
                   <svg
                     className="h-6 w-6 text-hub-fg"
                     fill="none"
@@ -166,7 +166,7 @@ export default function LandingPage() {
 
             <Card className="glass-card glass-card-hover p-8">
               <div className="mb-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fef3c7]">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-hub-border">
                   <svg
                     className="h-6 w-6 text-hub-fg"
                     fill="none"

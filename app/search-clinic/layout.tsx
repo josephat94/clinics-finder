@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Atkinson_Hyperlegible, Geist, Geist_Mono } from "next/font/google";
 import { getLocale, getTranslations } from "next-intl/server";
 import "../globals.css";
 
@@ -11,6 +11,12 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const atkinson = Atkinson_Hyperlegible({
+  variable: "--font-atkinson",
+  subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -30,7 +36,7 @@ export default async function RootLayout({
   return (
     <html lang={locale} className="overflow-y-hidden">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${atkinson.variable} antialiased`}
       >
 
           {children}

@@ -8,6 +8,7 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { useTranslations } from "next-intl";
+import { placeFloatingEditor } from "@/features/pdf-editor/lib/placeFloatingEditor";
 import { AnimatePresence } from "motion/react";
 import type { ShapeAnnotation } from "@/features/pdf-editor/stores/annotationsStore";
 import { ShapeEditor } from "./ShapeEditor";
@@ -24,6 +25,7 @@ type Props = {
   onSelect: (id: string) => void;
   onChange: (id: string, patch: Partial<ShapeAnnotation>) => void;
   onClone?: (id: string) => void;
+  onDelete?: (id: string) => void;
 };
 
 const HANDLES: { dir: ResizeDir; className: string; cursor: string }[] = [
@@ -58,6 +60,7 @@ export function ShapeAnnotationItem({
   onSelect,
   onChange,
   onClone,
+  onDelete,
 }: Props) {
   const t = useTranslations("pdfEditor");
   const boxRef = useRef<HTMLDivElement>(null);
@@ -131,19 +134,16 @@ export function ShapeAnnotationItem({
   useLayoutEffect(() => {
     if (!isSelected || !boxRef.current) return;
 
+    const stage = boxRef.current.closest("[data-pdf-stage]");
+
     const update = () => {
-      if (!boxRef.current) return;
-      const rect = boxRef.current.getBoundingClientRect();
-      const editorWidth = editorRef.current?.offsetWidth ?? 280;
-      const margin = 8;
-      let left = rect.left;
-      let top = rect.bottom + margin;
-      const maxLeft = window.innerWidth - editorWidth - 8;
-      left = Math.max(8, Math.min(left, maxLeft));
-      if (top + 80 > window.innerHeight) {
-        top = Math.max(8, rect.top - 80 - margin);
-      }
-      setEditorPosition({ top, left });
+      if (!boxRef.current || !editorRef.current) return;
+      const next = placeFloatingEditor(
+        boxRef.current,
+        editorRef.current,
+        stage instanceof HTMLElement ? stage : null
+      );
+      setEditorPosition({ top: next.top, left: next.left });
     };
 
     update();
@@ -270,7 +270,7 @@ export function ShapeAnnotationItem({
           onSelect(annotation.id);
         }}
         className={`relative cursor-move border-solid ${
-          isSelected ? "ring-2 ring-blue-500 ring-offset-1" : ""
+          isSelected ? "ring-2 ring-hub-primary ring-offset-1" : ""
         }`}
         style={{
           width: `${annotation.width}px`,
@@ -311,6 +311,7 @@ export function ShapeAnnotationItem({
               annotation={annotation}
               onChange={(patch) => onChange(annotation.id, patch)}
               onClone={onClone ? () => onClone(annotation.id) : undefined}
+              onDelete={onDelete ? () => onDelete(annotation.id) : undefined}
             />
           </div>
         )}

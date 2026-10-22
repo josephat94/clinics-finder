@@ -302,7 +302,7 @@ export function ClinicModal({
                 name="bilingual"
                 checked={formData.bilingual ?? false}
                 onChange={handleCheckboxChange}
-                className="h-4 w-4 rounded border-zinc-300 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-zinc-700 dark:text-blue-400 dark:focus:ring-blue-500"
+                className="h-4 w-4 rounded border-zinc-300 text-[#0f766e] focus:ring-2 focus:ring-hub-primary dark:border-zinc-700 dark:text-blue-400 dark:focus:ring-blue-500"
               />
               <label
                 htmlFor="bilingual"

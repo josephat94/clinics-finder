@@ -15,7 +15,7 @@ const ListItem = React.forwardRef<HTMLButtonElement, ListItemProps>(
 
     const variants = {
       default:
-        'text-hub-fg hover:bg-[#fef3c7]',
+        'text-hub-fg hover:bg-hub-border',
       danger:
         'text-hub-danger hover:bg-red-50',
     };

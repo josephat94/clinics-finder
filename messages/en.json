@@ -32,7 +32,8 @@
     "unnamed": "Unnamed",
     "user": "User",
     "admin": "Administrator",
-    "selectOption": "Select an option"
+    "selectOption": "Select an option",
+    "userMenu": "User menu"
   },
   "auth": {
     "loginTitle": "Sign in",
@@ -116,6 +117,11 @@
     "mapboxMissing": "Error: the Mapbox API key is not configured. Add NEXT_PUBLIC_MAPBOX_API_TOKEN to your environment variables.",
     "centerOnMe": "Center on my location",
     "closeDetail": "Close details",
+    "streetView": "Street view of the clinic",
+    "loadingStreetView": "Loading Street View...",
+    "streetViewUnavailable": "There is no Street View photo at this spot.",
+    "streetViewError": "Street View could not be loaded.",
+    "openStreetView": "Open Street View",
     "bilingual": "Bilingual",
     "phone": "Tel",
     "secondaryPhone": "Secondary phone",
@@ -333,7 +339,8 @@
     "ratioFree": "Free aspect ratio",
     "fill": "Fill",
     "stroke": "Border",
-    "resize": "Resize {dir}"
+    "resize": "Resize {dir}",
+    "deleteElement": "Delete"
   },
   "api": {
     "clinicIdRequired": "Clinic ID is required",

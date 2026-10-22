@@ -12,14 +12,14 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const baseStyles =
-  "inline-flex cursor-pointer items-center justify-center gap-2 rounded-2xl font-medium transition-[opacity,box-shadow,background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0f172a] focus-visible:ring-offset-2 focus-visible:ring-offset-hub-bg disabled:pointer-events-none disabled:opacity-50";
+  "inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl font-medium transition-[opacity,box-shadow,background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hub-primary focus-visible:ring-offset-2 focus-visible:ring-offset-hub-bg disabled:pointer-events-none disabled:opacity-50";
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-hub-accent text-white shadow-[0_8px_18px_rgba(37,99,235,0.28)] hover:opacity-90",
+    "bg-hub-accent text-white shadow-[0_2px_4px_rgba(22,163,74,0.24)] hover:opacity-90",
   ghost: "bg-transparent text-hub-fg hover:bg-white/50",
   outline:
-    "border-2 border-hub-primary bg-white/40 text-hub-fg hover:bg-[#fef3c7]",
+    "border-2 border-hub-primary bg-white/70 text-hub-fg hover:bg-hub-border",
 };
 
 const sizes: Record<Size, string> = {

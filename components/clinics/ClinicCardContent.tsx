@@ -100,7 +100,7 @@ export function ClinicCardContent({ clinic }: ClinicCardContentProps) {
                 href={clinic.website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`${clinic.banned ? "text-hub-muted line-through cursor-not-allowed" : "text-hub-accent hover:underline"}`}
+                className={`${clinic.banned ? "text-hub-muted line-through cursor-not-allowed" : "text-[#15803d] hover:underline"}`}
               >
                 {clinic.website}
               </a>
@@ -125,7 +125,7 @@ export function ClinicCardContent({ clinic }: ClinicCardContentProps) {
       
       {clinic.notes && (
         <div className="flex items-start gap-1">
-          <p className="text-xs mt-3 pt-3 border-t text-hub-muted border-[#fde68a]">
+          <p className="text-xs mt-3 pt-3 border-t text-hub-muted border-hub-border">
             {t('notes')}    {clinic.notes}
           </p>
         </div>

@@ -98,7 +98,7 @@ export function SignatureSelector({ isOpen, onClose, onSelect }: Props) {
                       key={signature.name}
                       type="button"
                       onClick={() => handleSelect(signature.path)}
-                      className="glass-field group relative cursor-pointer overflow-hidden rounded-2xl text-left transition-[box-shadow,background-color] duration-200 hover:ring-2 hover:ring-hub-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0f172a] focus-visible:ring-offset-2 focus-visible:ring-offset-hub-bg"
+                      className="glass-field group relative cursor-pointer overflow-hidden rounded-xl text-left transition-[box-shadow,background-color] duration-200 hover:ring-2 hover:ring-hub-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hub-primary focus-visible:ring-offset-2 focus-visible:ring-offset-hub-bg"
                     >
                       <div className="relative aspect-video p-4">
                         <Image

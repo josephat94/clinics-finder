@@ -56,7 +56,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
     const t = useTranslations('common');
     const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue || '');
     const [isOpen, setIsOpen] = useState(false);
-    const selectId = id || `select-${Math.random().toString(36).substr(2, 9)}`;
+    const selectId = id || React.useId();
 
     const isControlled = controlledValue !== undefined;
     const selectedValue = isControlled ? controlledValue : uncontrolledValue;
@@ -72,7 +72,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
     };
 
     const baseStyles =
-      'glass-field flex w-full min-h-11 items-center justify-between rounded-2xl border border-transparent px-3 py-2 text-base text-hub-fg transition-shadow duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0f172a] focus-visible:ring-offset-2 focus-visible:ring-offset-hub-bg disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer';
+      'glass-field flex w-full min-h-11 items-center justify-between rounded-xl border border-transparent px-3 py-2 text-base text-hub-fg transition-shadow duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hub-primary focus-visible:ring-offset-2 focus-visible:ring-offset-hub-bg disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer';
 
     const stateStyles = error
       ? 'ring-2 ring-hub-danger'
@@ -105,7 +105,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
                 className={cn(
                   selectedValue === option.value &&
                     !option.disabled &&
-                    'bg-[#fef3c7] font-medium',
+                    'bg-hub-border font-medium',
                   option.disabled && 'line-through'
                 )}
                 role="option"
