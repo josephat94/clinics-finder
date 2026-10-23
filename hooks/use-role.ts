@@ -1,18 +1,14 @@
 'use client';
 
+import { getUserRole, type UserRole } from '@/lib/user-role';
 import { useAuth } from './use-auth';
 
-export type UserRole = 'admin' | 'user';
+export type { UserRole };
 
 export function useRole() {
   const { user, loading } = useAuth();
 
-  const getRole = (): UserRole => {
-    if (!user) return 'user';
-    // El rol se almacena en user_metadata.role
-    const role = user.user_metadata?.role as UserRole;
-    return role || 'user';
-  };
+  const getRole = (): UserRole => getUserRole(user);
 
   const isAdmin = () => {
     return getRole() === 'admin';

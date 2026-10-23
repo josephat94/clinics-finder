@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 import { createClient as createAdminClient } from '@supabase/supabase-js';
 import { apiMessage } from '@/i18n/api';
+import { getUserRole } from '@/lib/user-role';
 
 export async function GET(request: NextRequest) {
   try {
@@ -21,8 +22,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const currentRole = user.user_metadata?.role;
-    if (currentRole !== 'admin') {
+    if (getUserRole(user) !== 'admin') {
       return NextResponse.json(
         { error: await apiMessage('adminsOnlyView') },
         { status: 403 }
@@ -61,7 +61,7 @@ export async function GET(request: NextRequest) {
       id: user.id,
       email: user.email,
       name: user.user_metadata?.name || user.email?.split('@')[0] || 'Sin nombre',
-      role: user.user_metadata?.role || 'user',
+      role: getUserRole(user),
       createdAt: user.created_at,
       lastSignIn: user.last_sign_in_at,
       emailConfirmed: user.email_confirmed_at !== null,

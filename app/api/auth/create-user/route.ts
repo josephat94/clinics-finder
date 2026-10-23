@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createClient as createAdminClient } from '@supabase/supabase-js';
 import { createClient } from '@/utils/supabase/server';
 import { apiMessage } from '@/i18n/api';
+import { getUserRole } from '@/lib/user-role';
 
 export async function POST(request: NextRequest) {
   try {
@@ -36,27 +38,40 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Verificar que el usuario actual es admin
-    const currentRole = currentUser.user_metadata?.role;
-    if (currentRole !== 'admin') {
+    if (getUserRole(currentUser) !== 'admin') {
       return NextResponse.json(
         { error: await apiMessage('adminsOnlyCreate') },
         { status: 403 }
       );
     }
 
-    // Crear el nuevo usuario usando el servicio de administración
-    // Nota: Esto requiere usar el service role key en producción
-    // Por ahora, usamos signUp pero con metadata de rol
-    const { data, error } = await supabase.auth.signUp({
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (!supabaseServiceKey) {
+      return NextResponse.json(
+        { error: await apiMessage('serviceRoleMissing') },
+        { status: 500 }
+      );
+    }
+
+    const adminClient = createAdminClient(supabaseUrl!, supabaseServiceKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    });
+
+    const assignedRole = role === 'admin' ? 'admin' : 'user';
+    const { data, error } = await adminClient.auth.admin.createUser({
       email,
       password,
-      options: {
-        data: {
-          name: name || email.split('@')[0],
-          role: role || 'user',
-        },
-        emailRedirectTo: undefined, // No enviar email de confirmación
+      email_confirm: true,
+      user_metadata: {
+        name: name || email.split('@')[0],
+      },
+      app_metadata: {
+        role: assignedRole,
       },
     });
 

@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from 'next/server';
+import { getUserRole } from './lib/user-role';
 import { createClient } from './utils/supabase/middleware';
 
 export async function middleware(request: NextRequest) {
@@ -37,8 +38,7 @@ export async function middleware(request: NextRequest) {
 
     // Si intenta acceder a una ruta admin sin ser admin
     if (isAdminPath && user) {
-      const userRole = user.user_metadata?.role;
-      if (userRole !== 'admin') {
+      if (getUserRole(user) !== 'admin') {
         return NextResponse.redirect(new URL('/', request.url));
       }
     }

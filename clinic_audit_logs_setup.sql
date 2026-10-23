@@ -25,14 +25,13 @@ create index if not exists idx_clinic_audit_logs_action_created
 
 alter table public.clinic_audit_logs enable row level security;
 
--- Solo admins autenticados pueden leer el historial
+-- Solo admins autenticados pueden leer el historial.
+-- El rol vive en app_metadata y lo lee private.is_admin().
 create policy "Admins can read clinic audit logs"
   on public.clinic_audit_logs
   for select
   to authenticated
-  using (
-    (auth.jwt() -> 'user_metadata' ->> 'role') = 'admin'
-  );
+  using (private.is_admin());
 
 -- Inserción: la app usará el cliente con sesión del usuario autenticado
 create policy "Authenticated users can insert clinic audit logs"

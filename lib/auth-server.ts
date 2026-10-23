@@ -3,6 +3,7 @@ import { cookies } from 'next/headers';
 import type { User } from '@supabase/supabase-js';
 import type { AuditActor } from '@/lib/clinic-audit';
 import { apiMessage } from '@/i18n/api';
+import { getUserRole } from '@/lib/user-role';
 
 export async function getAuthenticatedUser(): Promise<User | null> {
   const cookieStore = await cookies();
@@ -38,7 +39,7 @@ export async function requireAdminUser(): Promise<
     return result;
   }
 
-  if (result.user.user_metadata?.role !== 'admin') {
+  if (getUserRole(result.user) !== 'admin') {
     return {
       error: await apiMessage('adminsOnly'),
       status: 403,

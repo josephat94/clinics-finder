@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 import { createClient as createAdminClient } from '@supabase/supabase-js';
 import { apiMessage } from '@/i18n/api';
+import { getUserRole } from '@/lib/user-role';
 
 // Actualizar usuario
 export async function PATCH(
@@ -34,8 +35,7 @@ export async function PATCH(
       );
     }
 
-    const currentRole = currentUser.user_metadata?.role;
-    if (currentRole !== 'admin') {
+    if (getUserRole(currentUser) !== 'admin') {
       return NextResponse.json(
         { error: await apiMessage('adminsOnlyEdit') },
         { status: 403 }
@@ -61,10 +61,16 @@ export async function PATCH(
     });
 
     // Actualizar metadata del usuario
-    const updateData: any = {
+    const updateData: {
+      email?: string;
+      user_metadata: { name?: string };
+      app_metadata: { role: 'admin' | 'user' };
+    } = {
       user_metadata: {
         name: name || undefined,
-        role: role || undefined,
+      },
+      app_metadata: {
+        role: role === 'admin' ? 'admin' : 'user',
       },
     };
 
@@ -129,8 +135,7 @@ export async function DELETE(
       );
     }
 
-    const currentRole = currentUser.user_metadata?.role;
-    if (currentRole !== 'admin') {
+    if (getUserRole(currentUser) !== 'admin') {
       return NextResponse.json(
         { error: await apiMessage('adminsOnlyDelete') },
         { status: 403 }
