@@ -48,13 +48,14 @@ export type ShapeAnnotation = {
 
 export type Annotation = TextAnnotation | ImageAnnotation | ShapeAnnotation;
 
-type Tool = "none" | "text" | "image" | "shape";
+type Tool = "none" | "text" | "image" | "shape" | "date";
 
 type AnnotationsState = {
   items: Annotation[];
   activeTool: Tool;
   selectedSignature: string | null; // ruta de la firma seleccionada
   startTextPlacement: () => void;
+  startDatePlacement: () => void;
   startImagePlacement: (imageSrc: string) => void;
   startShapePlacement: () => void;
   stopTool: () => void;
@@ -74,6 +75,7 @@ export const useAnnotationsStore = create<AnnotationsState>((set, get) => ({
   activeTool: "none",
   selectedSignature: null,
   startTextPlacement: () => set({ activeTool: "text" }),
+  startDatePlacement: () => set({ activeTool: "date" }),
   startImagePlacement: (imageSrc: string) =>
     set({ activeTool: "image", selectedSignature: imageSrc }),
   startShapePlacement: () =>

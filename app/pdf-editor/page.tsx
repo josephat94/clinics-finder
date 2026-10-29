@@ -31,6 +31,7 @@ export default function PdfEditorPage() {
   const {
     items,
     startTextPlacement,
+    startDatePlacement,
     startImagePlacement,
     startShapePlacement,
     activeTool,
@@ -70,11 +71,12 @@ export default function PdfEditorPage() {
           </div>
 
           {file && (
-            <Card className="order-1 h-fit w-full lg:sticky lg:top-6 lg:order-2 lg:w-auto">
+            <Card className="order-1 h-fit w-full sticky top-6 lg:order-2 lg:w-auto !bg-white z-10">
               <AnnotationToolbar
                 activeTool={activeTool}
                 isExporting={isExporting}
                 onAddText={startTextPlacement}
+                onAddDate={startDatePlacement}
                 onAddSignature={() => setIsSignatureModalOpen(true)}
                 onAddShape={startShapePlacement}
                 onClear={clearAll}

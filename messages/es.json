@@ -299,6 +299,7 @@
     "exportErrorDetail": "No se pudo exportar el PDF. Revisa la consola para más detalles.",
     "placeHint": "Haz clic en el PDF",
     "addText": "Agregar texto",
+    "addDate": "Agregar fecha de hoy",
     "addSignature": "Agregar firma",
     "signatureAlt": "Firma",
     "addShape": "Agregar recuadro",

@@ -299,6 +299,7 @@
     "exportErrorDetail": "Could not export the PDF. Check the console for details.",
     "placeHint": "Click the PDF",
     "addText": "Add text",
+    "addDate": "Add today's date",
     "addSignature": "Add signature",
     "signatureAlt": "Signature",
     "addShape": "Add box",

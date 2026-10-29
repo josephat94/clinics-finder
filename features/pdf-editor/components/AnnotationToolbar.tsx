@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import {
+  CalendarBlank,
   CircleNotch,
   DownloadSimple,
   Eraser,
@@ -13,12 +14,13 @@ import {
 import { Button } from "@/features/pdf-editor/components/ui/button";
 import { Tooltip } from "@/features/pdf-editor/components/ui/tooltip";
 
-type Tool = "none" | "text" | "image" | "shape";
+type Tool = "none" | "text" | "image" | "shape" | "date";
 
 type Props = {
   activeTool: Tool;
   isExporting: boolean;
   onAddText: () => void;
+  onAddDate: () => void;
   onAddSignature: () => void;
   onAddShape: () => void;
   onClear: () => void;
@@ -29,6 +31,7 @@ export function AnnotationToolbar({
   activeTool,
   isExporting,
   onAddText,
+  onAddDate,
   onAddSignature,
   onAddShape,
   onClear,
@@ -43,6 +46,14 @@ export function AnnotationToolbar({
         onClick={onAddText}
       >
         <TextT size={22} aria-hidden="true" />
+      </ToolButton>
+
+      <ToolButton
+        label={activeTool === "date" ? t("placeHint") : t("addDate")}
+        pressed={activeTool === "date"}
+        onClick={onAddDate}
+      >
+        <CalendarBlank size={22} aria-hidden="true" />
       </ToolButton>
 
       <ToolButton

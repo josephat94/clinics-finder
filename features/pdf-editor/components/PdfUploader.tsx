@@ -135,12 +135,19 @@ export function PdfUploader() {
         1
       );
 
-      if (activeTool === "text") {
+      if (activeTool === "text" || activeTool === "date") {
         const id = addText({
           page: pageIndex + 1,
           x: canvasX,
           y: canvasY,
-          text: "",
+          text:
+            activeTool === "date"
+              ? new Intl.DateTimeFormat("en-US", {
+                  month: "2-digit",
+                  day: "2-digit",
+                  year: "numeric",
+                }).format(new Date())
+              : "",
           color: "#111111",
           fontSize: 12,
           fontFamily: "Inter, system-ui, sans-serif",
