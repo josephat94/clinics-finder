@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-11T12:00:00.000Z",
+  "title": "Design System: Clinics Finder",
+  "extensions": {
+    "colorMeta": {
+      "ink-navy": { "role": "primary", "displayName": "Tinta navy", "canonical": "#14213d", "tonalRamp": ["#05080f", "#0b1223", "#14213d", "#2a3a5e", "#46587f", "#7384a3", "#a9b4c8", "#dde2ec"] },
+      "link-blue": { "role": "primary", "displayName": "Azul de enlace y foco", "canonical": "#1d4ed8", "tonalRamp": ["#0b1e55", "#112d7e", "#1d4ed8", "#3b69e6", "#6487ee", "#8fa9f3", "#bccaf8", "#e4eafc"] },
+      "sticker-orange": { "role": "secondary", "displayName": "Pegatina naranja", "canonical": "#f26b21", "tonalRamp": ["#4a1c05", "#7a2f0a", "#b84c14", "#f26b21", "#f58c52", "#f8ac81", "#fbcdb2", "#fff1e8"] },
+      "sticker-yellow": { "role": "secondary", "displayName": "Pegatina amarilla", "canonical": "#ffd23f", "tonalRamp": ["#4d3b00", "#7d6100", "#b89200", "#ffd23f", "#ffdb66", "#ffe58f", "#fff0bb", "#fff8dc"] },
+      "sticker-green": { "role": "secondary", "displayName": "Pegatina verde", "canonical": "#157a52", "tonalRamp": ["#05281b", "#0b4a31", "#157a52", "#2a9a6d", "#5cb78f", "#8fd0b3", "#c0e6d6", "#e6f4ee"] },
+      "sticker-red": { "role": "secondary", "displayName": "Pegatina roja", "canonical": "#c0261c", "tonalRamp": ["#3d0a07", "#6b1510", "#c0261c", "#d6483f", "#e3736b", "#eda19b", "#f6cdca", "#fdecea"] },
+      "background": { "role": "neutral", "displayName": "Fondo frío", "canonical": "#f4f5f7", "tonalRamp": ["#14213d", "#4a5568", "#7a8394", "#a8aebb", "#d9dee7", "#eceef2", "#f4f5f7", "#ffffff"] },
+      "paper": { "role": "neutral", "displayName": "Papel", "canonical": "#eceef2", "tonalRamp": ["#14213d", "#4a5568", "#7a8394", "#a8aebb", "#d9dee7", "#e3e6ec", "#eceef2", "#f4f5f7"] },
+      "card": { "role": "neutral", "displayName": "Tarjeta", "canonical": "#ffffff", "tonalRamp": ["#d9dee7", "#e3e6ec", "#eceef2", "#f4f5f7", "#f8f9fa", "#fbfbfc", "#fdfdfe", "#ffffff"] },
+      "muted-slate": { "role": "neutral", "displayName": "Pizarra", "canonical": "#4a5568", "tonalRamp": ["#14181f", "#232a35", "#343c4b", "#4a5568", "#68738a", "#8c95a6", "#b4bac6", "#dde0e6"] },
+      "line": { "role": "neutral", "displayName": "Línea", "canonical": "#d9dee7", "tonalRamp": ["#4a5568", "#7a8394", "#a0a8b6", "#bec5d1", "#d9dee7", "#e3e6ec", "#eceef2", "#f4f5f7"] }
+    },
+    "typographyMeta": {
+      "hero": { "displayName": "Titular de landing", "purpose": "Solo el h1 del landing, Figtree 700 de 3rem a 4.5rem." },
+      "page-title": { "displayName": "Título de página", "purpose": "h1 de la página, p. ej. el recuento de clínicas." },
+      "heading": { "displayName": "Título de etiqueta", "purpose": "Nombre de la clínica en cada etiqueta y títulos de sección, Figtree 700." },
+      "body": { "displayName": "Cuerpo", "purpose": "Texto general en Figtree." },
+      "data": { "displayName": "Datos", "purpose": "Teléfonos, distancias e ids en Geist Mono con cifras tabulares." },
+      "label": { "displayName": "Rótulo de campo", "purpose": "Rótulo de cada campo de la etiqueta y texto de pegatina, sin mayúsculas." }
+    },
+    "shadows": [
+      { "name": "surface-rest", "value": "0 1px 2px rgba(20, 33, 61, 0.05), 0 6px 20px rgba(20, 33, 61, 0.05)", "purpose": "Tarjeta, modal y barra de filtro en reposo (.glass-card)." },
+      { "name": "card-hover", "value": "0 2px 4px rgba(20, 33, 61, 0.06), 0 14px 32px rgba(20, 33, 61, 0.1)", "purpose": "Hover de tarjeta con borde #b9c1d0 y elevación de 3px; solo sin reduced-motion." },
+      { "name": "toast", "value": "0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1)", "purpose": "Toast flotante (shadow-md de Tailwind)." }
+    ],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "Easing de todas las entradas y del hover de tarjeta; definido solo bajo prefers-reduced-motion: no-preference." },
+      { "name": "rise", "value": "520ms ease-out, translateY(14px) a 0; retardo calc(min(--i, 8) * 55ms)", "purpose": "Entrada escalonada de titular del landing y tarjetas de clínica." },
+      { "name": "reveal-on-scroll", "value": "animation-timeline: view(); animation-range: entry 0% entry 35%", "purpose": "Aparición ligada al scroll en tarjetas del landing; mejora progresiva bajo @supports." },
+      { "name": "underline-draw", "value": "700ms con 450ms de retardo, background-size 0% a 100%", "purpose": "Subrayado del titular del landing que se dibuja una vez." },
+      { "name": "toast-in", "value": "380ms ease-out, translateY(16px) scale(0.97) a none", "purpose": "Entrada del toast." },
+      { "name": "sticker-ping", "value": "2.2s infinito, scale 1 a 2.6 con fundido", "purpose": "Pulso del punto en la pegatina «Actualizada»." },
+      { "name": "card-lift", "value": "280ms ease-out, translateY(-3px)", "purpose": "Elevación en .glass-card-hover." },
+      { "name": "button-press", "value": "active:scale-[0.97], transición de 200ms", "purpose": "Presionado del Button." },
+      { "name": "modal-enter", "value": "spring damping 25, stiffness 300", "purpose": "Entrada del modal; salida de 200ms." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "2xl", "value": "1536px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Acción primaria de la banda, navy con hover azul y presionado con escala.",
+      "html": "<button class=\"ds-btn-primary\">Nueva clínica</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 12px; height: 40px; padding: 0 16px; border: 0; border-radius: 20px; background: #14213d; color: #fff; font-family: 'Figtree', 'Segoe UI', sans-serif; font-size: 16px; font-weight: 600; cursor: pointer; transition: opacity 200ms, box-shadow 200ms, transform 200ms, background-color 200ms; } .ds-btn-primary:hover { background: #1d4ed8; } .ds-btn-primary:active { transform: scale(0.97); } .ds-btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 2px #f4f5f7, 0 0 0 4px #1d4ed8; }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Acción secundaria y conmutador inactivo.",
+      "html": "<button class=\"ds-btn-outline\">Z-A</button>",
+      "css": ".ds-btn-outline { display: inline-flex; align-items: center; justify-content: center; height: 32px; padding: 0 12px; border: 1px solid #14213d; border-radius: 20px; background: #fff; color: #14213d; font-family: 'Figtree', 'Segoe UI', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: background-color 200ms, transform 200ms; } .ds-btn-outline:hover { background: #eceef2; } .ds-btn-outline:active { transform: scale(0.97); } .ds-btn-outline:focus-visible { outline: none; box-shadow: 0 0 0 2px #f4f5f7, 0 0 0 4px #1d4ed8; }"
+    },
+    {
+      "name": "Search Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Campo de texto sobre papel blanco con borde de línea y esquina de 12px.",
+      "html": "<input class=\"ds-input\" placeholder=\"Buscar por nombre\" />",
+      "css": ".ds-input { box-sizing: border-box; width: 100%; min-height: 44px; padding: 8px 12px; border: 1px solid #d9dee7; border-radius: 12px; background: #fff; color: #14213d; font-family: 'Figtree', 'Segoe UI', sans-serif; font-size: 16px; transition: box-shadow 200ms; } .ds-input::placeholder { color: #4a5568; } .ds-input:focus-visible { outline: none; box-shadow: 0 0 0 2px #f4f5f7, 0 0 0 4px #1d4ed8; }"
+    },
+    {
+      "name": "Navigation Link",
+      "kind": "nav",
+      "refersTo": "card",
+      "description": "Enlace de la barra superior con subrayado amarillo en el estado activo.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-link ds-nav-active\" href=\"#\">Clínicas</a><a class=\"ds-nav-link\" href=\"#\">Editor PDF</a></nav>",
+      "css": ".ds-nav { display: flex; gap: 20px; padding: 8px 16px; background: #fff; border-bottom: 1px solid #d9dee7; } .ds-nav-link { display: inline-flex; align-items: center; min-height: 44px; padding: 0 4px; border-bottom: 2px solid transparent; color: #4a5568; font-family: 'Figtree', 'Segoe UI', sans-serif; font-size: 14px; font-weight: 600; text-decoration: none; transition: color 200ms; } .ds-nav-link:hover { color: #14213d; } .ds-nav-active { color: #14213d; border-bottom-color: #ffd23f; } .ds-nav-link:focus-visible { outline: 2px solid #1d4ed8; outline-offset: 2px; }"
+    },
+    {
+      "name": "Status Sticker",
+      "kind": "chip",
+      "refersTo": "badge-ok",
+      "description": "Pegatina de estado en pastilla, sin mayúsculas; un color, un significado.",
+      "html": "<span class=\"ds-sticker ds-sticker-ok\">Activa</span> <span class=\"ds-sticker ds-sticker-updated\">Actualizada</span> <span class=\"ds-sticker ds-sticker-caution\">Deshabilitada</span> <span class=\"ds-sticker ds-sticker-danger\">Lista negra</span>",
+      "css": ".ds-sticker { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 9999px; font-family: 'Figtree', 'Segoe UI', sans-serif; font-size: 12px; font-weight: 600; } .ds-sticker-ok { background: #157a52; color: #fff; } .ds-sticker-updated { background: #f26b21; color: #14213d; } .ds-sticker-caution { background: #ffd23f; color: #14213d; } .ds-sticker-danger { background: #c0261c; color: #fff; }"
+    },
+    {
+      "name": "Clinic Label Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Etiqueta de dispensación: pegatinas, nombre en Figtree bold, campos rotulados en mono tabular y distancia al pie.",
+      "html": "<article class=\"ds-card\"><div class=\"ds-card-stickers\"><span class=\"ds-sticker\">Activa</span></div><h2 class=\"ds-card-name\">Clínica Central</h2><dl class=\"ds-card-fields\"><div><dt>Teléfono</dt><dd>(555) 010-2030</dd></div><div><dt>Fax</dt><dd>(555) 010-2031</dd></div></dl><p class=\"ds-card-distance\">2.40 mi</p></article>",
+      "css": ".ds-card { box-sizing: border-box; display: flex; flex-direction: column; width: 320px; padding: 24px; background: #fff; border: 1px solid #d9dee7; border-radius: 16px; box-shadow: 0 1px 2px rgba(20,33,61,0.05), 0 6px 20px rgba(20,33,61,0.05); color: #14213d; transition: transform 280ms cubic-bezier(0.22,1,0.36,1), box-shadow 280ms cubic-bezier(0.22,1,0.36,1), border-color 200ms; } .ds-card:hover { transform: translateY(-3px); border-color: #b9c1d0; box-shadow: 0 2px 4px rgba(20,33,61,0.06), 0 14px 32px rgba(20,33,61,0.1); } .ds-card-stickers { margin-bottom: 16px; } .ds-sticker { display: inline-flex; padding: 2px 8px; border-radius: 9999px; background: #157a52; color: #fff; font-family: 'Figtree', 'Segoe UI', sans-serif; font-size: 12px; font-weight: 600; } .ds-card-name { margin: 0; font-family: 'Figtree', 'Segoe UI', sans-serif; font-size: 24px; font-weight: 700; line-height: 1.25; letter-spacing: -0.01em; } .ds-card-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 20px; margin: 16px 0 0; padding-top: 16px; border-top: 1px solid #d9dee7; } .ds-card-fields dt { font-family: 'Figtree', 'Segoe UI', sans-serif; font-size: 12px; font-weight: 600; color: #4a5568; } .ds-card-fields dd { margin: 2px 0 0; font-family: 'Geist Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; font-size: 14px; } .ds-card-distance { margin: 12px 0 0; padding-top: 12px; border-top: 1px solid #14213d; font-family: 'Geist Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; font-size: 14px; font-weight: 600; }"
+    },
+    {
+      "name": "Toast",
+      "kind": "custom",
+      "refersTo": "badge-ok",
+      "description": "Aviso flotante de relleno sólido que sustituye a alert().",
+      "html": "<div class=\"ds-toast\" role=\"status\"><span>Clínica guardada</span></div>",
+      "css": ".ds-toast { display: flex; max-width: 384px; padding: 12px 16px; border-radius: 20px; background: #157a52; color: #fff; font-family: 'Figtree', 'Segoe UI', sans-serif; font-size: 14px; font-weight: 500; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "La etiqueta de dispensación",
+    "overview": "Cada clínica es una etiqueta de farmacia: papel blanco sobre un fondo gris frío, tinta navy, campos rotulados separados por filetes y el estado como pegatina de color. El sistema es denso y de herramienta diaria; la expresividad se gasta en el color de estado y en un movimiento corto, no en superficies decorativas. Sin gradientes, sin vidrio, sin desenfoque. Las esquinas son amables y las sombras suaves y difusas.\n\nLa app sirve a personal interno que repite tareas (buscar, leer estado, editar, abrir mapa o PDF), así que la jerarquía es de lectura rápida: nombre grande en Figtree bold, campos rotulados en mono tabular, pegatina de estado arriba. Solo existe tema claro; el modo oscuro no está entregado.\n\nEstado de entrega: la pegatina naranja existe como «Actualizada» (editada en los últimos 7 días, desde updated_at). La marca naranja «hasta revisarlo» no se entregó porque exige guardar un estado de revisión. El landing conserva su rejilla de tarjetas con icono y el filtro de /clinics sigue en dos bandas.",
+    "keyCharacteristics": [
+      "Papel #ffffff sobre #f4f5f7, tinta navy #14213d, líneas #d9dee7.",
+      "Cuatro pegatinas de estado en pastilla, cada una con un único trabajo.",
+      "Dos familias: Figtree (títulos y cuerpo) y Geist Mono tabular (datos).",
+      "Esquinas de 12 a 20px, sombra suave, solo tema claro.",
+      "Movimiento de entrada escalonado, siempre condicionado a prefers-reduced-motion: no-preference."
+    ],
+    "rules": [
+      { "name": "The One Job Rule", "body": "Cada color de pegatina tiene un solo significado (naranja = cambiado, amarillo = precaución, verde = ok, rojo = peligro). No se usa un color de estado como decoración.", "section": "colors" },
+      { "name": "The Real Field Rule", "body": "Una pegatina de estado se deriva de un campo real del registro (banned, enabled, lat/lng, updated_at). No se pinta un estado que los datos no respaldan.", "section": "colors" },
+      { "name": "The Tabular Data Rule", "body": "Todo valor que se compara o se marca por teléfono (teléfonos, fax, distancias, ids) va en mono tabular.", "section": "typography" },
+      { "name": "The Sentence Case Rule", "body": "Rótulos y pegatinas van en minúsculas con inicial de frase; ningún texto de interfaz se pone en mayúsculas.", "section": "typography" },
+      { "name": "The Soft Lift Rule", "body": "La sombra es difusa y de tinta navy; solo crece como respuesta al cursor o a la flotación real (toast, modal). Nunca una sombra dura desplazada.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do usar navy #14213d para texto y acción primaria, y reservar los colores de pegatina para estado real.",
+      "Do componer cada registro como etiqueta: pegatinas, nombre en Figtree bold, campos rotulados en mono tabular.",
+      "Do mantener tarjetas y modales en 16px, campos en 12px, botones en 20px, pegatinas en pastilla, y borde de 1px #d9dee7.",
+      "Do usar el anillo de foco azul de 2px en todo control interactivo y objetivos de 44px en navegación y campos.",
+      "Do envolver cada animación en prefers-reduced-motion: no-preference y escalonar entradas con --i.",
+      "Do informar acciones con toast, nunca con alert()."
+    ],
+    "donts": [
+      "Don't usar gradientes de superficie, vidrio o desenfoque; el nombre glass-* de las clases es heredado y no describe el sistema.",
+      "Don't usar un color de pegatina fuera de su significado.",
+      "Don't añadir sombras duras desplazadas ni sombras de adorno; la sombra suave responde a superficie, cursor o flotación.",
+      "Don't introducir tema oscuro sin definir antes sus tokens; hoy solo existe el claro.",
+      "Don't mostrar una pegatina de estado que no salga de un campo real.",
+      "Don't poner rótulos, pegatinas ni etiquetas en mayúsculas."
+    ]
+  }
+}
