@@ -26,7 +26,7 @@ export function ShapeEditor({ annotation, onChange, onClone, onDelete }: Props) 
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.9, y: 10 }}
       transition={{ duration: 0.2, ease: "easeOut" }}
-      className="glass-card flex min-w-fit flex-col gap-3 rounded-2xl p-3"
+      className="glass-card flex min-w-fit flex-col gap-3 rounded-md p-3"
       onClick={(e) => e.stopPropagation()}
       onPointerDown={(e) => e.stopPropagation()}
     >
@@ -38,7 +38,7 @@ export function ShapeEditor({ annotation, onChange, onClone, onDelete }: Props) 
             min={20}
             max={2000}
             step={5}
-            className="glass-field h-11 w-24 rounded-2xl px-2 py-1 text-sm text-hub-fg outline-none"
+            className="glass-field h-11 w-24 rounded-md px-2 py-1 text-sm text-hub-fg outline-none"
             value={Math.round(annotation.width)}
             onChange={(e) => {
               const value = Number(e.target.value);
@@ -54,7 +54,7 @@ export function ShapeEditor({ annotation, onChange, onClone, onDelete }: Props) 
             min={20}
             max={2000}
             step={5}
-            className="glass-field h-11 w-24 rounded-2xl px-2 py-1 text-sm text-hub-fg outline-none"
+            className="glass-field h-11 w-24 rounded-md px-2 py-1 text-sm text-hub-fg outline-none"
             value={Math.round(annotation.height)}
             onChange={(e) => {
               const value = Number(e.target.value);
@@ -67,7 +67,7 @@ export function ShapeEditor({ annotation, onChange, onClone, onDelete }: Props) 
           <EditorLabel>{t("fill")}</EditorLabel>
           <input
             type="color"
-            className="h-11 w-11 cursor-pointer rounded-xl border border-hub-border bg-white/80 p-1"
+            className="h-11 w-11 cursor-pointer rounded-md border border-hub-border bg-white/80 p-1"
             value={annotation.fill}
             onChange={(e) => onChange({ fill: e.target.value })}
             title={t("fill")}
@@ -77,7 +77,7 @@ export function ShapeEditor({ annotation, onChange, onClone, onDelete }: Props) 
           <EditorLabel>{t("stroke")}</EditorLabel>
           <input
             type="color"
-            className="h-11 w-11 cursor-pointer rounded-xl border border-hub-border bg-white/80 p-1"
+            className="h-11 w-11 cursor-pointer rounded-md border border-hub-border bg-white/80 p-1"
             value={annotation.stroke}
             onChange={(e) => onChange({ stroke: e.target.value })}
             title={t("stroke")}
@@ -108,7 +108,7 @@ export function ShapeEditor({ annotation, onChange, onClone, onDelete }: Props) 
                   e.stopPropagation();
                   onDelete();
                 }}
-                className="whitespace-nowrap border-hub-danger text-hub-danger hover:bg-red-50"
+                className="whitespace-nowrap border-hub-danger text-hub-danger hover:bg-hub-danger-soft"
                 title={t("deleteElement")}
               >
                 <Trash size={18} aria-hidden="true" /> {t("deleteElement")}

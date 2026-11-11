@@ -44,11 +44,11 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
       closeOnOverlayClick={!isLoading}
     >
       <div className="space-y-4">
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="text-sm text-hub-muted">
           {message}
         </p>
 
-        <div className="flex gap-3 pt-4 border-t border-zinc-200 dark:border-zinc-800">
+        <div className="flex gap-3 pt-4 border-t border-hub-line">
           <Button
             type="button"
             variant="outline"

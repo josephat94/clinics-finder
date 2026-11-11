@@ -1,25 +1,21 @@
 import type { Metadata } from "next";
-import { Atkinson_Hyperlegible, Geist, Geist_Mono } from "next/font/google";
+import { Figtree, Geist_Mono } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import "./globals.css";
 import { AuthProvider } from "@/components/auth/AuthProvider";
+import { ToastProvider } from "@/components/ui/toast";
 import { Navbar } from "@/components/layout/Navbar";
 import { Analytics } from "@vercel/analytics/next"
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
 
-const atkinson = Atkinson_Hyperlegible({
-  variable: "--font-atkinson",
+const figtree = Figtree({
+  variable: "--font-figtree",
   subsets: ["latin"],
-  weight: ["400", "700"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -41,16 +37,18 @@ export default async function RootLayout({
   return (
     <html lang={locale}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${atkinson.variable} antialiased`}
+        className={`${figtree.variable} ${geistMono.variable} antialiased`}
       >
         <NextIntlClientProvider messages={messages}>
           <AuthProvider>
-            <Navbar />
-            {children}
+            <ToastProvider>
+              <Navbar />
+              {children}
+            </ToastProvider>
           </AuthProvider>
         </NextIntlClientProvider>
+        <Analytics />
       </body>
-      <Analytics />
     </html>
   );
 }

@@ -1,42 +1,59 @@
 @import "tailwindcss";
 
-/* Telemedicine soft UI */
-
-@custom-variant dark (&:where(.dark, .dark *));
+/* Etiqueta de dispensación, suavizada: papel blanco, tinta navy, pegatinas de color, esquinas amables y movimiento sobrio. Solo tema claro. */
 
 :root {
-  --background: #f0fdfa;
-  --foreground: #134e4a;
+  --background: #f4f5f7;
+  --foreground: #14213d;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-atkinson), "Segoe UI", sans-serif;
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-atkinson), "Segoe UI", sans-serif;
-  --font-body: var(--font-atkinson), "Segoe UI", sans-serif;
-  --color-hub-bg: #f0fdfa;
-  --color-hub-fg: #134e4a;
-  --color-hub-muted: #475569;
-  --color-hub-accent: #16a34a;
-  --color-hub-primary: #0891b2;
-  --color-hub-danger: #dc2626;
-  --color-hub-border: #ccfbf1;
+  --font-sans: var(--font-figtree), "Segoe UI", sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-heading: var(--font-figtree), "Segoe UI", sans-serif;
+  --font-body: var(--font-figtree), "Segoe UI", sans-serif;
+
+  /* Esquinas más generosas y amables */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+
+  --color-hub-bg: #f4f5f7;
+  --color-hub-paper: #eceef2;
   --color-hub-card: #ffffff;
-  --color-hub-secondary: #22d3ee;
+  --color-hub-white: #ffffff;
+  --color-hub-fg: #14213d;
+  --color-hub-muted: #4a5568;
+  --color-hub-line: #d9dee7;
+  --color-hub-border: #d9dee7;
+  --color-hub-accent: #14213d;
+  --color-hub-primary: #1d4ed8;
+  --color-hub-secondary: #eceef2;
+  /* Pegatinas auxiliares: cada color tiene un trabajo */
+  --color-hub-warn: #f26b21;
+  --color-hub-warn-soft: #fff1e8;
+  --color-hub-caution: #ffd23f;
+  --color-hub-caution-soft: #fff8dc;
+  --color-hub-ok: #157a52;
+  --color-hub-ok-soft: #e6f4ee;
+  --color-hub-danger: #c0261c;
+  --color-hub-danger-soft: #fdecea;
+}
+
+html {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  color-scheme: light;
 }
 
 body {
-  background-color: #f0fdfa;
-  background-image:
-    radial-gradient(circle at 8% 10%, rgba(8, 145, 178, 0.16), transparent 34%),
-    radial-gradient(circle at 92% 6%, rgba(34, 211, 238, 0.18), transparent 32%),
-    radial-gradient(circle at 78% 86%, rgba(22, 163, 74, 0.1), transparent 30%),
-    radial-gradient(circle at 12% 82%, rgba(8, 145, 178, 0.1), transparent 28%);
-  background-attachment: fixed;
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-atkinson), "Segoe UI", sans-serif;
+  font-family: var(--font-figtree), "Segoe UI", sans-serif;
   margin: 0;
   padding: 0;
 }
@@ -45,48 +62,147 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: var(--font-atkinson), "Segoe UI", sans-serif;
+  font-family: var(--font-figtree), "Segoe UI", sans-serif;
+  letter-spacing: -0.01em;
 }
 
-html {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--color-hub-fg);
+}
+
+::selection {
+  background: #ffd23f;
+  color: #14213d;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-hub-primary);
+  outline-offset: 2px;
+}
+
+/* Cifras tabulares para datos (teléfonos, distancias, ids) */
+.tabular {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
 }
 
 .hub-shell {
   color-scheme: light;
-  color: #134e4a;
+  color: var(--color-hub-fg);
 }
 
+/* Superficies. Los nombres glass-* se conservan por compatibilidad con los componentes. */
 .glass-card {
-  background: #ffffff;
-  border: 1px solid #ccfbf1;
-  box-shadow: 0 2px 4px rgba(19, 78, 74, 0.06), 0 8px 24px rgba(8, 145, 178, 0.08);
-  border-radius: 12px;
+  background: var(--color-hub-card);
+  border: 1px solid var(--color-hub-line);
+  border-radius: 16px;
+  box-shadow: 0 1px 2px rgba(20, 33, 61, 0.05), 0 6px 20px rgba(20, 33, 61, 0.05);
 }
 
 .glass-bar {
-  background: rgba(240, 253, 250, 0.88);
-  border-bottom: 1px solid #ccfbf1;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: var(--color-hub-card);
+  border-bottom: 1px solid var(--color-hub-line);
 }
 
 .glass-field {
-  background: #ffffff;
-  border: 1px solid #ccfbf1;
-  box-shadow: inset 0 1px 2px rgba(19, 78, 74, 0.04);
+  background: var(--color-hub-card);
+  border: 1px solid var(--color-hub-line);
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  :root {
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Hover de tarjeta: se eleva y gana sombra */
   .glass-card-hover {
-    transition: box-shadow 200ms ease, transform 200ms ease;
+    transition: transform 280ms var(--ease-out), box-shadow 280ms var(--ease-out), border-color 200ms ease;
   }
 
   .glass-card-hover:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(19, 78, 74, 0.08), 0 12px 28px rgba(8, 145, 178, 0.12);
+    transform: translateY(-3px);
+    border-color: #b9c1d0;
+    box-shadow: 0 2px 4px rgba(20, 33, 61, 0.06), 0 14px 32px rgba(20, 33, 61, 0.1);
+  }
+
+  /* Entrada escalonada: --i es el índice del elemento (tope 8) */
+  .rise {
+    animation: rise 520ms var(--ease-out) both;
+    animation-delay: calc(min(var(--i, 0), 8) * 55ms);
+  }
+
+  /* Aparición ligada al scroll (mejora progresiva) */
+  @supports (animation-timeline: view()) {
+    .reveal-on-scroll {
+      animation: rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 35%;
+    }
+  }
+
+  /* El subrayado naranja del titular se dibuja una vez */
+  .underline-draw {
+    background-image: linear-gradient(var(--color-hub-warn), var(--color-hub-warn));
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 100% 0.14em;
+    animation: draw 700ms 450ms var(--ease-out) both;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    padding-bottom: 0.08em;
+  }
+
+  .toast-in {
+    animation: toast-in 380ms var(--ease-out) both;
+  }
+
+  /* Pulso suave en la pegatina de registro actualizado */
+  .sticker-ping {
+    animation: ping-soft 2.2s var(--ease-out) infinite;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes draw {
+  from {
+    background-size: 0% 0.14em;
+  }
+  to {
+    background-size: 100% 0.14em;
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ping-soft {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  70%,
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
   }
 }
 
@@ -94,9 +210,5 @@ html {
   .hub-shell,
   .hub-shell * {
     scroll-behavior: auto !important;
-  }
-
-  .glass-card-hover:hover {
-    transform: none;
   }
 }

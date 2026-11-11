@@ -72,7 +72,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
     };
 
     const baseStyles =
-      'glass-field flex w-full min-h-11 items-center justify-between rounded-xl border border-transparent px-3 py-2 text-base text-hub-fg transition-shadow duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hub-primary focus-visible:ring-offset-2 focus-visible:ring-offset-hub-bg disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer';
+      'glass-field flex w-full min-h-11 items-center justify-between rounded-md border border-transparent px-3 py-2 text-base text-hub-fg transition-shadow duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hub-primary focus-visible:ring-offset-2 focus-visible:ring-offset-hub-bg disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer';
 
     const stateStyles = error
       ? 'ring-2 ring-hub-danger'
@@ -86,7 +86,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
             className="block text-sm font-medium mb-1.5 text-hub-fg"
           >
             {label}
-            {required && <span className="text-red-500 ml-1">*</span>}
+            {required && <span className="text-hub-danger ml-1">*</span>}
           </label>
         )}
         <Popover

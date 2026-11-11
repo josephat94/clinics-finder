@@ -113,14 +113,14 @@ export function CreateUserForm({ onSuccess }: CreateUserFormProps) {
       </div>
 
       {error && (
-        <div className="p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
-          <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+        <div className="p-3 rounded-lg bg-hub-danger-soft border border-hub-danger/30">
+          <p className="text-sm text-hub-danger">{error}</p>
         </div>
       )}
 
       {success && (
-        <div className="p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
-          <p className="text-sm text-green-600 dark:text-green-400">{success}</p>
+        <div className="p-3 rounded-lg bg-hub-ok-soft border border-hub-ok/30">
+          <p className="text-sm text-hub-ok">{success}</p>
         </div>
       )}
 

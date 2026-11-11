@@ -163,7 +163,7 @@ export function ClinicHistoryTable() {
       {error ? (
         <Card className="p-6">
           <div className="text-center">
-            <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>
+            <p className="text-hub-danger mb-4">{error}</p>
             <Button variant="outline" size="sm" onClick={fetchLogs}>
               {common('retry')}
             </Button>
@@ -172,10 +172,10 @@ export function ClinicHistoryTable() {
       ) : logs.length === 0 ? (
         <Card className="p-8">
           <div className="text-center space-y-2">
-            <p className="text-zinc-900 dark:text-zinc-100 font-medium">
+            <p className="text-hub-fg font-medium">
               {t('emptyHistory')}
             </p>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            <p className="text-sm text-hub-muted">
               {t('emptyHistoryHint')}
             </p>
           </div>
@@ -185,23 +185,23 @@ export function ClinicHistoryTable() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-zinc-200 dark:border-zinc-800">
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                <tr className="border-b border-hub-line">
+                  <th className="text-left py-3 px-4 text-sm font-semibold text-hub-fg">
                     {t('date')}
                   </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                  <th className="text-left py-3 px-4 text-sm font-semibold text-hub-fg">
                     {t('action')}
                   </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                  <th className="text-left py-3 px-4 text-sm font-semibold text-hub-fg">
                     {t('clinic')}
                   </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                  <th className="text-left py-3 px-4 text-sm font-semibold text-hub-fg">
                     {t('user')}
                   </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                  <th className="text-left py-3 px-4 text-sm font-semibold text-hub-fg">
                     {t('changes')}
                   </th>
-                  <th className="text-right py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                  <th className="text-right py-3 px-4 text-sm font-semibold text-hub-fg">
                     {t('detail')}
                   </th>
                 </tr>
@@ -210,9 +210,9 @@ export function ClinicHistoryTable() {
                 {logs.map((log) => (
                   <tr
                     key={log.id}
-                    className="border-b border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
+                    className="border-b border-hub-line hover:bg-hub-paper transition-colors"
                   >
-                    <td className="py-3 px-4 text-sm text-zinc-600 dark:text-zinc-400 whitespace-nowrap">
+                    <td className="py-3 px-4 text-sm text-hub-muted whitespace-nowrap">
                       {formatDateTime(log.created_at, locale)}
                     </td>
                     <td className="py-3 px-4">
@@ -220,13 +220,13 @@ export function ClinicHistoryTable() {
                         {t(log.action === 'create' ? 'actionCreate' : log.action === 'update' ? 'actionUpdate' : 'actionDelete')}
                       </Badge>
                     </td>
-                    <td className="py-3 px-4 text-sm text-zinc-900 dark:text-zinc-100">
+                    <td className="py-3 px-4 text-sm text-hub-fg">
                       {log.clinic_name || '—'}
                     </td>
-                    <td className="py-3 px-4 text-sm text-zinc-600 dark:text-zinc-400">
+                    <td className="py-3 px-4 text-sm text-hub-muted">
                       {log.actor_email || common('unknown')}
                     </td>
-                    <td className="py-3 px-4 text-sm text-zinc-600 dark:text-zinc-400 max-w-xs truncate">
+                    <td className="py-3 px-4 text-sm text-hub-muted max-w-xs truncate">
                       {summarizeChanges(log, t, common('unnamed'))}
                     </td>
                     <td className="py-3 px-4">
@@ -283,7 +283,7 @@ function HistoryFilters({
   return (
     <div className="flex flex-col sm:flex-row gap-3">
       <div className="relative flex-1">
-        <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
+        <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-hub-muted pointer-events-none" />
         <Input
           placeholder={t('searchHistory')}
           value={searchQuery}

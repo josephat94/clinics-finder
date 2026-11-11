@@ -60,7 +60,7 @@ export function ImageEditor({ annotation, onChange, onClone, onDelete }: Props) 
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.9, y: 10 }}
       transition={{ duration: 0.2, ease: "easeOut" }}
-      className="glass-card flex min-w-fit flex-col gap-3 rounded-2xl p-3"
+      className="glass-card flex min-w-fit flex-col gap-3 rounded-md p-3"
       onClick={(e) => e.stopPropagation()}
     >
       <div className="flex flex-row gap-3 items-end">
@@ -71,7 +71,7 @@ export function ImageEditor({ annotation, onChange, onClone, onDelete }: Props) 
             min={20}
             max={1000}
             step={5}
-            className="glass-field h-11 w-24 rounded-2xl px-2 py-1 text-sm text-hub-fg outline-none"
+            className="glass-field h-11 w-24 rounded-md px-2 py-1 text-sm text-hub-fg outline-none"
             value={Math.round(annotation.width)}
             onChange={(e) => {
               const value = Number(e.target.value) || annotation.width;
@@ -86,7 +86,7 @@ export function ImageEditor({ annotation, onChange, onClone, onDelete }: Props) 
             min={20}
             max={1000}
             step={5}
-            className="glass-field h-11 w-24 rounded-2xl px-2 py-1 text-sm text-hub-fg outline-none"
+            className="glass-field h-11 w-24 rounded-md px-2 py-1 text-sm text-hub-fg outline-none"
             value={Math.round(annotation.height)}
             onChange={(e) => {
               const value = Number(e.target.value) || annotation.height;
@@ -139,7 +139,7 @@ export function ImageEditor({ annotation, onChange, onClone, onDelete }: Props) 
                   e.stopPropagation();
                   onDelete();
                 }}
-                className="whitespace-nowrap border-hub-danger text-hub-danger hover:bg-red-50"
+                className="whitespace-nowrap border-hub-danger text-hub-danger hover:bg-hub-danger-soft"
                 title={t("deleteElement")}
               >
                 <Trash size={18} aria-hidden="true" /> {t("deleteElement")}

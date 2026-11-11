@@ -12,17 +12,17 @@ export default function LandingPage() {
       <section className="relative overflow-hidden px-4 py-20 sm:py-32">
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
-            <h1 className="font-heading text-balance text-5xl font-bold tracking-tight text-hub-fg sm:text-6xl lg:text-7xl">
+            <h1 className="rise font-heading text-balance text-5xl font-bold tracking-tight text-hub-fg sm:text-6xl lg:text-7xl">
               {t.rich('heroTitle', {
                 accent: (chunks) => (
-                  <span className="text-[#15803d]">{chunks}</span>
+                  <span className="underline-draw">{chunks}</span>
                 ),
               })}
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-hub-muted sm:text-xl">
+            <p className="rise mx-auto mt-6 max-w-2xl text-lg leading-8 text-hub-muted sm:text-xl" style={{ "--i": 1 } as React.CSSProperties}>
               {t('heroSubtitle')}
             </p>
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+            <div className="rise mt-10 flex flex-wrap items-center justify-center gap-4" style={{ "--i": 2 } as React.CSSProperties}>
               <Link href="/clinics">
                 <Button size="lg" variant="primary" className="text-lg px-8">
                   {t('searchClinics')}
@@ -50,9 +50,9 @@ export default function LandingPage() {
           </div>
 
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            <Card className="glass-card glass-card-hover p-8">
+            <Card className="reveal-on-scroll glass-card glass-card-hover p-8">
               <div className="mb-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-hub-border">
+                <div className="flex h-12 w-12 items-center justify-center rounded-md bg-hub-border">
                   <svg
                     className="h-6 w-6 text-hub-fg"
                     fill="none"
@@ -83,9 +83,9 @@ export default function LandingPage() {
               </p>
             </Card>
 
-            <Card className="glass-card glass-card-hover p-8">
+            <Card className="reveal-on-scroll glass-card glass-card-hover p-8">
               <div className="mb-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#dbeafe]">
+                <div className="flex h-12 w-12 items-center justify-center rounded-md bg-hub-paper">
                   <svg
                     className="h-6 w-6 text-hub-fg"
                     fill="none"
@@ -110,9 +110,9 @@ export default function LandingPage() {
               </p>
             </Card>
 
-            <Card className="glass-card glass-card-hover p-8">
+            <Card className="reveal-on-scroll glass-card glass-card-hover p-8">
               <div className="mb-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-hub-border">
+                <div className="flex h-12 w-12 items-center justify-center rounded-md bg-hub-border">
                   <svg
                     className="h-6 w-6 text-hub-fg"
                     fill="none"
@@ -137,9 +137,9 @@ export default function LandingPage() {
               </p>
             </Card>
 
-            <Card className="glass-card glass-card-hover p-8">
+            <Card className="reveal-on-scroll glass-card glass-card-hover p-8">
               <div className="mb-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#dbeafe]">
+                <div className="flex h-12 w-12 items-center justify-center rounded-md bg-hub-paper">
                   <svg
                     className="h-6 w-6 text-hub-fg"
                     fill="none"
@@ -164,9 +164,9 @@ export default function LandingPage() {
               </p>
             </Card>
 
-            <Card className="glass-card glass-card-hover p-8">
+            <Card className="reveal-on-scroll glass-card glass-card-hover p-8">
               <div className="mb-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-hub-border">
+                <div className="flex h-12 w-12 items-center justify-center rounded-md bg-hub-border">
                   <svg
                     className="h-6 w-6 text-hub-fg"
                     fill="none"
@@ -191,9 +191,9 @@ export default function LandingPage() {
               </p>
             </Card>
 
-            <Card className="glass-card glass-card-hover p-8">
+            <Card className="reveal-on-scroll glass-card glass-card-hover p-8">
               <div className="mb-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#dbeafe]">
+                <div className="flex h-12 w-12 items-center justify-center rounded-md bg-hub-paper">
                   <svg
                     className="h-6 w-6 text-hub-fg"
                     fill="none"

@@ -62,8 +62,8 @@ export function StreetViewPreview({ lat, lng }: StreetViewPreviewProps) {
   }, [lat, lng]);
 
   return (
-    <div className="mb-4 overflow-hidden rounded-xl border border-hub-border">
-      <div className="relative h-40 bg-zinc-100 dark:bg-zinc-950">
+    <div className="mb-4 overflow-hidden rounded-md border border-hub-border">
+      <div className="relative h-40 bg-hub-paper">
         {status === 'loading' && (
           <p className="absolute inset-0 flex items-center justify-center px-3 text-center text-sm text-hub-muted">
             {t('loadingStreetView')}
@@ -88,7 +88,7 @@ export function StreetViewPreview({ lat, lng }: StreetViewPreviewProps) {
           href={mapsUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 bg-[#e8f1f6] px-3 py-2 text-sm font-medium text-hub-fg hover:underline"
+          className="flex items-center justify-center gap-2 bg-hub-paper px-3 py-2 text-sm font-medium text-hub-fg hover:underline"
         >
           <FaStreetView aria-hidden="true" />
           {t('openStreetView')}

@@ -115,7 +115,7 @@ export default function SearchClinicClient() {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[600px]">
-        <div className="glass-card rounded-2xl p-6 max-w-md">
+        <div className="glass-card rounded-md p-6 max-w-md">
           <h2 className="text-lg font-semibold text-hub-danger mb-2">
             {t('errorTitle')}
           </h2>
@@ -208,7 +208,7 @@ export default function SearchClinicClient() {
                     cursor-pointer transition-all duration-200
                     ${isSelected ? "ring-2 ring-hub-primary shadow-lg" : ""}
                     ${isHovered ? "shadow-md scale-[1.02]" : ""}
-                    ${clinic.banned ? "opacity-80 border-red-500 dark:border-red-600 bg-red-50/30 dark:bg-red-950/20" : ""}
+                    ${clinic.banned ? "opacity-80 border-hub-danger bg-hub-danger-soft/30" : ""}
                   `}
                   travelTime={clinic.travelTime}
                   floatingBadge={
@@ -253,7 +253,7 @@ export default function SearchClinicClient() {
 
         {/* Columna derecha: Mapa */}
         <div
-          className={`${showMap ? "flex" : "hidden"} sm:flex flex-1 bg-transparent  sticky top-0 px-6 rounded-3xl`}
+          className={`${showMap ? "flex" : "hidden"} sm:flex flex-1 bg-transparent  sticky top-0 px-6 rounded-md`}
         >
           <ClinicsMap
             userLocation={userLocation}

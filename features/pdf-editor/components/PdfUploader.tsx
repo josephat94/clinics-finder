@@ -350,7 +350,7 @@ export function PdfUploader() {
             </CardHeader>
             {isDragging && (
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
-                <div className="flex flex-col items-center gap-4 text-[#15803d]">
+                <div className="flex flex-col items-center gap-4 text-hub-primary">
                   <div className="relative">
                     <div className="absolute inset-0 rounded-full bg-hub-primary/30 blur-xl motion-safe:animate-pulse"></div>
                     <svg
@@ -410,7 +410,7 @@ export function PdfUploader() {
           </p>
 
           {error && (
-            <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-hub-danger">
+            <div className="rounded-md border border-hub-danger/30 bg-hub-danger-soft px-4 py-3 text-sm text-hub-danger">
               {error}
             </div>
           )}
@@ -429,7 +429,7 @@ export function PdfUploader() {
         <CardContent
           ref={containerRef}
           data-pdf-stage
-          className="relative min-h-[400px] w-full overflow-hidden rounded-2xl border border-white/80 bg-white/80 p-4"
+          className="relative min-h-[400px] w-full overflow-hidden rounded-md border border-white/80 bg-white/80 p-4"
           onClick={() => setSelectedId(null)}
         >
           <div className="flex flex-col gap-4">

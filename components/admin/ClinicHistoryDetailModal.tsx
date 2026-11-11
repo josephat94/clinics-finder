@@ -101,25 +101,25 @@ export function ClinicHistoryDetailModal({
           <Badge variant={getActionBadgeVariant(log.action)}>
             {t(log.action === 'create' ? 'actionCreate' : log.action === 'update' ? 'actionUpdate' : 'actionDelete')}
           </Badge>
-          <span className="text-sm text-zinc-600 dark:text-zinc-400">
+          <span className="text-sm text-hub-muted">
             {formatDateTime(log.created_at, locale)}
           </span>
         </div>
 
         <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <dt className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+            <dt className="text-xs font-medium uppercase tracking-wide text-hub-muted">
               {t('clinic')}
             </dt>
-            <dd className="mt-1 text-sm text-zinc-900 dark:text-zinc-100">
+            <dd className="mt-1 text-sm text-hub-fg">
               {log.clinic_name || t('deletedClinicName')}
             </dd>
           </div>
           <div>
-            <dt className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+            <dt className="text-xs font-medium uppercase tracking-wide text-hub-muted">
               {t('user')}
             </dt>
-            <dd className="mt-1 text-sm text-zinc-900 dark:text-zinc-100">
+            <dd className="mt-1 text-sm text-hub-fg">
               {log.actor_email || common('unknown')}
             </dd>
           </div>
@@ -127,26 +127,26 @@ export function ClinicHistoryDetailModal({
 
         {fieldsToShow.length > 0 ? (
           <div>
-            <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-3">
+            <h3 className="text-sm font-semibold text-hub-fg mb-3">
               {log.action === 'create'
                 ? t('registeredData')
                 : log.action === 'delete'
                   ? t('deletedData')
                   : t('changedFields')}
             </h3>
-            <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
+            <div className="overflow-x-auto rounded-lg border border-hub-line">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50">
-                    <th className="text-left py-2.5 px-3 font-medium text-zinc-700 dark:text-zinc-300">
+                  <tr className="border-b border-hub-line bg-hub-paper">
+                    <th className="text-left py-2.5 px-3 font-medium text-hub-muted">
                       {t('field')}
                     </th>
                     {log.action === 'update' && (
-                      <th className="text-left py-2.5 px-3 font-medium text-zinc-700 dark:text-zinc-300">
+                      <th className="text-left py-2.5 px-3 font-medium text-hub-muted">
                         {t('before')}
                       </th>
                     )}
-                    <th className="text-left py-2.5 px-3 font-medium text-zinc-700 dark:text-zinc-300">
+                    <th className="text-left py-2.5 px-3 font-medium text-hub-muted">
                       {log.action === 'update' ? t('after') : t('value')}
                     </th>
                   </tr>
@@ -155,17 +155,17 @@ export function ClinicHistoryDetailModal({
                   {fieldsToShow.map((field) => (
                     <tr
                       key={field}
-                      className="border-b border-zinc-100 dark:border-zinc-800 last:border-0"
+                      className="border-b border-hub-line last:border-0"
                     >
-                      <td className="py-2.5 px-3 text-zinc-900 dark:text-zinc-100">
+                      <td className="py-2.5 px-3 text-hub-fg">
                         {labelFor(field)}
                       </td>
                       {log.action === 'update' && (
-                        <td className="py-2.5 px-3 text-zinc-600 dark:text-zinc-400">
+                        <td className="py-2.5 px-3 text-hub-muted">
                           {formatAuditValue(log.old_data?.[field], field, auditLabels)}
                         </td>
                       )}
-                      <td className="py-2.5 px-3 text-zinc-900 dark:text-zinc-100">
+                      <td className="py-2.5 px-3 text-hub-fg">
                         {formatAuditValue(
                           log.action === 'delete'
                             ? log.old_data?.[field]
@@ -181,7 +181,7 @@ export function ClinicHistoryDetailModal({
             </div>
           </div>
         ) : (
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">
+          <p className="text-sm text-hub-muted">
             {t('noDetail')}
           </p>
         )}

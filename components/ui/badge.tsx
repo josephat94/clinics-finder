@@ -9,18 +9,18 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
   ({ className, variant = 'default', size = 'md', children, ...props }, ref) => {
     const baseStyles =
-      'inline-flex items-center justify-center rounded-full font-medium transition-colors';
+      'inline-flex items-center justify-center rounded-full font-semibold transition-colors';
 
     const variants = {
-      default: "bg-[#e8f1f6] text-hub-white",
-      primary: "bg-hub-accent text-black",
-      secondary: "bg-[#cffafe] text-hub-fg",
+      default: "bg-hub-paper text-hub-fg",
+      primary: "bg-hub-accent text-white",
+      secondary: "bg-hub-paper text-hub-fg",
       success:
-        "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+        "bg-hub-ok text-white",
       warning:
-        "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-      danger: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-      info: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
+        "bg-hub-caution text-hub-fg",
+      danger: "bg-hub-danger text-white",
+      info: "bg-hub-warn text-hub-fg",
     };
 
     const sizes = {

@@ -12,11 +12,11 @@ export function ClinicHistoryTableSkeleton() {
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-zinc-200 dark:border-zinc-800">
+            <tr className="border-b border-hub-line">
               {headers.map((header) => (
                 <th
                   key={header || 'actions'}
-                  className="text-left py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100"
+                  className="text-left py-3 px-4 text-sm font-semibold text-hub-fg"
                 >
                   {header}
                 </th>
@@ -27,7 +27,7 @@ export function ClinicHistoryTableSkeleton() {
             {[1, 2, 3, 4, 5, 6].map((index) => (
               <tr
                 key={index}
-                className="border-b border-zinc-100 dark:border-zinc-800"
+                className="border-b border-hub-line"
               >
                 <td className="py-3 px-4">
                   <Skeleton className="h-4 w-36" />

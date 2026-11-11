@@ -67,10 +67,10 @@ export function OpenDaysSelector({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between gap-3">
-        <label className="block text-sm font-medium text-zinc-900 dark:text-zinc-100">
+        <label className="block text-sm font-medium text-hub-fg">
           {label ?? t('openDays')}
         </label>
-        <span className="text-xs text-zinc-500 dark:text-zinc-400">
+        <span className="text-xs text-hub-muted">
           {t('selectedDays', { count: selectedDays.size })}
         </span>
       </div>
@@ -89,14 +89,14 @@ export function OpenDaysSelector({
               onClick={() => toggleDay(day.value)}
               className={cn(
                 'flex min-h-[72px] flex-col items-center justify-center rounded-lg border px-2 py-3 text-center transition-colors',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 dark:focus-visible:ring-white',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2',
                 'disabled:cursor-not-allowed disabled:opacity-50',
                 isSelected
-                  ? 'border-black bg-black text-white dark:border-white dark:bg-white dark:text-black'
+                  ? 'border-black bg-black text-white'
                   : isLocked
-                  ? 'border-zinc-200 bg-zinc-100 text-zinc-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-600'
-                  : 'border-zinc-300 bg-white text-zinc-700 hover:border-zinc-400 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-zinc-500 dark:hover:bg-zinc-800',
-                error && !isSelected && !isLocked && 'border-red-300 dark:border-red-800'
+                  ? 'border-hub-line bg-hub-paper text-hub-muted'
+                  : 'border-hub-line bg-white text-hub-muted hover:border-hub-line hover:bg-hub-paper',
+                error && !isSelected && !isLocked && 'border-hub-danger/30'
               )}
             >
               <span className="text-sm font-semibold">{t(SHORT_DAY_KEY[day.value])}</span>
@@ -109,7 +109,7 @@ export function OpenDaysSelector({
       </div>
 
       {error && errorText && (
-        <p className="text-sm text-red-600 dark:text-red-400">{errorText}</p>
+        <p className="text-sm text-hub-danger">{errorText}</p>
       )}
     </div>
   );

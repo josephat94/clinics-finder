@@ -128,10 +128,10 @@ export function WeeklyScheduleEditor({
     <div className="space-y-3">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h3 className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+          <h3 className="text-sm font-medium text-hub-fg">
             {t("scheduleTitle")}
           </h3>
-          <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+          <p className="mt-1 text-xs text-hub-muted">
             {t("scheduleHelp")}
           </p>
         </div>
@@ -148,8 +148,8 @@ export function WeeklyScheduleEditor({
       </div>
 
       {blocks.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-zinc-300 px-4 py-6 text-center dark:border-zinc-700">
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+        <div className="rounded-lg border border-dashed border-hub-line px-4 py-6 text-center">
+          <p className="text-sm text-hub-muted">
             {t("noSchedule")}
           </p>
         </div>
@@ -162,10 +162,10 @@ export function WeeklyScheduleEditor({
             return (
               <div
                 key={blockIndex}
-                className="space-y-3 rounded-lg border border-zinc-200 p-4 dark:border-zinc-800"
+                className="space-y-3 rounded-lg border border-hub-line p-4"
               >
                 <div className="flex items-center justify-between gap-3">
-                  <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                  <span className="text-sm font-medium text-hub-fg">
                     {t("scheduleBlock", { index: blockIndex + 1 })}
                   </span>
                   <Button
@@ -174,7 +174,7 @@ export function WeeklyScheduleEditor({
                     size="sm"
                     disabled={disabled}
                     onClick={() => removeBlock(blockIndex)}
-                    className="text-red-600 hover:text-red-700 dark:text-red-400"
+                    className="text-hub-danger hover:text-hub-danger"
                   >
                     <FaTrash className="h-3.5 w-3.5" />
                     {common("delete")}
@@ -197,7 +197,7 @@ export function WeeklyScheduleEditor({
 
                 <div className="space-y-3">
                   <div className="flex items-center justify-between gap-3">
-                    <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                    <span className="text-sm font-medium text-hub-fg">
                       {t("hourRanges")}
                     </span>
                     <Button
@@ -217,10 +217,10 @@ export function WeeklyScheduleEditor({
                     return (
                       <div
                         key={hourIndex}
-                        className="space-y-3 rounded-lg border border-zinc-200 p-3 dark:border-zinc-800"
+                        className="space-y-3 rounded-lg border border-hub-line p-3"
                       >
                         <div className="flex items-center justify-between gap-3">
-                          <span className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+                          <span className="text-xs font-medium uppercase tracking-wide text-hub-muted">
                             {t("range", { index: hourIndex + 1 })}
                           </span>
                           {block.hours.length > 1 && (
@@ -232,7 +232,7 @@ export function WeeklyScheduleEditor({
                               onClick={() =>
                                 removeHourRange(blockIndex, hourIndex)
                               }
-                              className="text-red-600 hover:text-red-700 dark:text-red-400"
+                              className="text-hub-danger hover:text-hub-danger"
                             >
                               <FaTrash className="h-3 w-3" />
                               {t("remove")}
@@ -291,7 +291,7 @@ export function WeeklyScheduleEditor({
                         </div>
 
                         {hourError && (
-                          <p className="text-sm text-red-600 dark:text-red-400">
+                          <p className="text-sm text-hub-danger">
                             {hourError}
                           </p>
                         )}
@@ -301,7 +301,7 @@ export function WeeklyScheduleEditor({
                 </div>
 
                 {blockError && error?.code !== "missingDays" && (
-                  <p className="text-sm text-red-600 dark:text-red-400">
+                  <p className="text-sm text-hub-danger">
                     {blockError}
                   </p>
                 )}

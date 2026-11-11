@@ -61,8 +61,8 @@ export function ClinicsMapModal({
       <div className="flex h-[calc(100vh-12rem)] min-h-[420px] flex-col gap-4">
         <div className="relative min-h-0 w-full flex-1 overflow-hidden rounded-lg">
           {clinicsWithCoords.length === 0 ? (
-            <div className="flex items-center justify-center h-full bg-zinc-100 dark:bg-zinc-900 rounded-lg">
-              <p className="text-zinc-600 dark:text-zinc-400 text-center px-4">
+            <div className="flex items-center justify-center h-full bg-hub-paper rounded-lg">
+              <p className="text-hub-muted text-center px-4">
                 {t('noneWithCoords')}
               </p>
             </div>
@@ -75,12 +75,12 @@ export function ClinicsMapModal({
               reuseMaps={false}
             />
           ) : (
-            <div className="flex h-full items-center justify-center rounded-lg bg-zinc-100 dark:bg-zinc-900">
-              <p className="text-zinc-600 dark:text-zinc-400">{t('loadingMap')}</p>
+            <div className="flex h-full items-center justify-center rounded-lg bg-hub-paper">
+              <p className="text-hub-muted">{t('loadingMap')}</p>
             </div>
           )}
         </div>
-        <div className="flex items-center gap-4 text-sm text-zinc-600 dark:text-zinc-400 flex-shrink-0">
+        <div className="flex items-center gap-4 text-sm text-hub-muted flex-shrink-0">
           {userLocation && (
             <div className="flex items-center gap-2">
               <div className="w-4 h-4 bg-hub-primary rounded-full"></div>
@@ -88,7 +88,7 @@ export function ClinicsMapModal({
             </div>
           )}
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-red-500 rounded-full"></div>
+            <div className="w-4 h-4 bg-hub-danger rounded-full"></div>
             <span>{t('clinicsLegend')}</span>
           </div>
         </div>

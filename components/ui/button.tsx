@@ -10,17 +10,17 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'primary', size = 'md', ...props }, ref) => {
     const baseStyles =
-      "inline-flex items-center gap-3 justify-center rounded-xl font-medium transition-[opacity,box-shadow,transform] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hub-primary focus-visible:ring-offset-2 focus-visible:ring-offset-hub-bg disabled:pointer-events-none disabled:opacity-50 cursor-pointer";
+      "inline-flex items-center gap-3 justify-center whitespace-nowrap rounded-xl font-semibold transition-[opacity,box-shadow,transform,background-color] duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hub-primary focus-visible:ring-offset-2 focus-visible:ring-offset-hub-bg disabled:pointer-events-none disabled:opacity-50 cursor-pointer";
 
     const variants = {
       primary:
-        "bg-hub-accent text-white shadow-[0_2px_4px_rgba(22,163,74,0.24)] hover:opacity-90",
-      secondary: "glass-card text-hub-fg",
+        "bg-hub-accent text-white hover:bg-hub-primary",
+      secondary: "glass-card text-hub-fg hover:bg-hub-paper",
       outline:
-        "border-2 border-hub-primary bg-white/70 text-hub-fg hover:bg-hub-border",
-      ghost: "bg-transparent text-hub-fg hover:bg-white/50",
+        "border border-hub-fg bg-hub-card text-hub-fg hover:bg-hub-paper",
+      ghost: "bg-transparent text-hub-fg hover:bg-hub-paper",
       danger:
-        "bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-500",
+        "bg-hub-danger text-white hover:opacity-90 focus-visible:ring-hub-danger",
     };
 
     const sizes = {

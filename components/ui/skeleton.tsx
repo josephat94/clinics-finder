@@ -20,7 +20,7 @@ const Skeleton = React.forwardRef<HTMLDivElement, SkeletonProps>(
     ...props 
   }, ref) => {
     const baseStyles =
-      'bg-[#fcd34d] rounded-xl';
+      'bg-hub-line rounded-md';
 
     const variants = {
       rectangular: 'rounded',

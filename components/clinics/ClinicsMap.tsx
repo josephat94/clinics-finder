@@ -462,8 +462,8 @@ export function ClinicsMap({
 
   if (!mapboxToken) {
     return (
-      <div className="flex items-center justify-center h-full bg-zinc-100 dark:bg-zinc-900 rounded-lg">
-        <p className="text-red-600 dark:text-red-400">
+      <div className="flex items-center justify-center h-full bg-hub-paper rounded-lg">
+        <p className="text-hub-danger">
           {t('mapboxMissing')}
         </p>
       </div>
@@ -472,14 +472,14 @@ export function ClinicsMap({
 
   if (!isMounted) {
     return (
-      <div className="flex items-center justify-center h-full bg-zinc-100 dark:bg-zinc-900 rounded-lg">
-        <p className="text-zinc-600 dark:text-zinc-400">{t('loadingMap')}</p>
+      <div className="flex items-center justify-center h-full bg-hub-paper rounded-lg">
+        <p className="text-hub-muted">{t('loadingMap')}</p>
       </div>
     );
   }
 
   return (
-    <div className="clinics-map relative w-full h-full rounded-3xl overflow-hidden">
+    <div className="clinics-map relative w-full h-full rounded-md overflow-hidden">
       <style>{`
         .clinics-map .mapboxgl-marker:hover,
         .clinics-map .mapboxgl-marker:focus-within {
@@ -528,13 +528,13 @@ export function ClinicsMap({
             anchor="bottom"
           >
             <div className="relative group" style={{ zIndex: 1000 }}>
-              <div className="w-10 h-10 bg-hub-primary text-black rounded-full border-2 border-white shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform">
+              <div className="w-10 h-10 bg-hub-fg text-white rounded-full border-2 border-white shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform">
                 <FaUser />
               </div>
               {userAddress && (
-                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1.5 bg-hub-primary text-black text-sm rounded-lg whitespace-nowrap shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1.5 bg-hub-fg text-white text-sm rounded-lg whitespace-nowrap shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
                   {userAddress}
-                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-hub-primary" />
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-hub-fg" />
                 </div>
               )}
             </div>
@@ -544,25 +544,25 @@ export function ClinicsMap({
 
       <div
         ref={tooltipRef}
-        className="pointer-events-none absolute left-0 top-0 z-30 max-w-[200px] rounded-lg bg-red-500 px-3 py-1.5 text-sm text-white shadow-xl"
+        className="pointer-events-none absolute left-0 top-0 z-30 max-w-[200px] rounded-lg bg-hub-danger px-3 py-1.5 text-sm text-white shadow-xl"
         style={{ display: 'none' }}
       >
         <div ref={tooltipLabelRef} className="truncate" />
-        <div className="absolute top-full left-1/2 w-0 h-0 -translate-x-1/2 border-l-4 border-r-4 border-t-4 border-transparent border-t-red-500" />
+        <div className="absolute top-full left-1/2 w-0 h-0 -translate-x-1/2 border-l-4 border-r-4 border-t-4 border-transparent border-t-hub-danger" />
       </div>
 
       {/* Un solo popup compartido: evita montar 200+ Popovers */}
       {popupClinic && (
-        <div className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:w-[360px] z-40 max-h-[70%] overflow-y-auto rounded-lg shadow-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-          <div className="p-4 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 sticky top-0">
+        <div className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:w-[360px] z-40 max-h-[70%] overflow-y-auto rounded-lg shadow-xl border border-hub-line bg-white">
+          <div className="p-4 border-b border-hub-line bg-hub-paper sticky top-0">
             <div className="flex items-start justify-between gap-2 mb-2">
-              <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 flex-1">
+              <h3 className="text-lg font-semibold text-hub-fg flex-1">
                 {popupClinic.name}
               </h3>
               <button
                 type="button"
                 onClick={() => setPopupClinicId(null)}
-                className="text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 text-sm px-2"
+                className="text-hub-muted hover:text-hub-fg text-sm px-2"
                 aria-label={t('closeDetail')}
               >
                 ✕

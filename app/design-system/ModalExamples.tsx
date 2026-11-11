@@ -20,7 +20,7 @@ export function ModalExamples() {
     <div className="space-y-8">
       {/* Basic Modal */}
       <div>
-        <h3 className="text-lg font-medium text-zinc-700 dark:text-zinc-300 mb-4">
+        <h3 className="text-lg font-medium text-hub-muted mb-4">
           Básico
         </h3>
         <div className="flex flex-wrap gap-4">
@@ -34,7 +34,7 @@ export function ModalExamples() {
           title="Modal Básico"
           description="Este es un ejemplo de modal básico con título y descripción."
         >
-          <p className="text-zinc-600 dark:text-zinc-400">
+          <p className="text-hub-muted">
             Este es el contenido del modal. Puedes agregar cualquier contenido aquí.
           </p>
         </Modal>
@@ -42,7 +42,7 @@ export function ModalExamples() {
 
       {/* Modal with Form */}
       <div>
-        <h3 className="text-lg font-medium text-zinc-700 dark:text-zinc-300 mb-4">
+        <h3 className="text-lg font-medium text-hub-muted mb-4">
           Con Formulario
         </h3>
         <div className="flex flex-wrap gap-4">
@@ -98,7 +98,7 @@ export function ModalExamples() {
 
       {/* Modal Sizes */}
       <div>
-        <h3 className="text-lg font-medium text-zinc-700 dark:text-zinc-300 mb-4">
+        <h3 className="text-lg font-medium text-hub-muted mb-4">
           Tamaños
         </h3>
         <div className="flex flex-wrap gap-4">
@@ -122,7 +122,7 @@ export function ModalExamples() {
           title="Modal Small"
           size="sm"
         >
-          <p className="text-zinc-600 dark:text-zinc-400">
+          <p className="text-hub-muted">
             Este es un modal pequeño (max-w-md).
           </p>
         </Modal>
@@ -133,7 +133,7 @@ export function ModalExamples() {
           title="Modal Medium"
           size="md"
         >
-          <p className="text-zinc-600 dark:text-zinc-400">
+          <p className="text-hub-muted">
             Este es un modal mediano (max-w-lg). Este es el tamaño por defecto.
           </p>
         </Modal>
@@ -144,7 +144,7 @@ export function ModalExamples() {
           title="Modal Large"
           size="lg"
         >
-          <p className="text-zinc-600 dark:text-zinc-400">
+          <p className="text-hub-muted">
             Este es un modal grande (max-w-2xl). Perfecto para contenido más extenso.
           </p>
         </Modal>
@@ -155,7 +155,7 @@ export function ModalExamples() {
           title="Modal Extra Large"
           size="xl"
         >
-          <p className="text-zinc-600 dark:text-zinc-400">
+          <p className="text-hub-muted">
             Este es un modal extra grande (max-w-4xl). Ideal para tablas o contenido muy amplio.
           </p>
         </Modal>
@@ -163,24 +163,24 @@ export function ModalExamples() {
 
       {/* Modal Options */}
       <div>
-        <h3 className="text-lg font-medium text-zinc-700 dark:text-zinc-300 mb-4">
+        <h3 className="text-lg font-medium text-hub-muted mb-4">
           Opciones
         </h3>
         <div className="space-y-4">
           <div>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-2">
+            <p className="text-sm text-hub-muted mb-2">
               • Cerrar con tecla Escape
             </p>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-2">
+            <p className="text-sm text-hub-muted mb-2">
               • Cerrar haciendo click en el overlay (configurable)
             </p>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-2">
+            <p className="text-sm text-hub-muted mb-2">
               • Botón de cerrar opcional
             </p>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-2">
+            <p className="text-sm text-hub-muted mb-2">
               • Previene scroll del body cuando está abierto
             </p>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            <p className="text-sm text-hub-muted">
               • Soporte completo para dark mode
             </p>
           </div>

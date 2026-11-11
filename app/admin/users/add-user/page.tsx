@@ -42,16 +42,16 @@ export default function AdminUsersPage() {
     <Container className="min-h-screen py-16 px-4">
       <div className="max-w-2xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100 mb-2">
+          <h1 className="text-3xl font-bold text-hub-fg mb-2">
             {t('usersTitle')}
           </h1>
-          <p className="text-zinc-600 dark:text-zinc-400">
+          <p className="text-hub-muted">
             {t('usersCreateSubtitle')}
           </p>
         </div>
 
         <Card className="p-6">
-          <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 mb-4">
+          <h2 className="text-xl font-semibold text-hub-fg mb-4">
             {t('createUserTitle')}
           </h2>
           <CreateUserForm />

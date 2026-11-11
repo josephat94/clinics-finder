@@ -59,10 +59,10 @@ export default function AdminUsersPage() {
       <div className="max-w-7xl mx-auto">
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100 mb-2">
+            <h1 className="text-3xl font-bold text-hub-fg mb-2">
               {t('usersTitle')}
             </h1>
-            <p className="text-zinc-600 dark:text-zinc-400">
+            <p className="text-hub-muted">
               {t('usersSubtitle')}
             </p>
           </div>

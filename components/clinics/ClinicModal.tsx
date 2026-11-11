@@ -246,8 +246,8 @@ export function ClinicModal({
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
-          <div className="p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
-            <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+          <div className="p-3 rounded-lg bg-hub-danger-soft border border-hub-danger/30">
+            <p className="text-sm text-hub-danger">{error}</p>
           </div>
         )}
 
@@ -270,11 +270,11 @@ export function ClinicModal({
                 name="enabled"
                 checked={formData.enabled ?? true}
                 onChange={handleCheckboxChange}
-                className="h-4 w-4 rounded border-zinc-300 text-black focus:ring-2 focus:ring-black dark:border-zinc-700 dark:text-white dark:focus:ring-white"
+                className="h-4 w-4 rounded border-hub-line text-black focus:ring-2 focus:ring-black"
               />
               <label
                 htmlFor="enabled"
-                className="text-sm font-medium text-zinc-900 dark:text-zinc-100"
+                className="text-sm font-medium text-hub-fg"
               >
                 {t("enabled")}
               </label>
@@ -286,11 +286,11 @@ export function ClinicModal({
                 name="banned"
                 checked={formData.banned ?? false}
                 onChange={handleCheckboxChange}
-                className="h-4 w-4 rounded border-zinc-300 text-red-600 focus:ring-2 focus:ring-red-500 dark:border-zinc-700 dark:text-red-400 dark:focus:ring-red-500"
+                className="h-4 w-4 rounded border-hub-line text-hub-danger focus:ring-2 focus:ring-hub-danger"
               />
               <label
                 htmlFor="banned"
-                className="text-sm font-medium text-zinc-900 dark:text-zinc-100"
+                className="text-sm font-medium text-hub-fg"
               >
                 {t("blacklistLabel")}
               </label>
@@ -302,11 +302,11 @@ export function ClinicModal({
                 name="bilingual"
                 checked={formData.bilingual ?? false}
                 onChange={handleCheckboxChange}
-                className="h-4 w-4 rounded border-zinc-300 text-[#0f766e] focus:ring-2 focus:ring-hub-primary dark:border-zinc-700 dark:text-blue-400 dark:focus:ring-blue-500"
+                className="h-4 w-4 rounded border-hub-line text-hub-primary focus:ring-2 focus:ring-hub-primary"
               />
               <label
                 htmlFor="bilingual"
-                className="text-sm font-medium text-zinc-900 dark:text-zinc-100"
+                className="text-sm font-medium text-hub-fg"
               >
                 {t("bilingualLabel")}
               </label>
@@ -417,7 +417,7 @@ export function ClinicModal({
         <div>
           <label
             htmlFor="notes"
-            className="block text-sm font-medium mb-1.5 text-zinc-900 dark:text-zinc-100"
+            className="block text-sm font-medium mb-1.5 text-hub-fg"
           >
             {t("notesLabel")}
           </label>
@@ -428,11 +428,11 @@ export function ClinicModal({
             onChange={handleChange}
             rows={4}
             placeholder={t("notesPlaceholder")}
-            className="flex w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-base text-black dark:text-zinc-100 transition-colors placeholder:text-zinc-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black dark:focus-visible:ring-white focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex w-full rounded-lg border border-hub-line bg-white px-3 py-2 text-base text-black transition-colors placeholder:text-hub-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           />
         </div>
 
-        <div className="flex gap-3 pt-4 border-t border-zinc-200 dark:border-zinc-800">
+        <div className="flex gap-3 pt-4 border-t border-hub-line">
           <Button
             type="submit"
             variant="primary"

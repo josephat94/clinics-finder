@@ -9,23 +9,23 @@ export default function DesignSystemPage() {
   return (
     <div className="hub-shell font-body min-h-screen py-16 px-4">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-black dark:text-zinc-50 mb-2">
+        <h1 className="text-4xl font-bold text-black mb-2">
           Design System
         </h1>
-        <p className="text-zinc-600 dark:text-zinc-400 mb-12">
+        <p className="text-hub-muted mb-12">
           Componentes base que extienden elementos HTML nativos
         </p>
 
         {/* Buttons Section */}
         <section className="mb-16">
-          <h2 className="text-2xl font-semibold text-black dark:text-zinc-50 mb-6">
+          <h2 className="text-2xl font-semibold text-black mb-6">
             Botones
           </h2>
 
           <div className="space-y-8">
             {/* Variants */}
             <div>
-              <h3 className="text-lg font-medium text-zinc-700 dark:text-zinc-300 mb-4">
+              <h3 className="text-lg font-medium text-hub-muted mb-4">
                 Variantes
               </h3>
               <div className="flex flex-wrap gap-4">
@@ -39,7 +39,7 @@ export default function DesignSystemPage() {
 
             {/* Sizes */}
             <div>
-              <h3 className="text-lg font-medium text-zinc-700 dark:text-zinc-300 mb-4">
+              <h3 className="text-lg font-medium text-hub-muted mb-4">
                 Tamaños
               </h3>
               <div className="flex flex-wrap items-center gap-4">
@@ -51,7 +51,7 @@ export default function DesignSystemPage() {
 
             {/* States */}
             <div>
-              <h3 className="text-lg font-medium text-zinc-700 dark:text-zinc-300 mb-4">
+              <h3 className="text-lg font-medium text-hub-muted mb-4">
                 Estados
               </h3>
               <div className="flex flex-wrap gap-4">
@@ -67,14 +67,14 @@ export default function DesignSystemPage() {
 
         {/* Inputs Section */}
         <section className="mb-16">
-          <h2 className="text-2xl font-semibold text-black dark:text-zinc-50 mb-6">
+          <h2 className="text-2xl font-semibold text-black mb-6">
             Inputs
           </h2>
 
           <div className="space-y-8">
             {/* Basic Inputs */}
             <div>
-              <h3 className="text-lg font-medium text-zinc-700 dark:text-zinc-300 mb-4">
+              <h3 className="text-lg font-medium text-hub-muted mb-4">
                 Básicos
               </h3>
               <div className="space-y-4 max-w-md">
@@ -91,7 +91,7 @@ export default function DesignSystemPage() {
 
             {/* Input States */}
             <div>
-              <h3 className="text-lg font-medium text-zinc-700 dark:text-zinc-300 mb-4">
+              <h3 className="text-lg font-medium text-hub-muted mb-4">
                 Estados
               </h3>
               <div className="space-y-4 max-w-md">
@@ -118,7 +118,7 @@ export default function DesignSystemPage() {
 
             {/* Input Types */}
             <div>
-              <h3 className="text-lg font-medium text-zinc-700 dark:text-zinc-300 mb-4">
+              <h3 className="text-lg font-medium text-hub-muted mb-4">
                 Tipos
               </h3>
               <div className="space-y-4 max-w-md">
@@ -134,14 +134,14 @@ export default function DesignSystemPage() {
 
         {/* Selects Section */}
         <section className="mb-16">
-          <h2 className="text-2xl font-semibold text-black dark:text-zinc-50 mb-6">
+          <h2 className="text-2xl font-semibold text-black mb-6">
             Selects
           </h2>
 
           <div className="space-y-8">
             {/* Basic Selects */}
             <div>
-              <h3 className="text-lg font-medium text-zinc-700 dark:text-zinc-300 mb-4">
+              <h3 className="text-lg font-medium text-hub-muted mb-4">
                 Básicos
               </h3>
               <div className="space-y-4 max-w-md">
@@ -165,7 +165,7 @@ export default function DesignSystemPage() {
 
             {/* Select States */}
             <div>
-              <h3 className="text-lg font-medium text-zinc-700 dark:text-zinc-300 mb-4">
+              <h3 className="text-lg font-medium text-hub-muted mb-4">
                 Estados
               </h3>
               <div className="space-y-4 max-w-md">
@@ -198,7 +198,7 @@ export default function DesignSystemPage() {
 
         {/* Modals Section */}
         <section className="mb-16">
-          <h2 className="text-2xl font-semibold text-black dark:text-zinc-50 mb-6">
+          <h2 className="text-2xl font-semibold text-black mb-6">
             Modals
           </h2>
           <ModalExamples />
@@ -206,10 +206,10 @@ export default function DesignSystemPage() {
 
         {/* Usage Example */}
         <section className="mb-16">
-          <h2 className="text-2xl font-semibold text-black dark:text-zinc-50 mb-6">
+          <h2 className="text-2xl font-semibold text-black mb-6">
             Ejemplo de Uso
           </h2>
-          <div className="bg-white dark:bg-zinc-900 p-6 rounded-lg border border-zinc-200 dark:border-zinc-800 max-w-md">
+          <div className="bg-white p-6 rounded-lg border border-hub-line max-w-md">
             <form
               onSubmit={(e) => {
                 e.preventDefault();

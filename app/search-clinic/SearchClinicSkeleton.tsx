@@ -72,8 +72,8 @@ export function SearchClinicSkeleton() {
         </div>
 
         {/* Columna derecha: Mapa skeleton */}
-        <div className="flex-1 bg-[#dbeafe]/70 min-h-0 overflow-hidden px-6 py-6 rounded-3xl">
-          <Skeleton className="w-full h-full rounded-2xl bg-[#93c5fd]" />
+        <div className="flex-1 bg-hub-paper/70 min-h-0 overflow-hidden px-6 py-6 rounded-md">
+          <Skeleton className="w-full h-full rounded-md bg-hub-line" />
         </div>
       </div>
     </div>

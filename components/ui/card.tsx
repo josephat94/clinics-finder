@@ -66,17 +66,17 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
     const effectiveVariant = variant || 'normal';
 
     const baseStyles =
-      'text-hub-fg p-6 rounded-2xl border transition-[box-shadow,transform] duration-200 relative w-full h-auto flex flex-col';
+      'text-hub-fg p-6 rounded-2xl border transition-[box-shadow,border-color] duration-200 relative w-full flex flex-col';
 
     const variants = {
       normal:
-        'glass-card border-transparent',
+        'glass-card',
       first:
-        'border-yellow-500 dark:border-yellow-400 border-2 shadow-lg ring-2 ring-yellow-500/30 dark:ring-yellow-400/30 bg-yellow-50/10 dark:bg-yellow-950/10',
+        'border-hub-caution border-2 shadow-sm ring-2 ring-hub-caution/30 bg-hub-caution-soft',
       second:
-        'border-slate-500 dark:border-slate-300 border-2 shadow-lg ring-2 ring-slate-400/20 dark:ring-slate-300/30 bg-slate-50/10 dark:bg-slate-950/10',
+        'border-hub-muted border-2 shadow-sm ring-2 ring-hub-line/40 bg-hub-paper',
       third:
-        'border-amber-600 dark:border-amber-500 border-2 shadow-lg ring-2 ring-amber-600/30 dark:ring-amber-500/30 bg-amber-50/10 dark:bg-amber-950/10',
+        'border-hub-warn border-2 shadow-sm ring-2 ring-hub-warn/30 bg-hub-warn-soft',
     };
 
     const t = useTranslations('common');

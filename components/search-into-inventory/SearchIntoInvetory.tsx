@@ -71,13 +71,14 @@ export const SearchIntoInvetory = ({
         }}
       />
       <div>
-        <label className="block text-sm font-medium mb-1.5 text-zinc-900 dark:text-zinc-100 invisible">
+        <label className="block text-sm font-medium mb-1.5 text-hub-fg invisible">
           acciones
         </label>
         <div className="flex items-center gap-3 justify-end md:justify-start">
           <Button
             onClick={handleSearch}
             disabled={!state || !search}
+            variant={!state || !search ? "outline" : "primary"}
             size="md"
             title={t("search")}
           >
