@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/components/ui/toast';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Modal } from '@/components/ui/modal';
@@ -33,6 +34,7 @@ interface UsersTableProps {
 export function UsersTable({ refreshKey, onRefresh }: UsersTableProps) {
   const { user: currentUser } = useAuth();
   const t = useTranslations('admin');
+  const { notify } = useToast();
   const common = useTranslations('common');
   const locale = useLocale();
   const [users, setUsers] = useState<User[]>([]);
@@ -108,7 +110,7 @@ export function UsersTable({ refreshKey, onRefresh }: UsersTableProps) {
       onRefresh?.();
     } catch (err) {
       console.error('Error al eliminar usuario:', err);
-      alert(err instanceof Error ? err.message : t('deleteUserError'));
+      notify(err instanceof Error ? err.message : t('deleteUserError'), 'error');
     }
   };
 
@@ -120,7 +122,7 @@ export function UsersTable({ refreshKey, onRefresh }: UsersTableProps) {
     return (
       <Card className="p-6">
         <div className="text-center">
-          <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>
+          <p className="text-hub-danger mb-4">{error}</p>
           <Button variant="outline" size="sm" onClick={fetchUsers}>
             {common('retry')}
           </Button>
@@ -132,7 +134,7 @@ export function UsersTable({ refreshKey, onRefresh }: UsersTableProps) {
   if (users.length === 0) {
     return (
       <Card className="p-6">
-        <p className="text-center text-zinc-600 dark:text-zinc-400">
+        <p className="text-center text-hub-muted">
           {t('emptyUsers')}
         </p>
       </Card>
@@ -144,26 +146,26 @@ export function UsersTable({ refreshKey, onRefresh }: UsersTableProps) {
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-zinc-200 dark:border-zinc-800">
-              <th className="text-left py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+            <tr className="border-b border-hub-line">
+              <th className="text-left py-3 px-4 text-sm font-semibold text-hub-fg">
                 {common('name')}
               </th>
-              <th className="text-left py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+              <th className="text-left py-3 px-4 text-sm font-semibold text-hub-fg">
                 {common('email')}
               </th>
-              <th className="text-left py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+              <th className="text-left py-3 px-4 text-sm font-semibold text-hub-fg">
                 {common('role')}
               </th>
-              <th className="text-left py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+              <th className="text-left py-3 px-4 text-sm font-semibold text-hub-fg">
                 {t('status')}
               </th>
-              <th className="text-left py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+              <th className="text-left py-3 px-4 text-sm font-semibold text-hub-fg">
                 {t('created')}
               </th>
-              <th className="text-left py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+              <th className="text-left py-3 px-4 text-sm font-semibold text-hub-fg">
                 {t('lastAccess')}
               </th>
-              <th className="text-right py-3 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+              <th className="text-right py-3 px-4 text-sm font-semibold text-hub-fg">
                 {common('actions')}
               </th>
             </tr>
@@ -172,12 +174,12 @@ export function UsersTable({ refreshKey, onRefresh }: UsersTableProps) {
             {users.map((user) => (
               <tr
                 key={user.id}
-                className="border-b border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
+                className="border-b border-hub-line hover:bg-hub-paper transition-colors"
               >
-                <td className="py-3 px-4 text-sm text-zinc-900 dark:text-zinc-100">
+                <td className="py-3 px-4 text-sm text-hub-fg">
                   {user.name}
                 </td>
-                <td className="py-3 px-4 text-sm text-zinc-600 dark:text-zinc-400">
+                <td className="py-3 px-4 text-sm text-hub-muted">
                   {user.email}
                 </td>
                 <td className="py-3 px-4">
@@ -194,10 +196,10 @@ export function UsersTable({ refreshKey, onRefresh }: UsersTableProps) {
                     {user.emailConfirmed ? t('confirmed') : t('pending')}
                   </Badge>
                 </td>
-                <td className="py-3 px-4 text-sm text-zinc-600 dark:text-zinc-400">
+                <td className="py-3 px-4 text-sm text-hub-muted">
                   {formatDate(user.createdAt)}
                 </td>
-                <td className="py-3 px-4 text-sm text-zinc-600 dark:text-zinc-400">
+                <td className="py-3 px-4 text-sm text-hub-muted">
                   {formatDate(user.lastSignIn)}
                 </td>
                 <td className="py-3 px-4">

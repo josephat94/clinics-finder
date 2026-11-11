@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -34,22 +34,54 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
     ref
   ) => {
     const t = useTranslations('common');
+    const dialogRef = useRef<HTMLDivElement | null>(null);
     useEffect(() => {
-      const handleEscape = (e: KeyboardEvent) => {
-        if (e.key === 'Escape' && open) {
+      let raf = 0;
+      const previouslyFocused = document.activeElement as HTMLElement | null;
+      const focusableSelector =
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+      const handleKeydown = (e: KeyboardEvent) => {
+        if (!open) return;
+        if (e.key === 'Escape') {
           onClose();
+          return;
+        }
+        if (e.key !== 'Tab' || !dialogRef.current) return;
+        const items = Array.from(
+          dialogRef.current.querySelectorAll<HTMLElement>(focusableSelector)
+        );
+        if (items.length === 0) return;
+        const first = items[0];
+        const last = items[items.length - 1];
+        const active = document.activeElement;
+        if (e.shiftKey && (active === first || !dialogRef.current.contains(active))) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && (active === last || !dialogRef.current.contains(active))) {
+          e.preventDefault();
+          first.focus();
         }
       };
 
       if (open) {
-        document.addEventListener('keydown', handleEscape);
+        // Mueve el foco dentro del diálogo al abrir
+        raf = requestAnimationFrame(() => {
+          const el = dialogRef.current;
+          if (el && !el.contains(document.activeElement)) {
+            (el.querySelector<HTMLElement>(focusableSelector) ?? el).focus();
+          }
+        });
+        document.addEventListener('keydown', handleKeydown);
         // Prevenir scroll del body cuando el modal está abierto
         document.body.style.overflow = 'hidden';
       }
 
       return () => {
-        document.removeEventListener('keydown', handleEscape);
+        cancelAnimationFrame(raf);
+        document.removeEventListener('keydown', handleKeydown);
         document.body.style.overflow = 'unset';
+        if (open) previouslyFocused?.focus?.();
       };
     }, [open, onClose]);
 
@@ -109,6 +141,8 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
         {open && (
           <div
             className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
+            ref={dialogRef}
+            tabIndex={-1}
             role="dialog"
             aria-modal="true"
             aria-labelledby={title ? 'modal-title' : undefined}
@@ -121,7 +155,7 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
               exit="exit"
               variants={overlayVariants}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-black/50 dark:bg-black/70 backdrop-blur-sm"
+              className="fixed inset-0 bg-hub-fg/60"
               onClick={handleOverlayClick}
               aria-hidden="true"
             />
@@ -134,7 +168,7 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
               exit="exit"
               variants={modalVariants}
               className={cn(
-                'glass-card text-hub-fg relative z-[100] flex w-full max-h-[calc(100vh-2rem)] flex-col overflow-hidden rounded-2xl',
+                'glass-card text-hub-fg relative z-[100] flex w-full max-h-[calc(100vh-2rem)] flex-col overflow-hidden rounded-md',
                 sizeClasses[size],
                 isFullSize && 'h-[calc(100vh-2rem)]',
                 className
@@ -143,7 +177,7 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
             >
           {/* Header */}
           {(title || showCloseButton) && (
-            <div className="flex flex-shrink-0 items-center justify-between border-b border-white/60 p-6">
+            <div className="flex flex-shrink-0 items-center justify-between border-b border-hub-line p-6">
               <div className="flex-1">
                 {title && (
                   <h2

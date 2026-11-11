@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/toast";
 import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { SearchIntoInvetory } from "@/components/search-into-inventory/SearchIntoInvetory";
@@ -29,6 +31,8 @@ export function ClinicsPageClient({
 }: ClinicsPageClientProps) {
   const t = useTranslations("clinics");
   const common = useTranslations("common");
+  const router = useRouter();
+  const { notify } = useToast();
   // Stores
   const { filteredClinics, setInitialClinics, setFilteredClinics } = useClinicsStore();
   const { viewMode, setViewMode, isCreateModalOpen, openCreateModal, closeCreateModal } = useUIStore();
@@ -79,7 +83,7 @@ export function ClinicsPageClient({
       setClinicToDelete(null);
     } catch (error) {
       console.error('Error al eliminar la clínica:', error);
-      alert(t("deleteError"));
+      notify(t("deleteError"), "error");
     } finally {
       setIsDeleting(false);
     }
@@ -91,8 +95,8 @@ export function ClinicsPageClient({
   };
 
   const handleModalSuccess = () => {
-    // Recargar la página para mostrar los cambios
-    window.location.reload();
+    // Refresca los datos del servidor sin recargar toda la página
+    router.refresh();
   };
 
   const getBadgeVariantFromMinutes = (minutes: number) => {
@@ -140,14 +144,14 @@ export function ClinicsPageClient({
   const gridCols= viewMode === "grid" ? "md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1";
 
   return (
-    <Container className="hub-shell font-body min-h-screen py-16 px-4 flex flex-col gap-8">
+    <Container className="hub-shell font-body min-h-screen py-8 md:py-12 px-4 flex flex-col gap-6">
       <SearchIntoInvetory
         options={availableStates}
         initialClinics={initialClinics}
       />
 
       {/* Filtros y búsqueda interna */}
-      <div className="glass-card flex flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-4 p-4 rounded-2xl">
+      <div className="glass-card flex flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-4 p-4 rounded-md">
         <div className="flex-1 w-full sm:w-auto">
           <div className="relative">
             <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-hub-fg" />
@@ -160,7 +164,7 @@ export function ClinicsPageClient({
             />
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <span className="text-sm text-hub-muted">
             {t("sort")}
           </span>
@@ -194,43 +198,47 @@ export function ClinicsPageClient({
         </div>
       </div>
 
-      <div className="flex items-center justify-end w-full gap-6">
-        <div className="flex items-center gap-2">
-          <Button
-            disabled={viewMode === "list"}
-            variant="outline"
-            size="md"
-            onClick={() => setViewMode("list")}
-          >
-            <FaListAlt />
-          </Button>
-          <Button
-            disabled={viewMode === "grid"}
-            variant="outline"
-            size="md"
-            onClick={() => setViewMode("grid")}
-          >
-            <FaTable />
-          </Button>
-          <Button
-            variant="outline"
-            size="md"
-            onClick={() => setIsMapModalOpen(true)}
-            aria-label={t("viewMap")}
-            title={t("viewMap")}
-          >
-            <FaMapMarkedAlt />
-          </Button>
-        </div>
-        <Button variant="outline" size="md" onClick={openCreateModal}>
-          <FaPlus />
-          {t("addClinic")}
-        </Button>
-      </div>
       <div className={viewMode === "list" ? "w-full" : "w-full"}>
-        <h1 className="text-3xl font-bold text-hub-fg mb-8">
-          {t("listTitle", { count: filteredAndSortedClinics.length })}
-        </h1>
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+          <h1 className="font-heading text-3xl font-bold text-hub-fg">
+            {t("listTitle", { count: filteredAndSortedClinics.length })}
+          </h1>
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center gap-2">
+              <Button
+                disabled={viewMode === "list"}
+                variant="outline"
+                size="md"
+                onClick={() => setViewMode("list")}
+                aria-label={t("viewList")} title={t("viewList")}
+              >
+                <FaListAlt />
+              </Button>
+              <Button
+                disabled={viewMode === "grid"}
+                variant="outline"
+                size="md"
+                onClick={() => setViewMode("grid")}
+                aria-label={t("viewGrid")} title={t("viewGrid")}
+              >
+                <FaTable />
+              </Button>
+              <Button
+                variant="outline"
+                size="md"
+                onClick={() => setIsMapModalOpen(true)}
+                aria-label={t("viewMap")}
+                title={t("viewMap")}
+              >
+                <FaMapMarkedAlt />
+              </Button>
+            </div>
+            <Button variant="primary" size="md" onClick={openCreateModal}>
+              <FaPlus />
+              {t("addClinic")}
+            </Button>
+          </div>
+        </div>
 
         {filteredAndSortedClinics.length === 0 ? (
           <div className="text-center py-12">
@@ -399,7 +407,7 @@ export function ClinicsPageClient({
                   : baseVariants;
 
               return (
-                <div key={clinic.id}>
+                <div key={clinic.id} className="rise h-full" style={{ "--i": index } as React.CSSProperties}>
                   <Card
                     showOptions={true}
                     onEdit={() => handleEditClick(clinic)}
@@ -418,24 +426,8 @@ export function ClinicsPageClient({
                     }
                     className={
                       clinic.banned
-                        ? "opacity-80 border-red-500 dark:border-red-600 bg-red-50/30 dark:bg-red-950/20"
-                        : ""
-                    }
-                    badges={
-                      <>
-                        <div className="flex gap-2">
-                          {clinic.banned && (
-                            <Badge variant="danger" size="sm">
-                              {t("blacklist")}
-                            </Badge>
-                          )}
-                          {!clinic.enabled && (
-                            <Badge variant="warning" size="sm">
-                              {t("disabled")}
-                            </Badge>
-                          )}
-                        </div>
-                      </>
+                        ? "glass-card-hover h-full opacity-80 border-hub-danger bg-hub-danger-soft/30"
+                        : "glass-card-hover h-full"
                     }
                   >
                     <ClinicCardContent clinic={clinic} />

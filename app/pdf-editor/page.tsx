@@ -2,6 +2,7 @@
 import dynamic from "next/dynamic";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { useToast } from "@/components/ui/toast";
 import { Card } from "@/features/pdf-editor/components/ui/card";
 import { usePdfStore } from "@/features/pdf-editor/stores/pdfStore";
 import { useAnnotationsStore } from "@/features/pdf-editor/stores/annotationsStore";
@@ -37,6 +38,7 @@ export default function PdfEditorPage() {
     activeTool,
     clearAll,
   } = useAnnotationsStore();
+  const { notify } = useToast();
   const [isExporting, setIsExporting] = useState(false);
   const [isSignatureModalOpen, setIsSignatureModalOpen] = useState(false);
 
@@ -48,7 +50,7 @@ export default function PdfEditorPage() {
     } catch (err) {
       console.error(err);
       setError(t("exportError"));
-      alert(t("exportErrorDetail"));
+      notify(t("exportErrorDetail"), "error");
     } finally {
       setIsExporting(false);
     }

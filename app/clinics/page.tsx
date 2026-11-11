@@ -19,13 +19,13 @@ export default async function ClinicsPage() {
 
   if (error) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-red-600 mb-4">
+      <div className="flex min-h-screen items-center justify-center px-4">
+        <div className="glass-card max-w-md p-6 text-center" role="alert">
+          <h1 className="text-2xl font-bold text-hub-danger mb-4">
             {t("loadTitle")}
           </h1>
-          <p className="text-gray-600">{error}</p>
-          <p className="text-sm text-gray-500 mt-4">
+          <p className="text-hub-muted">{error}</p>
+          <p className="text-sm text-hub-muted mt-4">
             {t("loadHint")}
           </p>
         </div>
